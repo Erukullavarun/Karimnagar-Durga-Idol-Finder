@@ -702,3 +702,47 @@ function openInstagramApp(handleOrUrl = 'chintuvarun_3008') {
     }
   } catch (e) {}
 })();
+
+// Shared Google Maps-style Location Pin Marker Components
+function getGoogleMapsPinSvg(count = 1, width = 30, height = 42, color = "#EA4335") {
+  const badgeSvg = (count && count > 1)
+    ? `<g transform="translate(18, -3)">
+        <circle cx="7" cy="7" r="7.5" fill="#D4AF37" stroke="#FFFFFF" stroke-width="2"/>
+        <text x="7" y="10.5" font-size="9" font-weight="800" fill="#770E17" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif">${count}</text>
+       </g>`
+    : '';
+
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 30 42" style="display:block; overflow:visible;">
+    <ellipse cx="15" cy="40.5" rx="5.5" ry="2" fill="rgba(0,0,0,0.25)"/>
+    <path d="M15 0C8.373 0 3 5.373 3 12c0 9.25 12 28 12 28s12-18.75 12-28c0-6.627-5.373-12-12-12z" fill="${color}" stroke="#B31412" stroke-width="0.8" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));"/>
+    <circle cx="15" cy="12" r="4.8" fill="#FFFFFF"/>
+    <circle cx="15" cy="12" r="1.8" fill="${color === '#EA4335' ? '#B31412' : '#0B57D0'}"/>
+    ${badgeSvg}
+  </svg>`;
+}
+
+function createGoogleMapsLeafletIcon(count = 1, color = "#EA4335") {
+  if (typeof L === "undefined") return null;
+  return L.divIcon({
+    className: "google-maps-pin-marker",
+    html: getGoogleMapsPinSvg(count, 30, 42, color),
+    iconSize: [30, 42],
+    iconAnchor: [15, 40],
+    popupAnchor: [0, -36]
+  });
+}
+
+function getGoogleMapsMarkerIcon(count = 1, color = "#EA4335") {
+  const svg = getGoogleMapsPinSvg(count, 30, 42, color);
+  return {
+    url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg),
+    scaledSize: (typeof google !== "undefined" && google.maps) ? new google.maps.Size(30, 42) : null,
+    anchor: (typeof google !== "undefined" && google.maps) ? new google.maps.Point(15, 40) : null
+  };
+}
+
+if (typeof window !== "undefined") {
+  window.getGoogleMapsPinSvg = getGoogleMapsPinSvg;
+  window.createGoogleMapsLeafletIcon = createGoogleMapsLeafletIcon;
+  window.getGoogleMapsMarkerIcon = getGoogleMapsMarkerIcon;
+}

@@ -838,31 +838,29 @@
 
           groupedPandals.forEach(group => {
             const count = group.items.length;
-            const badgeSvg = count > 1
-              ? `<circle cx="28" cy="10" r="9" fill="#d4af37" stroke="#ffffff" stroke-width="2"/><text x="28" y="13" font-size="10" font-weight="bold" fill="#770e17" text-anchor="middle">${count}</text>`
-              : '';
-            const svgIcon = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
-              <svg xmlns="http://www.w3.org/2000/svg" width="38" height="38" viewBox="0 0 38 38">
-                <circle cx="19" cy="19" r="16" fill="#b8232e" stroke="#d4af37" stroke-width="2.5"/>
-                <text x="19" y="24" font-size="17" text-anchor="middle" fill="#ffffff">🔱</text>
-                ${badgeSvg}
-              </svg>
-            `)}`;
+            const markerIcon = (typeof getGoogleMapsMarkerIcon === "function")
+              ? getGoogleMapsMarkerIcon(count)
+              : null;
 
             const marker = new google.maps.Marker({
               position: { lat: group.lat, lng: group.lng },
               map: homeGoogleMap,
-              title: group.items.map(i => i.name).join(", "),
-              icon: {
-                url: svgIcon,
-                scaledSize: new google.maps.Size(38, 38),
-                anchor: new google.maps.Point(19, 19)
-              }
+              icon: markerIcon
             });
 
             marker.addListener("click", () => {
-              homeGoogleInfoWindow.setContent(buildPandalPopupHtml(group.items));
-              homeGoogleInfoWindow.open(homeGoogleMap, marker);
+              if (group.items.length === 1 && group.items[0].id) {
+                window.location.href = `pandal.html?id=${encodeURIComponent(group.items[0].id)}`;
+              } else if (group.items.length > 1) {
+                const area = group.items[0].area;
+                if (typeof handleFilterByArea === 'function' && area) {
+                  handleFilterByArea(area);
+                  const dir = document.getElementById("directory-section");
+                  if (dir) dir.scrollIntoView({ behavior: 'smooth' });
+                } else {
+                  window.location.href = `pandal.html?id=${encodeURIComponent(group.items[0].id)}`;
+                }
+              }
             });
 
             marker._pandalItems = group.items;
@@ -938,21 +936,33 @@
 
         groupedPandals.forEach(group => {
           const count = group.items.length;
-          const badgeHtml = count > 1
-            ? `<span style="position:absolute; top:-4px; right:-6px; background:#d4af37; color:#770e17; font-weight:800; font-size:10px; width:18px; height:18px; border-radius:50%; display:grid; place-items:center; border:2px solid #fff; box-shadow:0 2px 5px rgba(0,0,0,0.3);">${count}</span>`
-            : '';
+          const pinIcon = (typeof createGoogleMapsLeafletIcon === "function")
+            ? createGoogleMapsLeafletIcon(count)
+            : L.divIcon({
+                className: "google-maps-pin-marker",
+                html: (typeof getGoogleMapsPinSvg === "function") ? getGoogleMapsPinSvg(count, 30, 42) : '<div style="background:#EA4335;width:24px;height:24px;border-radius:50%;"></div>',
+                iconSize: [30, 42],
+                iconAnchor: [15, 40]
+              });
 
-          const trishulIcon = L.divIcon({
-            className: "trishul-marker-icon",
-            html: `<div style="position:relative; background:linear-gradient(135deg, #b8232e, #770e17); color:#fff; width:36px; height:36px; border-radius:50%; display:grid; place-items:center; font-size:18px; border:2.5px solid #d4af37; box-shadow:0 4px 14px rgba(126,12,28,0.55); cursor:pointer;">
-              🔱${badgeHtml}
-            </div>`,
-            iconSize: [36, 36],
-            iconAnchor: [18, 18]
+          const marker = L.marker([group.lat, group.lng], { icon: pinIcon }).addTo(homeLeafletMap);
+
+          // Direct pandal view or area filter on click - no popups or labels on map
+          marker.on("click", () => {
+            if (group.items.length === 1 && group.items[0].id) {
+              window.location.href = `pandal.html?id=${encodeURIComponent(group.items[0].id)}`;
+            } else if (group.items.length > 1) {
+              const area = group.items[0].area;
+              if (typeof handleFilterByArea === 'function' && area) {
+                handleFilterByArea(area);
+                const dir = document.getElementById("directory-section");
+                if (dir) dir.scrollIntoView({ behavior: 'smooth' });
+              } else {
+                window.location.href = `pandal.html?id=${encodeURIComponent(group.items[0].id)}`;
+              }
+            }
           });
 
-          const marker = L.marker([group.lat, group.lng], { icon: trishulIcon }).addTo(homeLeafletMap);
-          marker.bindPopup(buildPandalPopupHtml(group.items));
           marker._pandalItems = group.items;
           homeMapMarkers.push(marker);
         });
@@ -993,21 +1003,12 @@
         if (area === "Vijayanagar" || area === "Vidyanagar") {
           homeGoogleMap.panTo({ lat: 18.4280, lng: 79.1290 });
           homeGoogleMap.setZoom(16);
-          const targetMarker = homeGoogleMarkers.find(m => m._pandalItems && m._pandalItems.some(i => i.area === "Vijayanagar" || i.area === "Vidyanagar"));
-          if (targetMarker && homeGoogleInfoWindow) {
-            homeGoogleInfoWindow.setContent(buildPandalPopupHtml(targetMarker._pandalItems));
-            homeGoogleInfoWindow.open(homeGoogleMap, targetMarker);
-          }
           return;
         }
         const marker = homeGoogleMarkers.find(m => m._pandalItems && m._pandalItems.some(i => i.area === area));
         if (marker) {
           homeGoogleMap.panTo(marker.getPosition());
           homeGoogleMap.setZoom(16);
-          if (homeGoogleInfoWindow) {
-            homeGoogleInfoWindow.setContent(buildPandalPopupHtml(marker._pandalItems));
-            homeGoogleInfoWindow.open(homeGoogleMap, marker);
-          }
           return;
         }
         if (KARIMNAGAR_COLONY_COORDS && KARIMNAGAR_COLONY_COORDS[area]) {
@@ -1026,15 +1027,12 @@
       }
       if (area === "Vijayanagar" || area === "Vidyanagar") {
         homeLeafletMap.flyTo([18.4280, 79.1290], 16, { duration: 1.5 });
-        const marker = homeMapMarkers.find(m => m._pandalItems && m._pandalItems.some(i => i.area === "Vijayanagar" || i.area === "Vidyanagar"));
-        if (marker) marker.openPopup();
         return;
       }
       const marker = homeMapMarkers.find(m => m._pandalItems && m._pandalItems.some(i => i.area === area));
       if (marker) {
         const pos = marker.getLatLng();
         homeLeafletMap.flyTo([pos.lat, pos.lng], 16, { duration: 1.2 });
-        marker.openPopup();
         return;
       }
       if (KARIMNAGAR_COLONY_COORDS && KARIMNAGAR_COLONY_COORDS[area]) {
@@ -1074,10 +1072,6 @@
         if (matched) {
           homeGoogleMap.panTo(matched.getPosition());
           homeGoogleMap.setZoom(16);
-          if (homeGoogleInfoWindow) {
-            homeGoogleInfoWindow.setContent(buildPandalPopupHtml(matched._pandalItems));
-            homeGoogleInfoWindow.open(homeGoogleMap, matched);
-          }
           return;
         }
       }
@@ -1089,7 +1083,6 @@
         if (matchedMarker) {
           const pos = matchedMarker.getLatLng();
           homeLeafletMap.flyTo([pos.lat, pos.lng], 16, { duration: 1.2 });
-          matchedMarker.openPopup();
           return;
         }
       }
@@ -1107,7 +1100,11 @@
         try { prevUseMyLocation(); } catch (e) {}
       }
       if (!navigator.geolocation) {
-        alert("Geolocation not supported by your browser.");
+        alert("Geolocation is not supported by your browser.");
+        return;
+      }
+      if (window.isSecureContext === false && location.hostname !== "localhost" && location.hostname !== "127.0.0.1") {
+        alert("Location detection requires a secure HTTPS connection. Please access this website using https://");
         return;
       }
       navigator.geolocation.getCurrentPosition(
@@ -1125,7 +1122,6 @@
             homeUserLocationMarker = new google.maps.Marker({
               position: { lat, lng },
               map: homeGoogleMap,
-              title: "Your Current Location",
               icon: {
                 path: google.maps.SymbolPath.CIRCLE,
                 scale: 9,
@@ -1144,7 +1140,6 @@
             if (homeUserLocationMarker && homeLeafletMap.removeLayer) {
               try { homeLeafletMap.removeLayer(homeUserLocationMarker); } catch (e) {}
             }
-            const acc = Math.round(pos.coords.accuracy || 0);
             homeUserLocationMarker = L.marker([lat, lng], {
               icon: L.divIcon({
                 className: "user-loc-pin",
@@ -1152,14 +1147,22 @@
                 iconSize: [22, 22],
                 iconAnchor: [11, 11]
               })
-            }).addTo(homeLeafletMap).bindPopup(`<b>📍 Your Exact Location</b>${acc ? `<br><span style="font-size:11px;color:#555;">GPS Accuracy: ±${acc}m</span>` : ""}`).openPopup();
+            }).addTo(homeLeafletMap);
           }
         },
         (err) => {
           console.warn("GPS notice:", err);
-          alert("Could not detect your exact GPS location. Please select an area from the dropdown.");
+          if (err.code === 1) {
+            alert("Location access was denied. Please allow location permissions in your browser to view your live GPS position.");
+          } else if (err.code === 2) {
+            alert("GPS signal unavailable. Please ensure location services are enabled on your device.");
+          } else if (err.code === 3) {
+            alert("Location request timed out. Please try again or select an area from the dropdown.");
+          } else {
+            alert("Could not detect your exact GPS location. Please select an area from the dropdown.");
+          }
         },
-        { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
       );
     };
   </script>

@@ -769,26 +769,15 @@
 
         groupedPandals.forEach(group => {
           const count = group.items.length;
-          const badgeSvg = count > 1
-            ? `<circle cx="28" cy="10" r="9" fill="#d4af37" stroke="#ffffff" stroke-width="2"/><text x="28" y="13" font-size="10" font-weight="bold" fill="#770e17" text-anchor="middle">${count}</text>`
-            : '';
-          const svgIcon = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
-            <svg xmlns="http://www.w3.org/2000/svg" width="38" height="38" viewBox="0 0 38 38">
-              <circle cx="19" cy="19" r="16" fill="#b8232e" stroke="#d4af37" stroke-width="2.5"/>
-              <text x="19" y="24" font-size="17" text-anchor="middle" fill="#ffffff">🔱</text>
-              ${badgeSvg}
-            </svg>
-          `)}`;
+          const markerIcon = (typeof getGoogleMapsMarkerIcon === "function")
+            ? getGoogleMapsMarkerIcon(count)
+            : null;
 
           const marker = new google.maps.Marker({
             position: { lat: group.lat, lng: group.lng },
             map: dedicatedGoogleMap,
             title: group.items.map(i => i.name).join(", "),
-            icon: {
-              url: svgIcon,
-              scaledSize: new google.maps.Size(38, 38),
-              anchor: new google.maps.Point(19, 19)
-            }
+            icon: markerIcon
           });
 
           marker.addListener("click", () => {
@@ -810,20 +799,16 @@
 
         groupedPandals.forEach(group => {
           const count = group.items.length;
-          const badgeHtml = count > 1
-            ? `<span style="position:absolute; top:-4px; right:-6px; background:#d4af37; color:#770e17; font-weight:800; font-size:10px; width:18px; height:18px; border-radius:50%; display:grid; place-items:center; border:2px solid #fff; box-shadow:0 2px 5px rgba(0,0,0,0.3);">${count}</span>`
-            : '';
+          const pinIcon = (typeof createGoogleMapsLeafletIcon === "function")
+            ? createGoogleMapsLeafletIcon(count)
+            : L.divIcon({
+                className: "google-maps-pin-marker",
+                html: (typeof getGoogleMapsPinSvg === "function") ? getGoogleMapsPinSvg(count, 30, 42) : '<div style="background:#EA4335;width:24px;height:24px;border-radius:50%;"></div>',
+                iconSize: [30, 42],
+                iconAnchor: [15, 40]
+              });
 
-          const trishulIcon = L.divIcon({
-            className: 'custom-map-pin',
-            html: `<div style="position:relative; background:linear-gradient(135deg, #b8232e, #770e17); width:34px; height:34px; border-radius:50%; display:grid; place-items:center; color:white; box-shadow:0 4px 14px rgba(126,12,28,0.55); border:2.5px solid #d4af37; font-size:16px; cursor:pointer;">
-              🔱${badgeHtml}
-            </div>`,
-            iconSize: [34, 34],
-            iconAnchor: [17, 17]
-          });
-
-          const marker = L.marker([group.lat, group.lng], { icon: trishulIcon })
+          const marker = L.marker([group.lat, group.lng], { icon: pinIcon })
             .addTo(dedicatedMap)
             .bindPopup(buildPandalPopupHtml(group.items));
           marker._pandalItems = group.items;
@@ -892,7 +877,11 @@
 
     function handleMapUseLocation() {
       const btn = document.getElementById("map-btn-location");
-      if (!navigator.geolocation) return alert("Geolocation not supported by your browser.");
+      if (!navigator.geolocation) return alert("Geolocation is not supported by your browser.");
+      if (window.isSecureContext === false && location.hostname !== "localhost" && location.hostname !== "127.0.0.1") {
+        alert("Location detection requires a secure HTTPS connection. Please access this website using https://");
+        return;
+      }
       btn.innerHTML = `<span>⏳</span> Locating...`;
       navigator.geolocation.getCurrentPosition(
         (pos) => {
@@ -926,7 +915,7 @@
           if (dedicatedMap) {
             dedicatedMap.setView([lat, lng], 16);
             if (dedicatedUserPin) {
-              dedicatedMap.removeLayer(dedicatedUserPin);
+              try { dedicatedMap.removeLayer(dedicatedUserPin); } catch (e) {}
             }
             dedicatedUserPin = L.marker([lat, lng], {
               icon: L.divIcon({
@@ -938,11 +927,19 @@
             }).addTo(dedicatedMap).bindPopup(`<b>📍 Your Exact Location</b>${acc ? `<br><span style="font-size:11px;color:#555;">GPS Accuracy: ±${acc}m</span>` : ""}`).openPopup();
           }
         },
-        () => {
+        (err) => {
           btn.innerHTML = `<span>📍</span> Use My Location`;
-          alert("Could not fetch GPS location. Please check browser location permissions or choose an area pill above.");
+          if (err.code === 1) {
+            alert("Location access was denied. Please allow location permissions in your browser to view your live GPS position.");
+          } else if (err.code === 2) {
+            alert("GPS position unavailable. Please ensure location services are enabled on your device.");
+          } else if (err.code === 3) {
+            alert("Location request timed out. Please try again or choose an area pill above.");
+          } else {
+            alert("Could not fetch GPS location. Please check browser location permissions or choose an area pill above.");
+          }
         },
-        { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
       );
     }
 

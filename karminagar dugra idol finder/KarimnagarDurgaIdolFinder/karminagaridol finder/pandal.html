@@ -311,33 +311,18 @@
                     <span>📍</span> Karimnagar, Telangana, India
                   </p>
                 </div>
-                <!-- Interactive Embedded Map Container -->
-                <div class="mt-3 rounded-2xl overflow-hidden border border-cream-300 shadow-soft">
-                  <div id="detail-leaflet-map" class="w-full h-48 sm:h-56 z-0 bg-cream-100"></div>
-                </div>
-
-                <!-- Google Street View 360 & GPS Navigation Quick Actions -->
-                <div class="mt-2.5 grid grid-cols-2 gap-2">
-                  <a id="detail-streetview-btn" href="#" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold shadow-xs transition min-h-[42px] whitespace-nowrap">
-                    <span>👁️</span> <span>Street View 360°</span>
-                  </a>
-                  <a id="detail-directions-btn" href="#" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-saffron-600 hover:bg-saffron-700 text-white text-xs font-bold shadow-xs transition min-h-[42px] whitespace-nowrap">
-                    <span>🚗</span> <span>GPS Directions</span>
+                <!-- Fast Action: Open in Google Maps -->
+                <div class="mt-4 pt-1">
+                  <a id="detail-maps-link" href="#" target="_blank" rel="noopener noreferrer" class="btn-primary w-full !py-3.5 text-sm sm:text-base font-bold shadow-lift flex items-center justify-center gap-2.5 min-h-[48px] whitespace-nowrap">
+                    <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none">
+                      <path d="M12 2C8.134 2 5 5.134 5 9C5 13.9 10.4 19.8 11.45 20.89C11.75 21.2 12.25 21.2 12.55 20.89C13.6 19.8 19 13.9 19 9C19 5.134 15.866 2 12 2Z" fill="#EA4335"/>
+                      <circle cx="12" cy="8.8" r="2.7" fill="#FFFFFF"/>
+                    </svg>
+                    <span>Open in Google Maps</span>
                   </a>
                 </div>
-              </div>
 
-              <!-- Fast Action Buttons -->
-              <div class="space-y-2.5 pt-2">
-                <a id="detail-maps-link" href="#" target="_blank" rel="noopener noreferrer" class="btn-primary w-full !py-3 text-xs sm:text-sm font-bold shadow-lift flex items-center justify-center gap-2 min-h-[46px] whitespace-nowrap">
-                  <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none">
-                    <path d="M12 2C8.134 2 5 5.134 5 9C5 13.9 10.4 19.8 11.45 20.89C11.75 21.2 12.25 21.2 12.55 20.89C13.6 19.8 19 13.9 19 9C19 5.134 15.866 2 12 2Z" fill="#EA4335"/>
-                    <circle cx="12" cy="8.8" r="2.7" fill="#FFFFFF"/>
-                  </svg>
-                  <span>Google Maps Location</span>
-                </a>
-
-                <div class="grid grid-cols-2 gap-2.5">
+                <div class="grid grid-cols-2 gap-2.5 pt-2.5">
                   <button id="detail-whatsapp-btn" type="button" class="flex items-center justify-center gap-2 py-2.5 px-4 rounded-2xl bg-[#25D366] hover:bg-[#1EBE5D] text-white text-xs font-bold shadow-soft transition cursor-pointer min-h-[44px] whitespace-nowrap">
                     <svg class="w-4 h-4 shrink-0 fill-current" viewBox="0 0 24 24">
                       <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
@@ -715,29 +700,116 @@
         thumbsContainer.innerHTML = "";
       }
 
-      // Map & Navigation URLs (Guaranteed valid Indian coordinates in Karimnagar)
-      const sanitized = (typeof sanitizePandalCoords === "function") ? sanitizePandalCoords(item) : item;
-      const lat = parseFloat(sanitized.latitude) || 18.4386;
-      const lng = parseFloat(sanitized.longitude) || 79.1288;
-      const navUrl = (typeof getGoogleDirectionsUrl === "function") ? getGoogleDirectionsUrl(sanitized) : `https://www.google.com/maps/dir/?api=1&destination=${lat.toFixed(6)},${lng.toFixed(6)}`;
-      const svUrl = (typeof getGoogleStreetViewUrl === "function") ? getGoogleStreetViewUrl(sanitized) : `https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${lat.toFixed(6)},${lng.toFixed(6)}`;
-      const mapsUrl = (typeof getGoogleMapsUrl === "function") ? getGoogleMapsUrl(sanitized) : navUrl;
+      // Google Maps Destination & Navigation Handler with GPS Detection
+      function getDestinationParam(p) {
+        if (!p) return encodeURIComponent('Karimnagar, Telangana');
+        const lat = parseFloat(p.latitude);
+        const lng = parseFloat(p.longitude);
+        if (!isNaN(lat) && !isNaN(lng) && lat >= 8.0 && lat <= 37.5 && lng >= 68.0 && lng <= 97.5) {
+          return `${lat.toFixed(6)},${lng.toFixed(6)}`;
+        }
+        if (p.address && p.address.trim()) {
+          return encodeURIComponent(`${p.name ? p.name + ', ' : ''}${p.address.trim()}, Karimnagar, Telangana`);
+        }
+        if (p.area && p.area.trim()) {
+          return encodeURIComponent(`${p.area.trim()}, Karimnagar, Telangana`);
+        }
+        return encodeURIComponent('Karimnagar, Telangana');
+      }
 
+      function buildFallbackMapsUrl(p) {
+        if (!p) return "#";
+        if (p.mapsUrl && typeof p.mapsUrl === "string" && p.mapsUrl.startsWith("http")) {
+          return p.mapsUrl;
+        }
+        const dest = getDestinationParam(p);
+        return `https://www.google.com/maps/dir/?api=1&destination=${dest}`;
+      }
+
+      const navUrl = buildFallbackMapsUrl(item);
       const mapBtn = document.getElementById("detail-maps-link");
-      if (mapBtn) mapBtn.href = mapsUrl;
+      if (mapBtn) {
+        mapBtn.href = navUrl;
+        mapBtn.target = "_blank";
+        mapBtn.rel = "noopener noreferrer";
 
-      const svBtn = document.getElementById("detail-streetview-btn");
-      if (svBtn) svBtn.href = svUrl;
+        // Click-triggered GPS detection for turn-by-turn navigation
+        mapBtn.onclick = function(e) {
+          e.preventDefault();
 
-      const dirBtn = document.getElementById("detail-directions-btn");
-      if (dirBtn) dirBtn.href = navUrl;
+          const fallbackUrl = buildFallbackMapsUrl(item);
+          const origHtml = mapBtn.innerHTML;
+
+          const openDirectDestination = () => {
+            mapBtn.innerHTML = origHtml;
+            window.open(fallbackUrl, "_blank", "noopener,noreferrer");
+          };
+
+          // 1. If geolocation not supported by browser
+          if (!navigator.geolocation) {
+            openDirectDestination();
+            return;
+          }
+
+          // 2. If insecure HTTP (browser forbids GPS)
+          if (window.isSecureContext === false && location.hostname !== "localhost" && location.hostname !== "127.0.0.1") {
+            openDirectDestination();
+            return;
+          }
+
+          // Show clear status while locating
+          mapBtn.innerHTML = `
+            <svg class="animate-spin w-5 h-5 shrink-0 text-white" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+            </svg>
+            <span>Locating GPS...</span>
+          `;
+
+          let completed = false;
+
+          // Enforce 3.5s safety timeout to never leave UI hanging
+          const timer = setTimeout(() => {
+            if (!completed) {
+              completed = true;
+              openDirectDestination();
+            }
+          }, 3500);
+
+          navigator.geolocation.getCurrentPosition(
+            (pos) => {
+              if (completed) return;
+              completed = true;
+              clearTimeout(timer);
+              mapBtn.innerHTML = origHtml;
+
+              const uLat = pos.coords.latitude.toFixed(6);
+              const uLng = pos.coords.longitude.toFixed(6);
+              const dest = getDestinationParam(item);
+              const dirUrl = `https://www.google.com/maps/dir/?api=1&origin=${uLat},${uLng}&destination=${dest}`;
+              window.open(dirUrl, "_blank", "noopener,noreferrer");
+            },
+            (err) => {
+              if (completed) return;
+              completed = true;
+              clearTimeout(timer);
+              openDirectDestination();
+            },
+            {
+              enableHighAccuracy: true,
+              timeout: 3200,
+              maximumAge: 60000
+            }
+          );
+        };
+      }
 
       const waBtn = document.getElementById("detail-whatsapp-btn");
       if (waBtn) {
         waBtn.onclick = () => {
           const origin = window.location.origin;
           const pandalPageUrl = `${origin}/pandal.html?id=${encodeURIComponent(item.id)}`;
-          const shareText = encodeURIComponent(`🕉️ *${pTitle}* (${pArea}, Karimnagar)\n\n📍 Open in Google Maps for Navigation:\n👉 ${mapUrl}\n\n👁️ View 360° Google Street View:\n👉 ${svUrl}\n\n🔱 View full idol details on Karimnagar Durga Idol Finder:\n👉 ${pandalPageUrl}`);
+          const shareText = encodeURIComponent(`🕉️ *${pTitle}* (${pArea}, Karimnagar)\n\n📍 Open in Google Maps for Navigation:\n👉 ${navUrl}\n\n🔱 View full idol details on Karimnagar Durga Idol Finder:\n👉 ${pandalPageUrl}`);
           const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent || navigator.vendor || window.opera);
           const waUrl = isMobile ? `whatsapp://send?text=${shareText}` : `https://api.whatsapp.com/send?text=${shareText}`;
           if (isMobile) {
@@ -768,116 +840,8 @@
       // Related Pandals
       renderRelatedPandals(item, allList);
 
-      // Initialize Interactive Embedded Leaflet & Google Maps
-      initDetailPandalMap(item);
-
       // Start automatic 2-second slideshow transition between uploaded photos
       startDetailAutoSlider();
-    }
-
-    // Interactive Embedded Leaflet / Google Maps controller for pandal details page
-    let detailMapInstance = null;
-    function initDetailPandalMap(item) {
-      const mapContainer = document.getElementById("detail-leaflet-map");
-      if (!mapContainer) return;
-      if (typeof L === "undefined") return;
-
-      const sanitized = (typeof sanitizePandalCoords === "function") ? sanitizePandalCoords(item) : item;
-      const lat = parseFloat(sanitized.latitude) || 18.4386;
-      const lng = parseFloat(sanitized.longitude) || 79.1288;
-      const pTitle = sanitized.name || "Durga Pandal";
-      const pArea = sanitized.area || "Karimnagar";
-      const mapUrl = (typeof getGoogleMapsUrl === "function") ? getGoogleMapsUrl(sanitized) : `https://www.google.com/maps/dir/?api=1&destination=${lat.toFixed(6)},${lng.toFixed(6)}`;
-      const navUrl = (typeof getGoogleDirectionsUrl === "function") ? getGoogleDirectionsUrl(sanitized) : `https://www.google.com/maps/dir/?api=1&destination=${lat.toFixed(6)},${lng.toFixed(6)}`;
-      const svUrl = (typeof getGoogleStreetViewUrl === "function") ? getGoogleStreetViewUrl(sanitized) : `https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${lat.toFixed(6)},${lng.toFixed(6)}`;
-
-      if (detailMapInstance) {
-        try {
-          detailMapInstance.remove();
-        } catch (e) {}
-        detailMapInstance = null;
-      }
-
-      try {
-        detailMapInstance = L.map('detail-leaflet-map', {
-          center: [lat, lng],
-          zoom: 16,
-          maxZoom: 20,
-          zoomControl: true,
-          attributionControl: false
-        });
-
-        // 100% Free Authentic Google Maps Tiles & Layer Switcher
-        const googleTiles = typeof createGoogleTileLayers === "function" ? createGoogleTileLayers() : {
-          roadmap: L.tileLayer('https://mt{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
-            subdomains: ['0', '1', '2', '3'],
-            maxZoom: 20,
-            attribution: '&copy; Google Maps'
-          }),
-          hybrid: L.tileLayer('https://mt{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
-            subdomains: ['0', '1', '2', '3'],
-            maxZoom: 20,
-            attribution: '&copy; Google Maps Satellite'
-          }),
-          terrain: L.tileLayer('https://mt{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}', {
-            subdomains: ['0', '1', '2', '3'],
-            maxZoom: 20,
-            attribution: '&copy; Google Maps Terrain'
-          })
-        };
-
-        googleTiles.roadmap.addTo(detailMapInstance);
-        try {
-          L.control.layers({
-            "🗺️ Google Roadmap": googleTiles.roadmap,
-            "🛰️ Google Satellite": googleTiles.hybrid,
-            "⛰️ Google Terrain": googleTiles.terrain
-          }, null, { position: 'topright' }).addTo(detailMapInstance);
-        } catch (e) {}
-
-        setTimeout(() => {
-          if (detailMapInstance) detailMapInstance.invalidateSize();
-        }, 200);
-
-        // Custom branded Durga Trident Pin
-        const markerIcon = L.divIcon({
-          className: 'custom-pandal-detail-pin',
-          html: `
-            <div style="background:#b8232e; color:white; width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 12px rgba(184,35,46,0.6); border:2.5px solid #ffffff; font-size:16px;">
-              🔱
-            </div>
-          `,
-          iconSize: [34, 34],
-          iconAnchor: [17, 34],
-          popupAnchor: [0, -34]
-        });
-
-        const marker = L.marker([lat, lng], { icon: markerIcon }).addTo(detailMapInstance);
-
-        marker.bindPopup(`
-          <div style="font-family:sans-serif; padding:4px 6px; text-align:center; min-width:180px;">
-            <b style="font-size:12px; color:#140b0d;">${pTitle}</b><br/>
-            <span style="font-size:11px; color:#655257;">📍 ${pArea}</span><br/>
-            <div style="display:flex; flex-direction:column; gap:4px; margin-top:6px;">
-              <a href="${navUrl}" target="_blank" style="display:block; padding:5px 10px; background:#b8232e; color:#fff; border-radius:8px; text-decoration:none; font-size:11px; font-weight:bold;">
-                🚗 Start GPS Navigation ➔
-              </a>
-              <a href="${svUrl}" target="_blank" style="display:block; padding:5px 10px; background:#0f172a; color:#fff; border-radius:8px; text-decoration:none; font-size:11px; font-weight:bold;">
-                👁️ 360° Google Street View ➔
-              </a>
-              <a href="${gSearchUrl}" target="_blank" style="display:block; padding:4px 8px; background:#f1f5f9; color:#334155; border:1px solid #cbd5e1; border-radius:8px; text-decoration:none; font-size:10px; font-weight:600;">
-                📍 Open in Google Maps ➔
-              </a>
-            </div>
-          </div>
-        `);
-
-        setTimeout(() => {
-          if (detailMapInstance) detailMapInstance.invalidateSize();
-        }, 300);
-      } catch (err) {
-        console.warn("Detail map error:", err);
-      }
     }
 
     // Auto Slider Controller (Smoothly changes photo every 2 seconds)

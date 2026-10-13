@@ -72,9 +72,7 @@
     }
   </script>
   <link rel="stylesheet" href="styles.css" />
-  <!-- Leaflet CSS for Map Picker -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-</head>
+  </head>
 <body class="bg-cream-50 text-ink-900 flex flex-col min-h-screen">
 
   <!-- Top Sacred Bar -->
@@ -188,81 +186,17 @@
             <label class="block text-xs font-bold text-ink-800 mb-1.5">Exact Address & Nearby Landmark *</label>
             <input id="sub-address" required type="text" placeholder="e.g. Near Old Clock Tower, Main Road, Beside Hanuman Temple" class="w-full rounded-2xl border border-cream-300 p-3.5 text-xs text-ink-900 outline-none focus:border-saffron-500 bg-cream-50/50" />
           </div>
-
-          <!-- Google Maps Link & Map Location Picker -->
-          <div class="p-5 rounded-2xl bg-cream-50 border border-saffron-200 space-y-4">
-            <div>
-              <label class="block text-xs font-bold text-ink-800 mb-1.5 flex items-center justify-between">
-                <span class="flex items-center gap-1.5">
-                  <span>📍</span> Google Maps Location Link (or type coordinates)
-                </span>
-                <span class="text-[11px] text-saffron-700 font-semibold">Recommended</span>
-              </label>
-              <div class="flex flex-col sm:flex-row gap-2.5">
-                <input id="sub-maps-url" type="url" oninput="handleMapsUrlInput(this.value)" onchange="handleMapsUrlInput(this.value)" onpaste="setTimeout(() => handleMapsUrlInput(this.value), 50)" placeholder="Paste link from Google Maps (e.g. https://maps.app.goo.gl/... or https://goo.gl/maps/...)" class="flex-1 rounded-2xl border border-cream-300 p-3.5 text-xs text-ink-900 outline-none focus:border-saffron-500 bg-white shadow-xs" />
-                <button type="button" onclick="handleLocateFromUrlBtn()" class="px-5 py-3 rounded-2xl bg-saffron-600 hover:bg-saffron-700 text-white font-bold text-xs sm:text-sm shadow-soft transition flex items-center justify-center gap-2 shrink-0 cursor-pointer min-h-[44px]">
-                  <span>🗺️</span> <span>Locate on Map</span>
-                </button>
-              </div>
-              <div id="sub-maps-url-status" class="hidden text-xs mt-2 p-3 rounded-xl border transition"></div>
-              <p class="text-[11px] text-ink-500 mt-1">Open Google Maps on your phone/PC → Share → Copy link and paste here. The map will automatically jump to your exact pandal.</p>
-            </div>
-
-            <!-- Map Picker: Select Place on Map (Blinkit / Zepto / Rapido style) -->
-            <div class="border-t border-cream-300 pt-3 space-y-3">
-              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
-                <div>
-                  <span class="block text-xs font-bold text-ink-900">🗺️ Set Exact Pandal Location on Google Map</span>
-                  <span class="text-[11px] text-ink-500">Search your colony or tap directly on the map to pin the exact pandal spot</span>
-                </div>
-                <button type="button" id="sub-btn-gps" onclick="detectUserLocation()" class="px-4 py-2.5 rounded-xl bg-white border border-saffron-300 hover:bg-saffron-50 text-saffron-800 text-xs sm:text-sm font-bold transition shadow-xs flex items-center justify-center gap-2 cursor-pointer min-h-[42px] w-full sm:w-auto">
-                  <span>🎯</span> <span id="sub-btn-gps-text">Use Current GPS</span>
-                </button>
-              </div>
-
-              <!-- Quick Colony Search Bar on Map -->
-              <div class="relative">
-                <input id="picker-colony-search" type="text" placeholder="🔍 Search colony, landmark or street (e.g. Mukarampura, Tower Circle, Sapthagiri...)" oninput="handlePickerSearch(this.value)" class="w-full rounded-xl border border-cream-300 bg-white pl-9 pr-3 py-2 text-xs text-ink-900 outline-none focus:border-saffron-500 shadow-sm" />
-                <svg class="absolute left-3 top-2.5 h-3.5 w-3.5 text-ink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                <div id="picker-search-results" class="hidden absolute top-full inset-x-0 mt-1 max-h-48 overflow-y-auto bg-white rounded-xl border border-cream-300 shadow-xl z-50 divide-y divide-cream-100 text-xs"></div>
-              </div>
-
-              <!-- Interactive Map Container -->
-              <div class="relative rounded-2xl overflow-hidden border border-cream-300 shadow-inner">
-                <div id="submit-map-picker" class="w-full h-64 z-10 relative"></div>
-                <!-- Pin instruction pill -->
-                <div class="absolute bottom-2 inset-x-2 z-20 pointer-events-none flex justify-center">
-                  <span class="bg-black/75 backdrop-blur-md text-white text-[10px] sm:text-[11px] font-semibold px-3 py-1 rounded-full shadow-lg">
-                    👆 Click anywhere on the map or drag 🔱 pin to adjust spot
-                  </span>
-                </div>
-              </div>
-
-              <!-- Selected Coordinates readout & Manual Lat/Lng for far-away areas -->
-              <div class="bg-white p-3 rounded-2xl border border-cream-200 space-y-2">
-                <div class="flex items-center justify-between text-[11px] text-ink-700">
-                  <span>📍 Selected Spot: <strong id="selected-coords-text" class="text-saffron-700">18.4386° N, 79.1288° E (Karimnagar)</strong></span>
-                  <span class="text-[10px] text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">✓ Location Pinned</span>
-                </div>
-
-                <!-- Manual text coordinates (for far-away villages or custom GPS) -->
-                <details class="text-xs text-ink-600 pt-1 border-t border-cream-100">
-                  <summary class="cursor-pointer font-bold text-saffron-700 hover:underline">
-                    ✍️ Enter coordinates manually in text format (for far-away areas / villages)
-                  </summary>
-                  <div class="grid grid-cols-2 gap-2.5 pt-2">
-                    <div>
-                      <label class="block text-[10px] font-bold text-ink-700 mb-0.5">Latitude (e.g. 18.4386)</label>
-                      <input id="sub-lat" type="number" step="any" value="18.4386" oninput="handleManualCoordsInput()" class="w-full rounded-lg border border-cream-300 p-2 text-xs font-mono bg-cream-50 focus:bg-white focus:border-saffron-500 outline-none" />
-                    </div>
-                    <div>
-                      <label class="block text-[10px] font-bold text-ink-700 mb-0.5">Longitude (e.g. 79.1288)</label>
-                      <input id="sub-lng" type="number" step="any" value="79.1288" oninput="handleManualCoordsInput()" class="w-full rounded-lg border border-cream-300 p-2 text-xs font-mono bg-cream-50 focus:bg-white focus:border-saffron-500 outline-none" />
-                    </div>
-                  </div>
-                </details>
-              </div>
-            </div>
+          <!-- Google Maps Location Link (Optional) -->
+          <div>
+            <label class="block text-xs font-bold text-ink-800 mb-1.5 flex items-center justify-between">
+              <span class="flex items-center gap-1.5">
+                <span>📍</span> Google Maps Location Link (Optional)
+              </span>
+              <span class="text-[11px] text-ink-500">Paste Google Maps link if available</span>
+            </label>
+            <input id="sub-maps-url" type="url" oninput="handleMapsUrlInput(this.value)" placeholder="e.g. https://maps.app.goo.gl/... or https://goo.gl/maps/..." class="w-full rounded-2xl border border-cream-300 p-3.5 text-xs text-ink-900 outline-none focus:border-saffron-500 bg-cream-50/50" />
+            <input id="sub-lat" type="hidden" value="18.4386" />
+            <input id="sub-lng" type="hidden" value="79.1288" />
           </div>
 
           <!-- Durga Idol Photo URL (Web image reference or direct photo link) -->
@@ -414,15 +348,8 @@
     </div>
   </nav>
 
-  <!-- Leaflet Maps Script for Map Picker -->
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <script src="data.js"></script>
   <script>
-    let submitPickerMap = null;
-    let submitPickerMarker = null;
-    let submitPickerGoogleMap = null;
-    let submitPickerGoogleMarker = null;
-    let hasUserPinnedExactSpot = false;
 
     function handleImageUrlInput(val) {
       const prev = document.getElementById("sub-image-url-preview");
@@ -435,84 +362,51 @@
         prev.classList.add("hidden");
       }
     }
-
-    // Helper: Google Maps API key lookup
-    function getGoogleMapsApiKey() {
-      try {
-        const stored = (typeof window !== "undefined" && (window.GOOGLE_MAPS_API_KEY || localStorage.getItem("GOOGLE_MAPS_API_KEY") || localStorage.getItem("google_maps_api_key")));
-        if (stored) {
-          const trimmed = String(stored).trim();
-          if (trimmed.startsWith("AIza") && trimmed.length > 30) return trimmed;
-          localStorage.removeItem("GOOGLE_MAPS_API_KEY");
-          localStorage.removeItem("google_maps_api_key");
-        }
-      } catch (e) {}
-      return "";
+    function isValidIndianCoord(lat, lng) {
+      const nLat = parseFloat(lat);
+      const nLng = parseFloat(lng);
+      if (isNaN(nLat) || isNaN(nLng)) return false;
+      return nLat >= 8.0 && nLat <= 37.5 && nLng >= 68.0 && nLng <= 97.5;
     }
 
-    // Dynamic Google Maps Script Loader
-    function loadGoogleMapsScript(callback) {
-      if (typeof window === "undefined") return;
-      if (window.google && window.google.maps) {
-        if (callback) callback(window.google.maps);
-        return;
+    // Extract coordinates from text or any Google Maps URL format
+    function extractCoordinatesFromText(text) {
+      if (!text || typeof text !== "string") return null;
+      text = text.trim();
+
+      // 1. Raw coordinates pattern: "18.4386, 79.1288"
+      const rawMatch = text.match(/^([+-]?\d{1,2}\.\d+)[,\s]+([+-]?\d{1,3}\.\d+)$/);
+      if (rawMatch) {
+        const lat = parseFloat(rawMatch[1]);
+        const lng = parseFloat(rawMatch[2]);
+        if (isValidIndianCoord(lat, lng)) {
+          return { lat, lng };
+        }
       }
-      const apiKey = getGoogleMapsApiKey();
-      if (!apiKey) {
-        if (callback) callback(null);
-        return;
+
+      // 2. Google Maps URL coordinates: @lat,lng
+      const atMatch = text.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+      if (atMatch && isValidIndianCoord(atMatch[1], atMatch[2])) {
+        return { lat: parseFloat(atMatch[1]), lng: parseFloat(atMatch[2]) };
       }
-      if (window._googleMapsLoading) {
-        window._googleMapsCallbacks = window._googleMapsCallbacks || [];
-        if (callback) window._googleMapsCallbacks.push(callback);
-        return;
+
+      // 3. Google Maps q=lat,lng or query=lat,lng or destination=lat,lng
+      const qMatch = text.match(/[?&](?:q|query|destination|ll)=(-?\d+\.\d+),(-?\d+\.\d+)/);
+      if (qMatch && isValidIndianCoord(qMatch[1], qMatch[2])) {
+        return { lat: parseFloat(qMatch[1]), lng: parseFloat(qMatch[2]) };
       }
-      window._googleMapsLoading = true;
-      window._googleMapsCallbacks = callback ? [callback] : [];
-      window._onGoogleMapsPlatformReady = function() {
-        window._googleMapsLoading = false;
-        const cbs = window._googleMapsCallbacks || [];
-        window._googleMapsCallbacks = [];
-        cbs.forEach(cb => { if (typeof cb === "function") cb(window.google.maps); });
-      };
-      const script = document.createElement("script");
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(apiKey)}&libraries=places,geometry&callback=_onGoogleMapsPlatformReady`;
-      script.async = true;
-      script.defer = true;
-      script.onerror = function() {
-        console.warn("Failed to load Google Maps script. Check API key.");
-        window._googleMapsLoading = false;
-        const cbs = window._googleMapsCallbacks || [];
-        window._googleMapsCallbacks = [];
-        cbs.forEach(cb => { if (typeof cb === "function") cb(null); });
-      };
-      document.head.appendChild(script);
+
+      return null;
     }
 
-    function updatePinnedLocation(lat, lng, autoUpdateUrl = true) {
-      let nLat = parseFloat(lat);
-      let nLng = parseFloat(lng);
-      if (isNaN(nLat) || isNaN(nLng) || !isValidIndianCoord(nLat, nLng)) {
-        nLat = 18.4386;
-        nLng = 79.1288;
-      }
-      const fixedLat = nLat.toFixed(5);
-      const fixedLng = nLng.toFixed(5);
-      const latInput = document.getElementById("sub-lat");
-      const lngInput = document.getElementById("sub-lng");
-      if (latInput) latInput.value = fixedLat;
-      if (lngInput) lngInput.value = fixedLng;
-      const textEl = document.getElementById("selected-coords-text");
-      if (textEl) {
-        textEl.textContent = `${nLat.toFixed(4)}° N, ${nLng.toFixed(4)}° E`;
-      }
-      // Auto-generate Google Maps link if user hasn't typed one
-      if (autoUpdateUrl) {
-        const mapsUrlInput = document.getElementById("sub-maps-url");
-        if (mapsUrlInput && (!mapsUrlInput.value || mapsUrlInput.dataset.autoGenerated === "true")) {
-          mapsUrlInput.value = `https://www.google.com/maps/dir/?api=1&destination=${fixedLat},${fixedLng}`;
-          mapsUrlInput.dataset.autoGenerated = "true";
-        }
+    function handleMapsUrlInput(val) {
+      if (!val || typeof val !== "string") return;
+      const coords = extractCoordinatesFromText(val.trim());
+      if (coords) {
+        const latInput = document.getElementById("sub-lat");
+        const lngInput = document.getElementById("sub-lng");
+        if (latInput) latInput.value = coords.lat;
+        if (lngInput) lngInput.value = coords.lng;
       }
     }
 
@@ -542,661 +436,13 @@
           input.required = false;
           input.value = "";
         }
-        // ONLY sync map to selected colony center if user hasn't already pinned an exact spot!
-        if (!hasUserPinnedExactSpot) {
-          if (KARIMNAGAR_COLONY_COORDS && KARIMNAGAR_COLONY_COORDS[val]) {
-            const [cLat, cLng] = KARIMNAGAR_COLONY_COORDS[val];
-            selectPickerSearchResult(val, cLat, cLng, false);
-          }
+        if (typeof KARIMNAGAR_COLONY_COORDS !== "undefined" && KARIMNAGAR_COLONY_COORDS[val]) {
+          const [cLat, cLng] = KARIMNAGAR_COLONY_COORDS[val];
+          const latInput = document.getElementById("sub-lat");
+          const lngInput = document.getElementById("sub-lng");
+          if (latInput) latInput.value = cLat;
+          if (lngInput) lngInput.value = cLng;
         }
-      }
-    }
-
-    function setupPickerPlacesAutocomplete() {
-      const searchInput = document.getElementById("picker-colony-search");
-      if (!searchInput) return;
-
-      if (window.google && window.google.maps && window.google.maps.places) {
-        const autocomplete = new google.maps.places.Autocomplete(searchInput, {
-          componentRestrictions: { country: "in" },
-          fields: ["geometry", "name", "formatted_address"],
-          bounds: new google.maps.LatLngBounds(
-            new google.maps.LatLng(18.35, 79.05),
-            new google.maps.LatLng(18.52, 79.22)
-          ),
-          strictBounds: false
-        });
-
-        autocomplete.addListener("place_changed", () => {
-          const place = autocomplete.getPlace();
-          if (!place || !place.geometry || !place.geometry.location) return;
-          const lat = place.geometry.location.lat();
-          const lng = place.geometry.location.lng();
-          const placeName = place.name || searchInput.value;
-          selectPickerSearchResult(placeName, lat, lng);
-        });
-      }
-    }
-
-    // Initialize Interactive Map Picker (100% Free Authentic Google Maps & Satellite)
-    function initSubmitMapPicker() {
-      const mapContainer = document.getElementById("submit-map-picker");
-      if (!mapContainer) return;
-
-      const initialLat = 18.4386;
-      const initialLng = 79.1288;
-
-      if (submitPickerMap) {
-        submitPickerMap.invalidateSize();
-        return;
-      }
-
-      if (typeof L === "undefined") {
-        console.warn("Leaflet library not ready, retrying...");
-        setTimeout(initSubmitMapPicker, 200);
-        return;
-      }
-
-      if (mapContainer._leaflet_id) delete mapContainer._leaflet_id;
-
-      submitPickerMap = L.map("submit-map-picker", {
-        center: [initialLat, initialLng],
-        zoom: 15,
-        maxZoom: 20,
-        zoomControl: true,
-        scrollWheelZoom: false,
-        attributionControl: true
-      });
-
-      const googleRoadLayer = L.tileLayer("https://mt{s}.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}", {
-        subdomains: ['0', '1', '2', '3'],
-        maxZoom: 20,
-        attribution: '&copy; Google Maps'
-      }).addTo(submitPickerMap);
-
-      const osmLayer = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        maxZoom: 19,
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors'
-      });
-
-      const satelliteLayer = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
-        maxZoom: 19,
-        attribution: "Tiles &copy; Esri"
-      });
-
-      L.control.layers(
-        {
-          "🗺️ Google Roadmap": googleRoadLayer,
-          "📍 OpenStreetMap": osmLayer,
-          "🛰️ Satellite": satelliteLayer
-        },
-        null,
-        { position: 'topright' }
-      ).addTo(submitPickerMap);
-
-      const pinIcon = L.divIcon({
-        className: 'submit-picker-pin',
-        html: `<div style="background:linear-gradient(135deg, #b8232e, #770e17);color:#fff;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-size:18px;border:3px solid #fff;box-shadow:0 6px 16px rgba(0,0,0,0.45);cursor:grab;user-select:none;">🔱</div>`,
-        iconSize: [38, 38],
-        iconAnchor: [19, 38]
-      });
-
-      submitPickerMarker = L.marker([initialLat, initialLng], {
-        icon: pinIcon,
-        draggable: true
-      }).addTo(submitPickerMap);
-
-      submitPickerMap.on("click", function(e) {
-        hasUserPinnedExactSpot = true;
-        const { lat, lng } = e.latlng;
-        submitPickerMarker.setLatLng([lat, lng]);
-        updatePinnedLocation(lat, lng);
-        autoSelectNearestColony(lat, lng);
-      });
-
-      submitPickerMarker.on("dragend", function(e) {
-        hasUserPinnedExactSpot = true;
-        const latlng = submitPickerMarker.getLatLng();
-        updatePinnedLocation(latlng.lat, latlng.lng);
-        autoSelectNearestColony(latlng.lat, latlng.lng);
-      });
-
-      setTimeout(() => {
-        if (submitPickerMap) submitPickerMap.invalidateSize();
-      }, 300);
-
-      window.addEventListener("resize", () => {
-        if (submitPickerMap) submitPickerMap.invalidateSize();
-      });
-    }
-
-    // Distance helper for Karimnagar colony matching
-    function calcDistanceKm(lat1, lon1, lat2, lon2) {
-      const R = 6371;
-      const dLat = (lat2 - lat1) * Math.PI / 180;
-      const dLon = (lon2 - lon1) * Math.PI / 180;
-      const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
-                Math.sin(dLon/2) * Math.sin(dLon/2);
-      return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    }
-
-    // Auto-select nearest colony in the dropdown based on coordinates
-    function autoSelectNearestColony(lat, lng) {
-      if (!window.KARIMNAGAR_COLONY_COORDS) return;
-      let closestColony = null;
-      let minDistance = Infinity;
-
-      for (const [colony, coords] of Object.entries(window.KARIMNAGAR_COLONY_COORDS)) {
-        const d = calcDistanceKm(lat, lng, coords[0], coords[1]);
-        if (d < minDistance) {
-          minDistance = d;
-          closestColony = colony;
-        }
-      }
-
-      if (closestColony && minDistance <= 3.5) {
-        const areaSelect = document.getElementById("sub-area-select");
-        if (areaSelect && (!areaSelect.value || areaSelect.value === "__other__")) {
-          for (let i = 0; i < areaSelect.options.length; i++) {
-            if (areaSelect.options[i].value === closestColony) {
-              areaSelect.selectedIndex = i;
-              break;
-            }
-          }
-        }
-      }
-    }
-
-    function isValidIndianCoord(lat, lng) {
-      const nLat = parseFloat(lat);
-      const nLng = parseFloat(lng);
-      if (isNaN(nLat) || isNaN(nLng)) return false;
-      return nLat >= 8.0 && nLat <= 37.5 && nLng >= 68.0 && nLng <= 97.5;
-    }
-
-    // Extract coordinates from text or any Google Maps URL format
-    function extractCoordinatesFromText(text) {
-      if (!text || typeof text !== "string") return null;
-      text = text.trim();
-
-      // 1. Raw coordinates pattern: "18.4386, 79.1288" or "18.4386 79.1288"
-      const rawMatch = text.match(/^([+-]?\d{1,2}\.\d+)[,\s]+([+-]?\d{1,3}\.\d+)$/);
-      if (rawMatch) {
-        const lat = parseFloat(rawMatch[1]);
-        const lng = parseFloat(rawMatch[2]);
-        if (isValidIndianCoord(lat, lng)) {
-          return { lat, lng };
-        }
-      }
-
-      // 2. Google Maps @lat,lng format
-      let m = text.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
-      if (m && isValidIndianCoord(m[1], m[2])) return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) };
-
-      // 3. Protobuf !3dlat!4dlng format
-      m = text.match(/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/);
-      if (m && isValidIndianCoord(m[1], m[2])) return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) };
-
-      // 4. Protobuf alternate !1dlon!2dlat format
-      m = text.match(/!1d(-?\d+\.\d+)!2d(-?\d+\.\d+)/);
-      if (m && isValidIndianCoord(m[2], m[1])) return { lat: parseFloat(m[2]), lng: parseFloat(m[1]) };
-
-      // 5. Query params (q, ll, query, destination, daddr, center, loc:)
-      m = text.match(/[?&](?:q|ll|query|destination|daddr|saddr|center|loc:)=(-?\d+\.\d+)[,+](-?\d+\.\d+)/i);
-      if (m && isValidIndianCoord(m[1], m[2])) return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) };
-
-      // 6. /dir/.../lat,lng
-      m = text.match(/\/dir\/.*?\/(-?\d+\.\d+)[,+](-?\d+\.\d+)/i);
-      if (m && isValidIndianCoord(m[1], m[2])) return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) };
-
-      // 7. Generic lat,lng with 3+ decimal places
-      m = text.match(/\b(1[789]\.\d{3,})[,+\s]+(7[89]\.\d{3,})\b/);
-      if (m && isValidIndianCoord(m[1], m[2])) {
-        return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) };
-      }
-
-      m = text.match(/\b([123]?\d\.\d{3,})[,+\s]+([6789]\d\.\d{3,})\b/);
-      if (m && isValidIndianCoord(m[1], m[2])) {
-        return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) };
-      }
-
-      return null;
-    }
-
-    function extractPlaceNameFromText(text) {
-      if (!text || typeof text !== "string") return null;
-      const m = text.match(/\/place\/([^/@?#]+)/);
-      if (m) {
-        try {
-          return decodeURIComponent(m[1]).replace(/\+/g, ' ').trim();
-        } catch (e) {
-          return m[1].replace(/\+/g, ' ').trim();
-        }
-      }
-      return null;
-    }
-
-    let mapsUrlDebounceTimer = null;
-
-    function handleMapsUrlInput(val) {
-      if (!val || !val.trim()) {
-        const statusEl = document.getElementById("sub-maps-url-status");
-        if (statusEl) {
-          statusEl.classList.add("hidden");
-          statusEl.innerHTML = "";
-        }
-        return;
-      }
-      clearTimeout(mapsUrlDebounceTimer);
-      mapsUrlDebounceTimer = setTimeout(() => {
-        resolveAndPinMapsUrl(val.trim(), false);
-      }, 350);
-    }
-
-    function handleLocateFromUrlBtn() {
-      const input = document.getElementById("sub-maps-url");
-      const val = input ? input.value.trim() : "";
-      if (!val) {
-        alert("Please paste or type a Google Maps link or coordinates first.");
-        if (input) input.focus();
-        return;
-      }
-      resolveAndPinMapsUrl(val, true);
-    }
-
-    async function resolveAndPinMapsUrl(rawUrl, isManualClick = false) {
-      const statusEl = document.getElementById("sub-maps-url-status");
-      if (!rawUrl || typeof rawUrl !== "string") return;
-      rawUrl = rawUrl.trim();
-
-      // Show detecting indicator
-      if (statusEl) {
-        statusEl.className = "text-xs mt-2 p-2.5 rounded-xl border bg-amber-50 border-amber-300 text-amber-900 flex items-center gap-2";
-        statusEl.innerHTML = `<span>⏳</span> Detecting location and street from link...`;
-        statusEl.classList.remove("hidden");
-      }
-
-      // Step 1: Client-side direct extraction
-      const direct = extractCoordinatesFromText(rawUrl);
-      if (direct) {
-        const placeName = extractPlaceNameFromText(rawUrl);
-        applyResolvedLocation(direct.lat, direct.lng, "Exact coordinates detected from link", placeName);
-        return;
-      }
-
-      // Step 2: Server-side redirect resolution for short links (maps.app.goo.gl, goo.gl/maps, etc.)
-      try {
-        const res = await fetch(`/api/resolve-maps-url?url=${encodeURIComponent(rawUrl)}`);
-        const data = await res.json();
-        if (data && data.success && data.lat && data.lng) {
-          applyResolvedLocation(data.lat, data.lng, "Location extracted from Google Maps link", data.placeName || extractPlaceNameFromText(rawUrl));
-          return;
-        }
-      } catch (err) {
-        console.warn("Server URL resolution warning:", err);
-      }
-
-      // Step 3: Failure handling
-      if (statusEl) {
-        if (isManualClick) {
-          statusEl.className = "text-xs mt-2 p-2.5 rounded-xl border bg-red-50 border-red-300 text-red-800 flex items-center gap-2";
-          statusEl.innerHTML = `<span>⚠️</span> Could not extract GPS coordinates from this link. You can tap directly on the map or click 'Use Current GPS'.`;
-        } else {
-          statusEl.className = "text-xs mt-2 p-2.5 rounded-xl border bg-amber-50 border-amber-200 text-amber-800 flex items-center gap-2";
-          statusEl.innerHTML = `<span>💡</span> Tip: You can tap directly on the map or click 'Locate on Map' after pasting your link.`;
-        }
-      }
-    }
-
-    function applyResolvedLocation(lat, lng, reason, placeName = null) {
-      hasUserPinnedExactSpot = true;
-      let parsedLat = parseFloat(lat);
-      let parsedLng = parseFloat(lng);
-      if (isNaN(parsedLat) || isNaN(parsedLng)) return;
-
-      if (!isValidIndianCoord(parsedLat, parsedLng)) {
-        parsedLat = 18.4386;
-        parsedLng = 79.1288;
-      }
-
-      if (submitPickerMap && submitPickerMarker) {
-        submitPickerMap.flyTo([parsedLat, parsedLng], 17, { duration: 1.0 });
-        submitPickerMarker.setLatLng([parsedLat, parsedLng]);
-      }
-      updatePinnedLocation(parsedLat, parsedLng, false);
-      autoSelectNearestColony(parsedLat, parsedLng);
-
-      // Auto-populate street / address if user hasn't typed one
-      const addressInput = document.getElementById("sub-address");
-      if (addressInput && !addressInput.value.trim()) {
-        if (placeName && typeof placeName === "string" && placeName.length > 2) {
-          addressInput.value = placeName;
-        } else {
-          fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${parsedLat}&lon=${parsedLng}`, {
-            headers: { "Accept": "application/json" }
-          })
-            .then(r => r.json())
-            .then(data => {
-              if (data && data.address && !addressInput.value.trim()) {
-                const road = data.address.road || data.address.neighbourhood || data.address.suburb || data.address.residential || "";
-                const city = data.address.city || data.address.town || data.address.state_district || "Karimnagar";
-                const addr = [road, city].filter(Boolean).join(", ");
-                if (addr) addressInput.value = addr;
-              }
-            })
-            .catch(() => {});
-        }
-      }
-
-      const statusEl = document.getElementById("sub-maps-url-status");
-      if (statusEl) {
-        statusEl.className = "text-xs mt-2 p-2.5 rounded-xl border bg-emerald-50 border-emerald-300 text-emerald-800 flex items-center gap-2";
-        statusEl.innerHTML = `<span>✅</span> <strong>Location Located!</strong> ${parsedLat.toFixed(5)}° N, ${parsedLng.toFixed(5)}° E. Map pin positioned at exact spot!`;
-        statusEl.classList.remove("hidden");
-      }
-
-      const textEl = document.getElementById("selected-coords-text");
-      if (textEl) {
-        textEl.textContent = `${parsedLat.toFixed(5)}° N, ${parsedLng.toFixed(5)}° E (From Maps Link)`;
-      }
-    }
-
-    // High-Precision Real-time GPS Location Detection
-    let activeGpsWatchId = null;
-
-    function detectUserLocation() {
-      if (!navigator.geolocation) {
-        alert("Geolocation is not supported by your browser.");
-        return;
-      }
-
-      const btn = document.getElementById("sub-btn-gps");
-      const btnText = document.getElementById("sub-btn-gps-text");
-      if (btnText) btnText.textContent = "Acquiring exact GPS...";
-      if (btn) {
-        btn.classList.add("ring-2", "ring-saffron-400", "animate-pulse");
-      }
-
-      if (activeGpsWatchId !== null) {
-        navigator.geolocation.clearWatch(activeGpsWatchId);
-        activeGpsWatchId = null;
-      }
-
-      let bestAccuracy = Infinity;
-      let bestLat = null;
-      let bestLng = null;
-      let readingCount = 0;
-
-      const handlePos = (pos) => {
-        readingCount++;
-        const lat = pos.coords.latitude;
-        const lng = pos.coords.longitude;
-        const accuracy = pos.coords.accuracy || 999;
-
-        // Keep improving precision if a more accurate satellite fix arrives
-        if (accuracy <= bestAccuracy || !bestLat) {
-          hasUserPinnedExactSpot = true;
-          bestAccuracy = accuracy;
-          bestLat = lat;
-          bestLng = lng;
-
-          if (submitPickerMap && submitPickerMarker) {
-            submitPickerMap.flyTo([lat, lng], 17, { duration: 0.8 });
-            submitPickerMarker.setLatLng([lat, lng]);
-          }
-          updatePinnedLocation(lat, lng, true);
-          autoSelectNearestColony(lat, lng);
-
-          // If address input is empty, reverse geocode street for user
-          const addressInput = document.getElementById("sub-address");
-          if (addressInput && !addressInput.value.trim()) {
-            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`, {
-              headers: { "Accept": "application/json" }
-            })
-              .then(r => r.json())
-              .then(data => {
-                if (data && data.address && !addressInput.value.trim()) {
-                  const road = data.address.road || data.address.neighbourhood || data.address.suburb || data.address.residential || "";
-                  const city = data.address.city || data.address.town || "Karimnagar";
-                  const addr = [road, city].filter(Boolean).join(", ");
-                  if (addr) addressInput.value = addr;
-                }
-              })
-              .catch(() => {});
-          }
-
-          const accLabel = Math.round(accuracy);
-          const textEl = document.getElementById("selected-coords-text");
-          if (textEl) {
-            textEl.textContent = `${lat.toFixed(5)}° N, ${lng.toFixed(5)}° E (GPS accurate to ±${accLabel}m)`;
-          }
-
-          if (btnText) {
-            btnText.textContent = `GPS Locked (±${accLabel}m)`;
-          }
-          if (btn) {
-            btn.classList.remove("animate-pulse", "ring-2", "ring-saffron-400");
-            btn.classList.add("bg-emerald-50", "text-emerald-800", "border-emerald-300");
-          }
-        }
-
-        // If satellite lock reaches high accuracy (within 20 meters) or 4 readings acquired, stop watch
-        if (accuracy <= 20 || readingCount >= 4) {
-          if (activeGpsWatchId !== null) {
-            navigator.geolocation.clearWatch(activeGpsWatchId);
-            activeGpsWatchId = null;
-          }
-        }
-      };
-
-      const handleErr = (err) => {
-        if (activeGpsWatchId !== null) {
-          navigator.geolocation.clearWatch(activeGpsWatchId);
-          activeGpsWatchId = null;
-        }
-        if (btn) btn.classList.remove("animate-pulse", "ring-2", "ring-saffron-400");
-        if (btnText && (!bestLat || bestAccuracy === Infinity)) {
-          btnText.textContent = "Use Current GPS";
-          console.warn("GPS error:", err);
-          alert("Could not access exact GPS location. Please check browser location permissions or tap directly on the map to pin.");
-        }
-      };
-
-      // Force fresh GPS hardware query (maximumAge: 0 disables stale cached coordinates)
-      try {
-        activeGpsWatchId = navigator.geolocation.watchPosition(
-          handlePos,
-          handleErr,
-          {
-            enableHighAccuracy: true,
-            maximumAge: 0,
-            timeout: 15000
-          }
-        );
-      } catch (e) {
-        // Fallback to getCurrentPosition
-        navigator.geolocation.getCurrentPosition(
-          handlePos,
-          handleErr,
-          { enableHighAccuracy: true, maximumAge: 0, timeout: 15000 }
-        );
-      }
-
-      // Auto-release watch after 8 seconds to prevent excessive battery usage
-      setTimeout(() => {
-        if (activeGpsWatchId !== null) {
-          navigator.geolocation.clearWatch(activeGpsWatchId);
-          activeGpsWatchId = null;
-          if (btn) btn.classList.remove("animate-pulse", "ring-2", "ring-saffron-400");
-        }
-      }, 8000);
-    }
-
-    // Comprehensive Karimnagar Colony & Landmark Presets for instant search
-    window.KARIMNAGAR_COLONY_COORDS = window.KARIMNAGAR_COLONY_COORDS || {
-      "Vijayanagar": [18.4280, 79.1290],
-      "Vidyanagar": [18.4280, 79.1290],
-      "Tower Circle": [18.4386, 79.1288],
-      "Mukarampura": [18.4412, 79.1315],
-      "Mankammathota": [18.4335, 79.1245],
-      "Collectorate Chowrasta": [18.4428, 79.1352],
-      "Karkhanagadda": [18.4395, 79.1380],
-      "Jyothi Nagar": [18.4465, 79.1250],
-      "Sapthagiri Colony": [18.4510, 79.1320],
-      "Vavilalapalli": [18.4480, 79.1410],
-      "Geetha Bhavan": [18.4365, 79.1310],
-      "Court Road": [18.4400, 79.1270],
-      "Ramnagar": [18.4320, 79.1360],
-      "Vidyanagar": [18.4280, 79.1290],
-      "Kashmirgadda": [18.4450, 79.1390],
-      "Kaman Chowrasta": [18.4350, 79.1275],
-      "Housing Board Colony": [18.4550, 79.1380],
-      "Bhagyanagar": [18.4310, 79.1220],
-      "Padmanagar": [18.4250, 79.1180],
-      "Chinthakunta": [18.4600, 79.1450],
-      "Ganeshnagar": [18.4420, 79.1430],
-      "Alugunoor": [18.4100, 79.1550],
-      "Subhashnagar": [18.4370, 79.1220],
-      "Kishan Nagar": [18.4490, 79.1290],
-      "Gandhi Road": [18.4390, 79.1305],
-      "Adarsh Nagar": [18.4520, 79.1270],
-      "Bavapet": [18.4360, 79.1340],
-      "Bhagathnagar": [18.4440, 79.1260],
-      "Sawaran Street": [18.4405, 79.1325],
-      "Sitarampur": [18.4340, 79.1420],
-      "Rekurthi": [18.4650, 79.1120],
-      "Kothapalli": [18.4620, 79.0950],
-      "Lower Manair Dam (LMD)": [18.4050, 79.1480],
-      "Thimmapur": [18.3580, 79.1680],
-      "Karimnagar Bus Stand": [18.4367, 79.1332],
-      "Karimnagar Railway Station": [18.4216, 79.1518],
-      "Civil Hospital": [18.4392, 79.1310],
-      "Circus Ground": [18.4402, 79.1345],
-      "Ujwala Park": [18.4068, 79.1472],
-      "Deer Park": [18.4042, 79.1491],
-      "Katta Rampur": [18.4290, 79.1385],
-      "Auto Nagar": [18.4520, 79.1500],
-      "Christian Colony": [18.4355, 79.1215],
-      "SRR College": [18.4410, 79.1225]
-    };
-    var KARIMNAGAR_COLONY_COORDS = window.KARIMNAGAR_COLONY_COORDS;
-
-    let pickerSearchDebounceTimer = null;
-
-    function handlePickerSearch(query) {
-      const q = (query || "").toLowerCase().trim();
-      const resultsEl = document.getElementById("picker-search-results");
-      if (!resultsEl) return;
-      if (!q) {
-        resultsEl.classList.add("hidden");
-        resultsEl.innerHTML = "";
-        return;
-      }
-
-      // 1. Instant local preset matches
-      const matches = Object.keys(KARIMNAGAR_COLONY_COORDS).filter(colony =>
-        colony.toLowerCase().includes(q)
-      );
-
-      let html = matches.map(name => {
-        const coords = KARIMNAGAR_COLONY_COORDS[name];
-        return `
-          <div onclick="selectPickerSearchResult('${name}', ${coords[0]}, ${coords[1]})" class="p-2.5 hover:bg-saffron-50 cursor-pointer flex items-center justify-between text-ink-800 transition">
-            <span class="font-bold">📍 ${name}</span>
-            <span class="text-[10px] text-saffron-700 font-mono">${coords[0].toFixed(3)}°N, ${coords[1].toFixed(3)}°E</span>
-          </div>
-        `;
-      }).join("");
-
-      if (matches.length > 0) {
-        resultsEl.innerHTML = html;
-        resultsEl.classList.remove("hidden");
-      }
-
-      // 2. Debounced live OpenStreetMap Nominatim place lookup for Karimnagar
-      clearTimeout(pickerSearchDebounceTimer);
-      pickerSearchDebounceTimer = setTimeout(() => {
-        fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q + ', Karimnagar')}&viewbox=79.05,18.55,79.25,18.35&bounded=0&limit=5`, {
-          headers: { "Accept": "application/json" }
-        })
-          .then(res => res.json())
-          .then(osmPlaces => {
-            if (!Array.isArray(osmPlaces) || osmPlaces.length === 0) {
-              if (matches.length === 0) {
-                resultsEl.innerHTML = `
-                  <div class="p-3 text-ink-500 text-center">
-                    No colony preset found. Tap directly on the map or type manual coordinates below.
-                  </div>
-                `;
-                resultsEl.classList.remove("hidden");
-              }
-              return;
-            }
-
-            const osmHtml = osmPlaces.map(p => {
-              const displayName = p.display_name.split(",").slice(0, 3).join(",");
-              const lat = parseFloat(p.lat);
-              const lon = parseFloat(p.lon);
-              const safeName = (p.name || displayName).replace(/'/g, "\\'");
-              return `
-                <div onclick="selectPickerSearchResult('${safeName}', ${lat}, ${lon})" class="p-2.5 hover:bg-saffron-50 cursor-pointer flex items-center justify-between text-ink-800 transition">
-                  <div class="truncate mr-2">
-                    <span class="font-bold block truncate">🗺️ ${p.name || displayName}</span>
-                    <span class="text-[10px] text-ink-500 block truncate">${displayName}</span>
-                  </div>
-                  <span class="text-[10px] text-saffron-700 font-mono shrink-0">${lat.toFixed(3)}°N, ${lon.toFixed(3)}°E</span>
-                </div>
-              `;
-            }).join("");
-
-            resultsEl.innerHTML = (html ? html + `<div class="bg-cream-100 px-2 py-1 text-[10px] font-bold text-ink-600">OpenStreetMap Places:</div>` : "") + osmHtml;
-            resultsEl.classList.remove("hidden");
-          })
-          .catch(() => {
-            if (matches.length === 0) {
-              resultsEl.innerHTML = `
-                <div class="p-3 text-ink-500 text-center">
-                  Tap directly on the map or drag 🔱 pin to set exact coordinates.
-                </div>
-              `;
-              resultsEl.classList.remove("hidden");
-            }
-          });
-      }, 350);
-    }
-
-    function selectPickerSearchResult(name, lat, lng, isUserExplicit = true) {
-      if (isUserExplicit) {
-        hasUserPinnedExactSpot = true;
-      }
-      const searchInput = document.getElementById("picker-colony-search");
-      if (searchInput) searchInput.value = name;
-      const resultsEl = document.getElementById("picker-search-results");
-      if (resultsEl) resultsEl.classList.add("hidden");
-
-      if (submitPickerMap && submitPickerMarker) {
-        submitPickerMap.flyTo([lat, lng], 17, { duration: 1.0 });
-        submitPickerMarker.setLatLng([lat, lng]);
-      }
-
-      updatePinnedLocation(lat, lng);
-      const textEl = document.getElementById("selected-coords-text");
-      if (textEl) textEl.textContent = `${Number(lat).toFixed(4)}° N, ${Number(lng).toFixed(4)}° E (${name})`;
-    }
-
-    function handleManualCoordsInput() {
-      const latVal = parseFloat(document.getElementById("sub-lat")?.value);
-      const lngVal = parseFloat(document.getElementById("sub-lng")?.value);
-      if (!isNaN(latVal) && !isNaN(lngVal)) {
-        hasUserPinnedExactSpot = true;
-        if (submitPickerMap && submitPickerMarker) {
-          submitPickerMarker.setLatLng([latVal, lngVal]);
-          submitPickerMap.panTo([latVal, lngVal]);
-        }
-        updatePinnedLocation(latVal, lngVal);
-        const textEl = document.getElementById("selected-coords-text");
-        if (textEl) textEl.textContent = `${latVal.toFixed(4)}° N, ${lngVal.toFixed(4)}° E (Manual)`;
       }
     }
 
@@ -1329,45 +575,45 @@
     // Auto-init on page load
     document.addEventListener("DOMContentLoaded", () => {
       populateSubmitAreaOptions();
-      setTimeout(() => {
-        initSubmitMapPicker();
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const sharedUrl = params.get("mapsUrl") || params.get("url") || params.get("link") || params.get("q");
+        const paramLat = params.get("lat");
+        const paramLng = params.get("lng");
+        const paramColony = params.get("colony") || params.get("area");
 
-        // Check for URL query params: mapsUrl, url, link, q, or lat/lng
-        try {
-          const params = new URLSearchParams(window.location.search);
-          const sharedUrl = params.get("mapsUrl") || params.get("url") || params.get("link") || params.get("q");
-          const paramLat = params.get("lat");
-          const paramLng = params.get("lng");
-          const paramColony = params.get("colony") || params.get("area");
-
-          if (sharedUrl) {
-            hasUserPinnedExactSpot = true;
-            const urlInput = document.getElementById("sub-maps-url");
-            if (urlInput) urlInput.value = sharedUrl;
-            resolveAndPinMapsUrl(sharedUrl, true);
-          } else if (paramLat && paramLng) {
-            const pLat = parseFloat(paramLat);
-            const pLng = parseFloat(paramLng);
-            if (!isNaN(pLat) && !isNaN(pLng)) {
-              hasUserPinnedExactSpot = true;
-              applyResolvedLocation(pLat, pLng, "Coordinates from URL parameter");
-            }
+        if (sharedUrl) {
+          const urlInput = document.getElementById("sub-maps-url");
+          if (urlInput) {
+            urlInput.value = sharedUrl;
+            handleMapsUrlInput(sharedUrl);
           }
-          if (paramColony) {
-            const areaSelect = document.getElementById("sub-area-select");
-            if (areaSelect) {
-              for (let i = 0; i < areaSelect.options.length; i++) {
-                if (areaSelect.options[i].value.toLowerCase() === paramColony.toLowerCase()) {
-                  areaSelect.selectedIndex = i;
-                  break;
-                }
+        }
+        if (paramLat && paramLng) {
+          const pLat = parseFloat(paramLat);
+          const pLng = parseFloat(paramLng);
+          if (!isNaN(pLat) && !isNaN(pLng) && isValidIndianCoord(pLat, pLng)) {
+            const latEl = document.getElementById("sub-lat");
+            const lngEl = document.getElementById("sub-lng");
+            if (latEl) latEl.value = pLat;
+            if (lngEl) lngEl.value = pLng;
+          }
+        }
+        if (paramColony) {
+          const areaSelect = document.getElementById("sub-area-select");
+          if (areaSelect) {
+            for (let i = 0; i < areaSelect.options.length; i++) {
+              if (areaSelect.options[i].value.toLowerCase() === paramColony.toLowerCase()) {
+                areaSelect.selectedIndex = i;
+                handleAreaSelectChange(areaSelect.value);
+                break;
               }
             }
           }
-        } catch (e) {
-          console.warn("URL params parse warning:", e);
         }
-      }, 350);
+      } catch (e) {
+        console.warn("URL params parse warning:", e);
+      }
     });
   </script>
 </body>

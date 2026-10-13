@@ -713,60 +713,33 @@ function initLeafletMap() {
 
     groups.forEach(group => {
       const count = group.items.length;
-      const badgeHtml = count > 1
-        ? `<span style="position:absolute; top:-4px; right:-6px; background:#d4af37; color:#770e17; font-weight:800; font-size:10px; width:18px; height:18px; border-radius:50%; display:grid; place-items:center; border:2px solid #fff; box-shadow:0 2px 5px rgba(0,0,0,0.3);">${count}</span>`
-        : '';
+      const pinIcon = (typeof createGoogleMapsLeafletIcon === "function")
+        ? createGoogleMapsLeafletIcon(count)
+        : L.divIcon({
+            className: "google-maps-pin-marker",
+            html: (typeof getGoogleMapsPinSvg === "function") ? getGoogleMapsPinSvg(count, 30, 42) : '<div style="background:#EA4335;width:24px;height:24px;border-radius:50%;"></div>',
+            iconSize: [30, 42],
+            iconAnchor: [15, 40]
+          });
 
-      const trishulIcon = L.divIcon({
-        className: "trishul-marker-icon",
-        html: `<div style="position:relative; background:linear-gradient(135deg, #b8232e, #770e17); color:#fff; width:36px; height:36px; border-radius:50%; display:grid; place-items:center; font-size:18px; border:2.5px solid #d4af37; box-shadow:0 4px 14px rgba(126,12,28,0.55); cursor:pointer;">
-          🔱${badgeHtml}
-        </div>`,
-        iconSize: [36, 36],
-        iconAnchor: [18, 18]
+      const marker = L.marker([group.lat, group.lng], { icon: pinIcon }).addTo(leafletMap);
+
+      // On click, direct navigate to the pandal details page without displaying any information popups or cards on the map
+      marker.on("click", () => {
+        if (group.items.length === 1 && group.items[0].id) {
+          window.location.href = `pandal.html?id=${encodeURIComponent(group.items[0].id)}`;
+        } else if (group.items.length > 1) {
+          const area = group.items[0].area;
+          if (typeof handleFilterByArea === 'function' && area) {
+            handleFilterByArea(area);
+            const dir = document.getElementById("directory-section");
+            if (dir) dir.scrollIntoView({ behavior: 'smooth' });
+          } else {
+            window.location.href = `pandal.html?id=${encodeURIComponent(group.items[0].id)}`;
+          }
+        }
       });
 
-      const marker = L.marker([group.lat, group.lng], { icon: trishulIcon }).addTo(leafletMap);
-
-      let header = "";
-      if (count > 1) {
-        header = `<div style="background:linear-gradient(135deg, #770e17, #b8232e); color:#fff; padding:8px 12px; border-radius:10px 10px 0 0; margin:-2px -2px 10px -2px; font-size:12px; font-weight:bold; display:flex; justify-content:space-between; align-items:center;">
-          <span>🔱 ${count} Durga Mata Pandals</span>
-          <span style="background:#d4af37; color:#770e17; padding:2px 8px; border-radius:999px; font-size:11px; font-weight:800;">Same Spot</span>
-        </div>`;
-      }
-
-      const listContent = group.items.map((item, idx) => {
-        const mapUrl = getGoogleMapsUrl(item);
-        return `
-          <div style="${idx > 0 ? 'margin-top:10px; padding-top:10px; border-top:1px dashed #eaab9d;' : ''}">
-            <a href="pandal.html?id=${encodeURIComponent(item.id)}" style="display:block; text-decoration:none;">
-              <h4 style="font-weight:800; font-size:14px; color:#140b0d; margin:0 0 3px 0; display:flex; align-items:center; gap:5px;">
-                <span style="color:#b8232e;">🔱</span> ${item.name}
-              </h4>
-            </a>
-            ${item.teluguName ? `<p style="font-size:12px; color:#770e17; font-weight:bold; margin:0 0 4px 0;">${item.teluguName}</p>` : ''}
-            <p style="font-size:11px; color:#655257; font-weight:600; margin:0 0 8px 0;">📍 ${item.area}${item.address ? ' • ' + item.address : ''}</p>
-            <div style="display:flex; flex-direction:column; gap:5px;">
-              <a href="pandal.html?id=${encodeURIComponent(item.id)}" style="display:block; background:#fdf4f2; border:1px solid #eaab9d; color:#770e17; text-align:center; padding:6px; border-radius:8px; font-size:11px; font-weight:bold; text-decoration:none;">
-                🔱 View Full Details
-              </a>
-              <a href="${mapUrl}" target="_blank" rel="noopener noreferrer" style="display:block; background:linear-gradient(135deg, #b8232e, #770e17); color:white; text-align:center; padding:6px; border-radius:8px; font-size:11px; font-weight:bold; text-decoration:none;">
-                🚗 Google Maps Directions ➔
-              </a>
-            </div>
-          </div>
-        `;
-      }).join("");
-
-      const popupHtml = `
-        <div style="font-family:system-ui, -apple-system, sans-serif; width:240px; max-height:360px; overflow-y:auto; padding:2px;">
-          ${header}
-          ${listContent}
-        </div>
-      `;
-
-      marker.bindPopup(popupHtml);
       marker._pandalData = group.items[0];
       marker._pandalItems = group.items;
       mapMarkers.push(marker);
@@ -803,11 +776,6 @@ function handleMapColonyChange(area) {
   if (matching.length > 0) {
     const first = matching[0];
     leafletMap.flyTo([first.latitude, first.longitude], 16, { duration: 1.2 });
-    // Open popup of first marker
-    const marker = mapMarkers.find(m => m._pandalData && m._pandalData.id === first.id);
-    if (marker) {
-      setTimeout(() => marker.openPopup(), 1300);
-    }
   } else if (typeof KARIMNAGAR_COLONY_COORDS !== "undefined" && KARIMNAGAR_COLONY_COORDS[area]) {
     const coords = KARIMNAGAR_COLONY_COORDS[area];
     leafletMap.flyTo(coords, 16, { duration: 1.2 });
@@ -833,10 +801,6 @@ async function handleMapQuickSearch(query) {
   );
   if (match) {
     leafletMap.flyTo([match.latitude, match.longitude], 16, { duration: 1.2 });
-    const marker = mapMarkers.find(m => m._pandalData && m._pandalData.id === match.id);
-    if (marker) {
-      setTimeout(() => marker.openPopup(), 1300);
-    }
     return;
   }
   if (typeof KARIMNAGAR_COLONY_COORDS !== "undefined") {
@@ -928,8 +892,13 @@ function handleUseMyLocation() {
     return;
   }
 
+  if (window.isSecureContext === false && location.hostname !== "localhost" && location.hostname !== "127.0.0.1") {
+    alert("Location detection requires a secure HTTPS connection. Please access this website using https://");
+    return;
+  }
+
   const btn = document.getElementById("btn-use-location");
-  if (btn) btn.innerHTML = "<span>⏳ Acquiring exact GPS...</span>";
+  if (btn) btn.innerHTML = "<span>⏳ Acquiring GPS location...</span>";
 
   navigator.geolocation.getCurrentPosition(
     (pos) => {
@@ -945,10 +914,18 @@ function handleUseMyLocation() {
     },
     (err) => {
       console.warn("Location error:", err);
-      alert("Could not detect your exact GPS location. Please choose an area from the list.");
       if (btn) btn.innerHTML = "<span>📍 Use My Location</span>";
+      if (err.code === 1) {
+        alert("Location access was denied. Please allow location permissions in your browser to find nearest pandals.");
+      } else if (err.code === 2) {
+        alert("GPS position unavailable. Please ensure location services are enabled on your device.");
+      } else if (err.code === 3) {
+        alert("Location request timed out. Please try again or choose an area from the list.");
+      } else {
+        alert("Could not detect your exact GPS location. Please choose an area from the list.");
+      }
     },
-    { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+    { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
   );
 }
 
