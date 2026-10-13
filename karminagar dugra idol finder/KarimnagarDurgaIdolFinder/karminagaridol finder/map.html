@@ -407,7 +407,7 @@
       pandals.forEach(item => {
         const lat = parseFloat(item.latitude);
         const lng = parseFloat(item.longitude);
-        if (isNaN(lat) || isNaN(lng)) return;
+        if (isNaN(lat) || isNaN(lng) || lat < 8.0 || lat > 37.5 || lng < 68.0 || lng > 97.5) return;
         const key = `${lat.toFixed(4)},${lng.toFixed(4)}`;
         if (!groups.has(key)) {
           groups.set(key, { lat, lng, items: [] });
@@ -434,22 +434,20 @@
         const mapUrl = typeof getGoogleMapsUrl === "function"
           ? getGoogleMapsUrl(item)
           : `https://www.google.com/maps/dir/?api=1&destination=${lat.toFixed(5)},${lng.toFixed(5)}`;
-        const rawPhoto = (item.photos && item.photos.length > 0)
-          ? (typeof item.photos[0] === 'string' ? item.photos[0] : (item.photos[0].url || item.photos[0].image_url))
-          : "assets/images/hero-durga.jpg";
-        const photo = typeof resolveMediaUrl === "function" ? resolveMediaUrl(rawPhoto) : rawPhoto;
         return `
           <div style="${idx > 0 ? 'margin-top:10px; padding-top:10px; border-top:1px dashed #eaab9d;' : ''}">
             <a href="pandal.html?id=${encodeURIComponent(item.id)}" style="display:block; text-decoration:none;">
-              <img src="${photo}" alt="${item.name}" style="width:100%; height:110px; object-fit:cover; border-radius:8px; margin-bottom:6px; cursor:pointer;" onerror="this.src='assets/images/hero-durga.jpg'" />
-              <h4 style="font-weight:bold; font-size:13px; color:#140b0d; margin:0 0 3px 0;">${item.name}</h4>
+              <h4 style="font-weight:800; font-size:14px; color:#140b0d; margin:0 0 3px 0; display:flex; align-items:center; gap:5px;">
+                <span style="color:#b8232e;">🔱</span> ${item.name}
+              </h4>
             </a>
-            <p style="font-size:11px; color:#770e17; font-weight:600; margin:0 0 6px 0;">📍 ${item.area}${item.address ? ' • ' + item.address : ''}</p>
-            <div style="display:flex; flex-direction:column; gap:4px;">
-              <a href="pandal.html?id=${encodeURIComponent(item.id)}" style="display:block; background:#fdf4f2; border:1px solid #eaab9d; color:#770e17; text-align:center; padding:5px; border-radius:6px; font-size:11px; font-weight:bold; text-decoration:none;">
+            ${item.teluguName ? `<p style="font-size:12px; color:#770e17; font-weight:bold; margin:0 0 4px 0;">${item.teluguName}</p>` : ''}
+            <p style="font-size:11px; color:#655257; font-weight:600; margin:0 0 8px 0;">📍 ${item.area}${item.address ? ' • ' + item.address : ''}</p>
+            <div style="display:flex; flex-direction:column; gap:5px;">
+              <a href="pandal.html?id=${encodeURIComponent(item.id)}" style="display:block; background:#fdf4f2; border:1px solid #eaab9d; color:#770e17; text-align:center; padding:6px; border-radius:8px; font-size:11px; font-weight:bold; text-decoration:none;">
                 🔱 View Full Details
               </a>
-              <a href="${mapUrl}" target="_blank" rel="noopener noreferrer" style="display:block; background:#b8232e; color:white; text-align:center; padding:5px; border-radius:6px; font-size:11px; font-weight:bold; text-decoration:none;">
+              <a href="${mapUrl}" target="_blank" rel="noopener noreferrer" style="display:block; background:linear-gradient(135deg, #b8232e, #770e17); color:white; text-align:center; padding:6px; border-radius:8px; font-size:11px; font-weight:bold; text-decoration:none;">
                 🚗 Google Maps Directions ➔
               </a>
             </div>
@@ -583,10 +581,16 @@
           attributionControl: true
         });
 
+        const googleRoadLayer = L.tileLayer("https://mt{s}.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}", {
+          subdomains: ['0', '1', '2', '3'],
+          maxZoom: 20,
+          attribution: '&copy; Google Maps'
+        }).addTo(dedicatedMap);
+
         const osmLayer = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
           maxZoom: 19,
           attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors'
-        }).addTo(dedicatedMap);
+        });
 
         const satelliteLayer = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
           maxZoom: 19,
@@ -594,7 +598,7 @@
         });
 
         L.control.layers(
-          { "📍 OpenStreetMap": osmLayer, "🛰️ Satellite": satelliteLayer },
+          { "🗺️ Google Roadmap": googleRoadLayer, "📍 OpenStreetMap": osmLayer, "🛰️ Satellite": satelliteLayer },
           null,
           { position: 'topright' }
         ).addTo(dedicatedMap);

@@ -118,12 +118,22 @@ input::-ms-clear {
   }
 }
 
-.animate-float {
-  animation: floatSlow 4s ease-in-out infinite;
+/* Sacred Trishul Floating Animation on Home page & Maps */
+@keyframes trishulFloat {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+.trishul-marker-icon,
+.custom-map-pin {
+  animation: trishulFloat 2.6s ease-in-out infinite;
 }
 
 /* Buttons & Touch Targets (Mobile & Desktop Responsive) */
-button,
 .btn-primary,
 .btn-outline,
 .btn-soft,

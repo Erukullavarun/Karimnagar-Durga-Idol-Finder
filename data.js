@@ -238,13 +238,53 @@ function saveSiteConfig(config) {
   syncAllToServer();
 }
 
+// Ensure coordinates are strictly within valid Indian geographic boundaries (lat: 8 to 37.5, lng: 68 to 97.5)
+function sanitizePandalCoords(item) {
+  if (!item) return item;
+  let lat = parseFloat(item.latitude);
+  let lng = parseFloat(item.longitude);
+  const isValid = !isNaN(lat) && !isNaN(lng) && lat >= 8.0 && lat <= 37.5 && lng >= 68.0 && lng <= 97.5;
+
+  if (!isValid) {
+    const url = item.mapsUrl || item.googleMapsUrl || '';
+    let extracted = null;
+    if (url && typeof url === 'string') {
+      let m = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+      if (!m) m = url.match(/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/);
+      if (!m) m = url.match(/[?&](?:q|destination|query|ll)=(-?\d+\.\d+)[,+](-?\d+\.\d+)/i);
+      if (!m) m = url.match(/\/dir\/.*?\/(-?\d+\.\d+)[,+](-?\d+\.\d+)/i);
+      if (!m) m = url.match(/\b(1[789]\.\d{3,})[,+\s]+(7[89]\.\d{3,})\b/);
+      if (m) {
+        const eLat = parseFloat(m[1]), eLng = parseFloat(m[2]);
+        if (eLat >= 8.0 && eLat <= 37.5 && eLng >= 68.0 && eLng <= 97.5) {
+          extracted = { lat: eLat, lng: eLng };
+        }
+      }
+    }
+
+    if (extracted) {
+      item.latitude = extracted.lat;
+      item.longitude = extracted.lng;
+    } else if (item.area && typeof window !== "undefined" && window.KARIMNAGAR_COLONY_COORDS && window.KARIMNAGAR_COLONY_COORDS[item.area]) {
+      item.latitude = window.KARIMNAGAR_COLONY_COORDS[item.area][0];
+      item.longitude = window.KARIMNAGAR_COLONY_COORDS[item.area][1];
+    } else {
+      item.latitude = 18.4386;
+      item.longitude = 79.1288;
+    }
+  }
+  return item;
+}
+
 function getMandapams() {
   try {
     const saved = localStorage.getItem(STORAGE_KEYS.MANDAPAMS);
     if (saved) {
       const parsed = JSON.parse(saved);
       if (Array.isArray(parsed)) {
-        return parsed.filter(m => m && m.id && !String(m.id).startsWith("kd-") && !String(m.name || '').includes("Mankammathota Durga Samithi"));
+        return parsed
+          .filter(m => m && m.id && !String(m.id).startsWith("kd-") && !String(m.name || '').includes("Mankammathota Durga Samithi"))
+          .map(sanitizePandalCoords);
       }
     }
   } catch (e) {
@@ -257,7 +297,8 @@ function getMandapams() {
 function safeSaveMandapams(mandapams) {
   if (!Array.isArray(mandapams)) return;
   try {
-    localStorage.setItem(STORAGE_KEYS.MANDAPAMS, JSON.stringify(mandapams));
+    const sanitized = mandapams.map(sanitizePandalCoords);
+    localStorage.setItem(STORAGE_KEYS.MANDAPAMS, JSON.stringify(sanitized));
   } catch (quotaErr) {
     console.warn("LocalStorage storage notice:", quotaErr);
   }
@@ -294,58 +335,50 @@ function saveAreasList(areas) {
 function getGoogleMapsUrl(item) {
   if (!item) return "https://www.google.com/maps/dir/?api=1&destination=18.4386,79.1288";
 
-  let lat = item.latitude || (item.coordinates && item.coordinates.lat);
-  let lng = item.longitude || (item.coordinates && item.coordinates.lng);
+  // If submitter provided an exact custom Google Maps link, preserve and prioritize that exact URL
+  const explicitUrl = (item.mapsUrl && typeof item.mapsUrl === "string" && item.mapsUrl.startsWith("http")) ? item.mapsUrl :
+                      (item.googleMapsUrl && typeof item.googleMapsUrl === "string" && item.googleMapsUrl.startsWith("http")) ? item.googleMapsUrl : null;
 
-  // If coordinates are default or missing, match against Karimnagar landmarks
-  if ((!lat || !lng || (parseFloat(lat) === 18.4386 && parseFloat(lng) === 79.1288)) && typeof window !== "undefined" && window.KARIMNAGAR_LANDMARKS) {
-    const textToCheck = `${item.name || ''} ${item.address || ''} ${item.area || ''}`.toLowerCase();
-    for (const [name, coords] of Object.entries(window.KARIMNAGAR_LANDMARKS)) {
-      if (textToCheck.includes(name.toLowerCase())) {
-        lat = coords[0];
-        lng = coords[1];
-        break;
-      }
-    }
+  const sanitized = sanitizePandalCoords(item);
+  const lat = sanitized.latitude;
+  const lng = sanitized.longitude;
+
+  // If valid coordinates exist, direct turn-by-turn navigation directly to the exact spot!
+  if (lat && lng && !isNaN(parseFloat(lat)) && !isNaN(parseFloat(lng)) && parseFloat(lat) >= 8.0 && parseFloat(lng) >= 68.0) {
+    return `https://www.google.com/maps/dir/?api=1&destination=${parseFloat(lat).toFixed(6)},${parseFloat(lng).toFixed(6)}`;
   }
 
-  // If exact coordinates exist, direct turn-by-turn navigation directly to the exact spot!
-  if (lat && lng && !isNaN(parseFloat(lat)) && !isNaN(parseFloat(lng))) {
-    return `https://www.google.com/maps/dir/?api=1&destination=${parseFloat(lat).toFixed(5)},${parseFloat(lng).toFixed(5)}`;
+  if (explicitUrl) {
+    return explicitUrl;
   }
 
-  // Fallback to explicit custom URL if provided
-  if (item.mapsUrl && typeof item.mapsUrl === "string" && item.mapsUrl.startsWith("http")) {
-    return item.mapsUrl;
-  }
-  if (item.googleMapsUrl && typeof item.googleMapsUrl === "string" && item.googleMapsUrl.startsWith("http")) {
-    return item.googleMapsUrl;
+  const queryName = encodeURIComponent(`${item.name || 'Durga Mandapam'} ${item.area || ''} Karimnagar`.trim());
+  return `https://www.google.com/maps/dir/?api=1&destination=${queryName}`;
+}
+
+// Dedicated directions URL helper: Always navigates from visitor's current location to the pandal
+function getGoogleDirectionsUrl(item) {
+  if (!item) return "https://www.google.com/maps/dir/?api=1&destination=18.4386,79.1288";
+  const sanitized = sanitizePandalCoords(item);
+  const lat = sanitized.latitude;
+  const lng = sanitized.longitude;
+
+  if (lat && lng && !isNaN(parseFloat(lat)) && !isNaN(parseFloat(lng)) && parseFloat(lat) >= 8.0 && parseFloat(lng) >= 68.0) {
+    return `https://www.google.com/maps/dir/?api=1&destination=${parseFloat(lat).toFixed(6)},${parseFloat(lng).toFixed(6)}`;
   }
 
-  const queryName = encodeURIComponent(`${item.name || ''} ${item.area || ''} Karimnagar`.trim());
-  return `https://www.google.com/maps/search/?api=1&query=${queryName}`;
+  const queryName = encodeURIComponent(`${item.name || 'Durga Mandapam'} ${item.area || ''} Karimnagar`.trim());
+  return `https://www.google.com/maps/dir/?api=1&destination=${queryName}`;
 }
 
 // Google Street View 360 Panorama Helper
 function getGoogleStreetViewUrl(item) {
   if (!item) return "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=18.4386,79.1288";
-  let lat = item.latitude || (item.coordinates && item.coordinates.lat);
-  let lng = item.longitude || (item.coordinates && item.coordinates.lng);
+  const sanitized = sanitizePandalCoords(item);
+  const lat = sanitized.latitude;
+  const lng = sanitized.longitude;
 
-  if ((!lat || !lng || (parseFloat(lat) === 18.4386 && parseFloat(lng) === 79.1288)) && typeof window !== "undefined" && window.KARIMNAGAR_LANDMARKS) {
-    const textToCheck = `${item.name || ''} ${item.address || ''} ${item.area || ''}`.toLowerCase();
-    for (const [name, coords] of Object.entries(window.KARIMNAGAR_LANDMARKS)) {
-      if (textToCheck.includes(name.toLowerCase())) {
-        lat = coords[0];
-        lng = coords[1];
-        break;
-      }
-    }
-  }
-
-  lat = lat || 18.4386;
-  lng = lng || 79.1288;
-  return `https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${parseFloat(lat).toFixed(5)},${parseFloat(lng).toFixed(5)}`;
+  return `https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${parseFloat(lat).toFixed(6)},${parseFloat(lng).toFixed(6)}`;
 }
 
 // Photo Gallery Helpers

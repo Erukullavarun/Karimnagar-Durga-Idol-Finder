@@ -117,11 +117,59 @@ const INITIAL_AREAS = [
   "Sitarampur"
 ];
 
+// Ensure coordinates are strictly within valid Indian geographic boundaries (lat: 8 to 37.5, lng: 68 to 97.5)
+function sanitizePandalCoords(item) {
+  if (!item) return item;
+  let lat = parseFloat(item.latitude);
+  let lng = parseFloat(item.longitude);
+  const isValid = !isNaN(lat) && !isNaN(lng) && lat >= 8.0 && lat <= 37.5 && lng >= 68.0 && lng <= 97.5;
+
+  if (!isValid) {
+    const url = item.mapsUrl || item.googleMapsUrl || '';
+    let extracted = null;
+    if (url && typeof url === 'string') {
+      let m = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+      if (!m) m = url.match(/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/);
+      if (!m) m = url.match(/[?&](?:q|destination|query|ll)=(-?\d+\.\d+)[,+](-?\d+\.\d+)/i);
+      if (!m) m = url.match(/\/dir\/.*?\/(-?\d+\.\d+)[,+](-?\d+\.\d+)/i);
+      if (!m) m = url.match(/\b(1[789]\.\d{3,})[,+\s]+(7[89]\.\d{3,})\b/);
+      if (m) {
+        const eLat = parseFloat(m[1]), eLng = parseFloat(m[2]);
+        if (eLat >= 8.0 && eLat <= 37.5 && eLng >= 68.0 && eLng <= 97.5) {
+          extracted = { lat: eLat, lng: eLng };
+        }
+      }
+    }
+
+    if (extracted) {
+      item.latitude = extracted.lat;
+      item.longitude = extracted.lng;
+    } else {
+      item.latitude = 18.4386;
+      item.longitude = 79.1288;
+    }
+  }
+  return item;
+}
+
 function readDB() {
   if (fs.existsSync(DATA_FILE)) {
     try {
       const data = JSON.parse(fs.readFileSync(DATA_FILE, 'utf-8'));
       if (data && Array.isArray(data.mandapams)) {
+        let changed = false;
+        data.mandapams = data.mandapams.map(m => {
+          const oldLat = m.latitude;
+          const oldLng = m.longitude;
+          const sanitized = sanitizePandalCoords(m);
+          if (sanitized.latitude !== oldLat || sanitized.longitude !== oldLng) {
+            changed = true;
+          }
+          return sanitized;
+        });
+        if (changed) {
+          writeDB(data);
+        }
         return data;
       }
     } catch (e) {
@@ -186,8 +234,14 @@ app.post('/api/mandapams', (req, res) => {
       categories: req.body.categories || [req.body.category || 'famous'],
       mapsUrl: req.body.mapsUrl || req.body.googleMapsUrl || '',
       googleMapsUrl: req.body.mapsUrl || req.body.googleMapsUrl || '',
-      latitude: parseFloat(req.body.latitude) || 18.4386,
-      longitude: parseFloat(req.body.longitude) || 79.1288,
+      latitude: (() => {
+        const val = parseFloat(req.body.latitude);
+        return (!isNaN(val) && val >= 8.0 && val <= 37.5) ? val : 18.4386;
+      })(),
+      longitude: (() => {
+        const val = parseFloat(req.body.longitude);
+        return (!isNaN(val) && val >= 68.0 && val <= 97.5) ? val : 79.1288;
+      })(),
       description: req.body.description || '',
       instagramHandle: req.body.instagramHandle || req.body.instagram || '',
       instagramUrl: req.body.instagramUrl || '',
@@ -279,44 +333,58 @@ app.get('/api/resolve-maps-url', async (req, res) => {
 
   const cleanUrl = rawUrl.trim();
 
+  // Validate geographic coordinates: in India / Telangana (lat: 8.0 to 37.5, lng: 68.0 to 97.5)
+  const isValidCoord = (lat, lng) => {
+    const nLat = parseFloat(lat);
+    const nLng = parseFloat(lng);
+    if (isNaN(nLat) || isNaN(nLng)) return false;
+    return nLat >= 8.0 && nLat <= 37.5 && nLng >= 68.0 && nLng <= 97.5;
+  };
+
   // Helper to extract coordinates from string/URL
   const extractCoords = (str) => {
-    if (!str) return null;
+    if (!str || typeof str !== 'string') return null;
     try {
       str = decodeURIComponent(str);
     } catch (e) {}
 
     // 1. @18.4386,79.1288
     let m = str.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
-    if (m) return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) };
+    if (m && isValidCoord(m[1], m[2])) return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) };
 
     // 2. !3d18.4386!4d79.1288 (standard Google Maps protobuf)
     m = str.match(/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/);
-    if (m) return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) };
+    if (m && isValidCoord(m[1], m[2])) return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) };
 
-    // 3. query/destination/ll/q parameter
+    // 3. !1dlon!2dlat (protobuf alternate: 1d is lng, 2d is lat)
+    m = str.match(/!1d(-?\d+\.\d+)!2d(-?\d+\.\d+)/);
+    if (m && isValidCoord(m[2], m[1])) return { lat: parseFloat(m[2]), lng: parseFloat(m[1]) };
+
+    // 4. query/destination/ll/q parameter
     m = str.match(/[?&](?:q|query|destination|ll|center|daddr|saddr|loc:)=(-?\d+\.\d+)[,+](-?\d+\.\d+)/i);
-    if (m) return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) };
+    if (m && isValidCoord(m[1], m[2])) return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) };
 
-    // 4. /dir/.../lat,lng
+    // 5. /dir/.../lat,lng
     m = str.match(/\/dir\/.*?\/(-?\d+\.\d+)[,+](-?\d+\.\d+)/i);
-    if (m) return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) };
+    if (m && isValidCoord(m[1], m[2])) return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) };
 
-    // 5. Plain coordinates format "18.4386, 79.1288" or "18.4386 79.1288"
-    m = str.match(/(-?\d{1,2}\.\d+)[,\s]+(-?\d{1,3}\.\d+)/);
-    if (m) {
-      const lat = parseFloat(m[1]);
-      const lng = parseFloat(m[2]);
-      if (lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) {
-        return { lat, lng };
-      }
-    }
+    // 6. Static map center parameter
+    m = str.match(/center=(-?\d+\.\d+)(?:%2C|,)(-?\d+\.\d+)/i);
+    if (m && isValidCoord(m[1], m[2])) return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) };
+
+    // 7. Explicit Karimnagar / Telangana coordinate pattern (lat ~18.x, lng ~79.x)
+    m = str.match(/\b(1[789]\.\d{3,})[,+\s]+(7[89]\.\d{3,})\b/);
+    if (m && isValidCoord(m[1], m[2])) return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) };
+
+    // 8. General Indian coordinate pattern with 3+ decimals
+    m = str.match(/\b([123]?\d\.\d{3,})[,+\s]+([6789]\d\.\d{3,})\b/);
+    if (m && isValidCoord(m[1], m[2])) return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) };
 
     return null;
   };
 
   const extractPlaceName = (str) => {
-    if (!str) return null;
+    if (!str || typeof str !== 'string') return null;
     let m = str.match(/\/place\/([^/@?#]+)/);
     if (m) {
       try {
@@ -353,7 +421,23 @@ app.get('/api/resolve-maps-url', async (req, res) => {
 
     if (!coords) {
       const text = await response.text();
-      coords = extractCoords(text);
+      // Look inside meta tags and link tags first
+      const canonicalMatch = text.match(/<link[^>]+rel=["']canonical["'][^>]+href=["']([^"']+)["']/i);
+      if (canonicalMatch) coords = extractCoords(canonicalMatch[1]);
+
+      if (!coords) {
+        const ogUrlMatch = text.match(/<meta[^>]+property=["']og:url["'][^>]+content=["']([^"']+)["']/i);
+        if (ogUrlMatch) coords = extractCoords(ogUrlMatch[1]);
+      }
+
+      if (!coords) {
+        const ogImageMatch = text.match(/<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i);
+        if (ogImageMatch) coords = extractCoords(ogImageMatch[1]);
+      }
+
+      if (!coords) {
+        coords = extractCoords(text);
+      }
     }
 
     if (coords) {

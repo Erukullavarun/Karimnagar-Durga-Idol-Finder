@@ -72,7 +72,37 @@
       "version": "v4.0.0"
     }
   },
-  "mandapams": [],
+  "mandapams": [
+    {
+      "id": "m-1791882042794",
+      "name": "Lakhimpur ka Rani",
+      "teluguName": "లక్ష్మీపూర్ కా రాణి",
+      "area": "Laxmipur shivalayam",
+      "address": "F37J 79J Shivalayam, Lakshmipur, Telangana 505451",
+      "category": "famous",
+      "categories": ["famous", "unique"],
+      "mapsUrl": "https://maps.app.goo.gl/Z6fxE2jdKMusmeWa8?g_st=ac",
+      "googleMapsUrl": "https://maps.app.goo.gl/Z6fxE2jdKMusmeWa8?g_st=ac",
+      "latitude": 18.4386,
+      "longitude": 79.1288,
+      "description": "Sacred Durga Mata idol at Shivalayam, Lakshmipur, Karimnagar.",
+      "instagramHandle": "",
+      "instagramUrl": "",
+      "photos": [
+        {
+          "url": "assets/images/hero-durga.jpg",
+          "caption": "Lakhimpur ka Rani Main Idol",
+          "isPublished": true
+        }
+      ],
+      "priority": 1,
+      "isMustVisit": true,
+      "isVerified": true,
+      "status": "approved",
+      "createdAt": "2026-10-13T09:00:42.794Z",
+      "approvedAt": "2026-10-13T09:01:22.920Z"
+    }
+  ],
   "areas": [
     "Tower Circle",
     "Mukarampura",

@@ -16,11 +16,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // 1. Initial immediate render from local cache so page is never blank
   initApp();
 
-  // Show Follow Developer popup while entering the website
-  setTimeout(() => {
-    openDeveloperPopup();
-  }, 400);
-
   // 2. Pull server data and fresh approved pandals from backend
   syncIndexData();
   setupEventListeners();
@@ -512,31 +507,31 @@ function renderMandapamsDirectory() {
             <span class="chip bg-black/60 backdrop-blur text-white text-[10px] font-semibold">🔍 View Details</span>
           </div>
         </div>
-        <div class="flex flex-1 flex-col p-4 justify-between">
+        <div class="flex flex-1 flex-col p-2.5 sm:p-4 justify-between">
           <div>
-            <h3 class="font-display text-[15px] font-bold leading-snug text-ink-900 group-hover:text-saffron-700 transition-colors">${item.name}</h3>
-            ${item.teluguName ? `<p class="font-telugu text-xs text-saffron-700 mt-0.5 font-medium">${item.teluguName}</p>` : ''}
-            <p class="mt-2 flex items-center gap-1.5 text-xs text-ink-600">
-              <svg class="h-3.5 w-3.5 shrink-0 text-saffron-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-              ${item.area}
+            <h3 class="font-display text-xs sm:text-[15px] font-bold leading-tight text-ink-900 group-hover:text-saffron-700 transition-colors line-clamp-1">${item.name}</h3>
+            ${item.teluguName ? `<p class="font-telugu text-[11px] sm:text-xs text-saffron-700 mt-0.5 font-medium line-clamp-1">${item.teluguName}</p>` : ''}
+            <p class="mt-1 sm:mt-1.5 flex items-center gap-1 text-[11px] sm:text-xs text-ink-600">
+              <svg class="h-3 w-3 sm:h-3.5 sm:w-3.5 shrink-0 text-saffron-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+              <span class="truncate">${item.area}</span>
             </p>
-            <p class="mt-2 text-xs text-ink-500 line-clamp-2 leading-relaxed">${item.description || item.address || 'Explore darshan timings and location.'}</p>
+            <p class="mt-1 text-[11px] text-ink-500 line-clamp-1 sm:line-clamp-2 leading-relaxed hidden sm:block">${item.description || item.address || 'Explore darshan timings and location.'}</p>
           </div>
 
           <!-- Direct Map & WhatsApp Actions & View Details -->
-          <div class="pt-3 border-t border-cream-200 mt-3 flex items-center gap-2" onclick="event.stopPropagation()">
-            <a href="pandal.html?id=${encodeURIComponent(item.id)}" class="px-3.5 py-2.5 rounded-xl bg-saffron-50 text-saffron-700 border border-saffron-200 text-xs font-bold hover:bg-saffron-100 transition min-h-[42px] flex items-center justify-center">
-              View Details
+          <div class="pt-2 border-t border-cream-200 mt-2 flex items-center gap-1.5" onclick="event.stopPropagation()">
+            <a href="pandal.html?id=${encodeURIComponent(item.id)}" class="flex-1 py-1.5 sm:py-2 px-1 rounded-xl bg-saffron-50 hover:bg-saffron-100 text-saffron-700 border border-saffron-200 text-[11px] sm:text-xs font-bold text-center transition min-h-[34px] sm:min-h-[38px] flex items-center justify-center">
+              Details
             </a>
-            <a href="${mapUrl}" target="_blank" rel="noopener noreferrer" class="btn-primary !py-2.5 !px-3.5 text-xs flex-1 flex items-center justify-center gap-1.5 font-bold shadow-sm min-h-[42px]">
-              <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none">
+            <a href="${mapUrl}" target="_blank" rel="noopener noreferrer" class="flex-1 py-1.5 sm:py-2 px-1 rounded-xl bg-saffron-600 hover:bg-saffron-700 text-white text-[11px] sm:text-xs font-bold text-center transition min-h-[34px] sm:min-h-[38px] flex items-center justify-center gap-1 shadow-xs">
+              <svg class="w-3 h-3 shrink-0" viewBox="0 0 24 24" fill="none">
                 <path d="M12 2C8.134 2 5 5.134 5 9C5 13.9 10.4 19.8 11.45 20.89C11.75 21.2 12.25 21.2 12.55 20.89C13.6 19.8 19 13.9 19 9C19 5.134 15.866 2 12 2Z" fill="#EA4335"/>
                 <circle cx="12" cy="8.8" r="2.7" fill="#FFFFFF"/>
               </svg>
               <span>Maps</span>
             </a>
-            <button type="button" onclick="handleWhatsAppShareItem('${item.name}', '${item.area}', '${mapUrl}', '${item.id}')" class="h-10 w-10 min-w-[40px] min-h-[40px] rounded-xl bg-emerald-50 text-[#25D366] hover:bg-[#25D366] hover:text-white border border-emerald-300 grid place-items-center text-xs shadow-soft transition cursor-pointer" title="Share on WhatsApp">
-              <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+            <button type="button" onclick="handleWhatsAppShareItem('${item.name}', '${item.area}', '${mapUrl}', '${item.id}')" class="h-[34px] w-[34px] sm:h-[38px] sm:w-[38px] min-w-[34px] rounded-xl bg-emerald-50 text-[#25D366] hover:bg-[#25D366] hover:text-white border border-emerald-300 grid place-items-center text-xs shadow-soft transition cursor-pointer" title="Share on WhatsApp">
+              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
             </button>
           </div>
         </div>
@@ -639,31 +634,28 @@ function initLeafletMap() {
       attributionControl: false
     });
 
-    // 100% Free Authentic Google Maps Tiles & Layer Switcher
-    const googleTiles = typeof createGoogleTileLayers === "function" ? createGoogleTileLayers() : {
-      roadmap: L.tileLayer('https://mt{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
-        subdomains: ['0', '1', '2', '3'],
-        maxZoom: 20,
-        attribution: '&copy; Google Maps'
-      }),
-      hybrid: L.tileLayer('https://mt{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
-        subdomains: ['0', '1', '2', '3'],
-        maxZoom: 20,
-        attribution: '&copy; Google Maps Satellite'
-      }),
-      terrain: L.tileLayer('https://mt{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}', {
-        subdomains: ['0', '1', '2', '3'],
-        maxZoom: 20,
-        attribution: '&copy; Google Maps Terrain'
-      })
-    };
+    // Authentic Google Maps Roadmap & Satellite Layers
+    const googleRoadLayer = L.tileLayer('https://mt{s}.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}', {
+      subdomains: ['0', '1', '2', '3'],
+      maxZoom: 20,
+      attribution: '&copy; Google Maps'
+    }).addTo(leafletMap);
 
-    googleTiles.roadmap.addTo(leafletMap);
+    const osmLayer = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19,
+      attribution: '&copy; OpenStreetMap'
+    });
+
+    const satelliteLayer = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
+      maxZoom: 19,
+      attribution: "Tiles &copy; Esri"
+    });
+
     try {
       L.control.layers({
-        "🗺️ Google Roadmap": googleTiles.roadmap,
-        "🛰️ Google Satellite": googleTiles.hybrid,
-        "⛰️ Google Terrain": googleTiles.terrain
+        "🗺️ Google Roadmap": googleRoadLayer,
+        "📍 OpenStreetMap": osmLayer,
+        "🛰️ Google Satellite": satelliteLayer
       }, null, { position: 'topright' }).addTo(leafletMap);
     } catch (e) {}
 
@@ -671,59 +663,90 @@ function initLeafletMap() {
       if (leafletMap) leafletMap.invalidateSize();
     }, 250);
 
-  mapMarkers = [];
+    mapMarkers = [];
 
-  currentMandapams.forEach(item => {
-    if (!item.latitude || !item.longitude) return;
-
-    const mapUrl = getGoogleMapsUrl(item);
-    const photo = (item.photos && item.photos.length > 0) ? (typeof item.photos[0] === 'string' ? item.photos[0] : item.photos[0].url) : "assets/images/hero-durga.jpg";
-
-    const customIcon = L.divIcon({
-      className: "custom-map-marker",
-      html: `
-        <div style="background:#b8232e; color:white; padding:6px; border-radius:50%; width:34px; height:34px; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 10px rgba(0,0,0,0.3); border:2px solid #d4af37; font-size:14px;">
-          🔱
-        </div>
-      `,
-      iconSize: [34, 34],
-      iconAnchor: [17, 17]
+    // Filter valid approved pandals
+    const validPandals = currentMandapams.filter(item => {
+      const lat = parseFloat(item.latitude);
+      const lng = parseFloat(item.longitude);
+      return !isNaN(lat) && !isNaN(lng) && lat >= 8.0 && lat <= 37.5 && lng >= 68.0 && lng <= 97.5;
     });
 
-    const marker = L.marker([item.latitude, item.longitude], { icon: customIcon }).addTo(leafletMap);
+    // Group pandals at same location
+    const groups = new Map();
+    validPandals.forEach(item => {
+      const lat = parseFloat(item.latitude);
+      const lng = parseFloat(item.longitude);
+      const key = `${lat.toFixed(4)},${lng.toFixed(4)}`;
+      if (!groups.has(key)) {
+        groups.set(key, { lat, lng, items: [] });
+      }
+      groups.get(key).items.push(item);
+    });
 
-    const streetViewUrl = (item.latitude && item.longitude)
-      ? `https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${item.latitude},${item.longitude}`
-      : mapUrl;
+    groups.forEach(group => {
+      const count = group.items.length;
+      const badgeHtml = count > 1
+        ? `<span style="position:absolute; top:-4px; right:-6px; background:#d4af37; color:#770e17; font-weight:800; font-size:10px; width:18px; height:18px; border-radius:50%; display:grid; place-items:center; border:2px solid #fff; box-shadow:0 2px 5px rgba(0,0,0,0.3);">${count}</span>`
+        : '';
 
-    const popupHtml = `
-      <div style="font-family:system-ui, sans-serif; width:230px; padding:2px;">
-        <a href="pandal.html?id=${encodeURIComponent(item.id)}" style="display:block; text-decoration:none;">
-          <img src="${photo}" alt="${item.name}" style="width:100%; height:110px; object-fit:cover; border-radius:10px; margin-bottom:8px; cursor:pointer;" onerror="this.src='assets/images/hero-durga.jpg'" />
-          <h4 style="font-weight:bold; font-size:13px; color:#140b0d; margin:0 0 4px 0;">${item.name}</h4>
-        </a>
-        <p style="font-size:11px; color:#770e17; font-weight:600; margin:0 0 6px 0;">📍 ${item.area}</p>
-        <div style="display:flex; flex-direction:column; gap:4px;">
-          <a href="pandal.html?id=${encodeURIComponent(item.id)}" style="display:block; background:#fdf4f2; border:1px solid #eaab9d; color:#770e17; text-align:center; padding:6px; border-radius:8px; font-size:11px; font-weight:bold; text-decoration:none;">
-            🔱 Explore Idol in Full Screen
-          </a>
-          <a href="${mapUrl}" target="_blank" rel="noopener noreferrer" style="display:block; background:#b8232e; color:white; text-align:center; padding:6px; border-radius:8px; font-size:11px; font-weight:bold; text-decoration:none;">
-            🚗 Google Maps Directions ➔
-          </a>
-          <a href="${streetViewUrl}" target="_blank" rel="noopener noreferrer" style="display:block; background:#1e293b; color:white; text-align:center; padding:6px; border-radius:8px; font-size:11px; font-weight:bold; text-decoration:none;">
-            👁️ Open Free Street View ➔
-          </a>
+      const trishulIcon = L.divIcon({
+        className: "trishul-marker-icon",
+        html: `<div style="position:relative; background:linear-gradient(135deg, #b8232e, #770e17); color:#fff; width:36px; height:36px; border-radius:50%; display:grid; place-items:center; font-size:18px; border:2.5px solid #d4af37; box-shadow:0 4px 14px rgba(126,12,28,0.55); cursor:pointer;">
+          🔱${badgeHtml}
+        </div>`,
+        iconSize: [36, 36],
+        iconAnchor: [18, 18]
+      });
+
+      const marker = L.marker([group.lat, group.lng], { icon: trishulIcon }).addTo(leafletMap);
+
+      let header = "";
+      if (count > 1) {
+        header = `<div style="background:linear-gradient(135deg, #770e17, #b8232e); color:#fff; padding:8px 12px; border-radius:10px 10px 0 0; margin:-2px -2px 10px -2px; font-size:12px; font-weight:bold; display:flex; justify-content:space-between; align-items:center;">
+          <span>🔱 ${count} Durga Mata Pandals</span>
+          <span style="background:#d4af37; color:#770e17; padding:2px 8px; border-radius:999px; font-size:11px; font-weight:800;">Same Spot</span>
+        </div>`;
+      }
+
+      const listContent = group.items.map((item, idx) => {
+        const mapUrl = getGoogleMapsUrl(item);
+        return `
+          <div style="${idx > 0 ? 'margin-top:10px; padding-top:10px; border-top:1px dashed #eaab9d;' : ''}">
+            <a href="pandal.html?id=${encodeURIComponent(item.id)}" style="display:block; text-decoration:none;">
+              <h4 style="font-weight:800; font-size:14px; color:#140b0d; margin:0 0 3px 0; display:flex; align-items:center; gap:5px;">
+                <span style="color:#b8232e;">🔱</span> ${item.name}
+              </h4>
+            </a>
+            ${item.teluguName ? `<p style="font-size:12px; color:#770e17; font-weight:bold; margin:0 0 4px 0;">${item.teluguName}</p>` : ''}
+            <p style="font-size:11px; color:#655257; font-weight:600; margin:0 0 8px 0;">📍 ${item.area}${item.address ? ' • ' + item.address : ''}</p>
+            <div style="display:flex; flex-direction:column; gap:5px;">
+              <a href="pandal.html?id=${encodeURIComponent(item.id)}" style="display:block; background:#fdf4f2; border:1px solid #eaab9d; color:#770e17; text-align:center; padding:6px; border-radius:8px; font-size:11px; font-weight:bold; text-decoration:none;">
+                🔱 View Full Details
+              </a>
+              <a href="${mapUrl}" target="_blank" rel="noopener noreferrer" style="display:block; background:linear-gradient(135deg, #b8232e, #770e17); color:white; text-align:center; padding:6px; border-radius:8px; font-size:11px; font-weight:bold; text-decoration:none;">
+                🚗 Google Maps Directions ➔
+              </a>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      const popupHtml = `
+        <div style="font-family:system-ui, -apple-system, sans-serif; width:240px; max-height:360px; overflow-y:auto; padding:2px;">
+          ${header}
+          ${listContent}
         </div>
-      </div>
-    `;
+      `;
 
-    marker.bindPopup(popupHtml);
-    marker._pandalData = item;
-    mapMarkers.push(marker);
-  });
+      marker.bindPopup(popupHtml);
+      marker._pandalData = group.items[0];
+      marker._pandalItems = group.items;
+      mapMarkers.push(marker);
+    });
 
-  // Populate map colony dropdown
-  populateMapColonySelect();
+    // Populate map colony dropdown
+    populateMapColonySelect();
   } catch (mapErr) {
     console.warn("Map init notice:", mapErr);
   }

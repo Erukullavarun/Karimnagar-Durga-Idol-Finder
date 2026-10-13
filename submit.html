@@ -405,7 +405,6 @@
   <!-- Leaflet Maps Script for Map Picker -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <script src="data.js"></script>
-  <script src="app.js"></script>
   <script>
     let submitPickerMap = null;
     let submitPickerMarker = null;
@@ -466,15 +465,21 @@
     }
 
     function updatePinnedLocation(lat, lng, autoUpdateUrl = true) {
-      const fixedLat = Number(lat).toFixed(5);
-      const fixedLng = Number(lng).toFixed(5);
+      let nLat = parseFloat(lat);
+      let nLng = parseFloat(lng);
+      if (isNaN(nLat) || isNaN(nLng) || !isValidIndianCoord(nLat, nLng)) {
+        nLat = 18.4386;
+        nLng = 79.1288;
+      }
+      const fixedLat = nLat.toFixed(5);
+      const fixedLng = nLng.toFixed(5);
       const latInput = document.getElementById("sub-lat");
       const lngInput = document.getElementById("sub-lng");
       if (latInput) latInput.value = fixedLat;
       if (lngInput) lngInput.value = fixedLng;
       const textEl = document.getElementById("selected-coords-text");
       if (textEl) {
-        textEl.textContent = `${Number(lat).toFixed(4)}° N, ${Number(lng).toFixed(4)}° E`;
+        textEl.textContent = `${nLat.toFixed(4)}° N, ${nLng.toFixed(4)}° E`;
       }
       // Auto-generate Google Maps link if user hasn't typed one
       if (autoUpdateUrl) {
@@ -576,10 +581,16 @@
         attributionControl: true
       });
 
+      const googleRoadLayer = L.tileLayer("https://mt{s}.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}", {
+        subdomains: ['0', '1', '2', '3'],
+        maxZoom: 20,
+        attribution: '&copy; Google Maps'
+      }).addTo(submitPickerMap);
+
       const osmLayer = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
         maxZoom: 19,
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors'
-      }).addTo(submitPickerMap);
+      });
 
       const satelliteLayer = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
         maxZoom: 19,
@@ -588,6 +599,7 @@
 
       L.control.layers(
         {
+          "🗺️ Google Roadmap": googleRoadLayer,
           "📍 OpenStreetMap": osmLayer,
           "🛰️ Satellite": satelliteLayer
         },
@@ -667,6 +679,13 @@
       }
     }
 
+    function isValidIndianCoord(lat, lng) {
+      const nLat = parseFloat(lat);
+      const nLng = parseFloat(lng);
+      if (isNaN(nLat) || isNaN(nLng)) return false;
+      return nLat >= 8.0 && nLat <= 37.5 && nLng >= 68.0 && nLng <= 97.5;
+    }
+
     // Extract coordinates from text or any Google Maps URL format
     function extractCoordinatesFromText(text) {
       if (!text || typeof text !== "string") return null;
@@ -677,35 +696,40 @@
       if (rawMatch) {
         const lat = parseFloat(rawMatch[1]);
         const lng = parseFloat(rawMatch[2]);
-        if (!isNaN(lat) && !isNaN(lng) && lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) {
+        if (isValidIndianCoord(lat, lng)) {
           return { lat, lng };
         }
       }
 
       // 2. Google Maps @lat,lng format
       let m = text.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
-      if (m) return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) };
+      if (m && isValidIndianCoord(m[1], m[2])) return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) };
 
       // 3. Protobuf !3dlat!4dlng format
       m = text.match(/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/);
-      if (m) return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) };
+      if (m && isValidIndianCoord(m[1], m[2])) return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) };
 
-      // 4. Query params (q, ll, query, destination, daddr, center, loc:)
+      // 4. Protobuf alternate !1dlon!2dlat format
+      m = text.match(/!1d(-?\d+\.\d+)!2d(-?\d+\.\d+)/);
+      if (m && isValidIndianCoord(m[2], m[1])) return { lat: parseFloat(m[2]), lng: parseFloat(m[1]) };
+
+      // 5. Query params (q, ll, query, destination, daddr, center, loc:)
       m = text.match(/[?&](?:q|ll|query|destination|daddr|saddr|center|loc:)=(-?\d+\.\d+)[,+](-?\d+\.\d+)/i);
-      if (m) return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) };
+      if (m && isValidIndianCoord(m[1], m[2])) return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) };
 
-      // 5. /dir/.../lat,lng
+      // 6. /dir/.../lat,lng
       m = text.match(/\/dir\/.*?\/(-?\d+\.\d+)[,+](-?\d+\.\d+)/i);
-      if (m) return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) };
+      if (m && isValidIndianCoord(m[1], m[2])) return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) };
 
-      // 6. Generic lat,lng with 3+ decimal places
-      m = text.match(/(-?\d{1,2}\.\d{3,})[,+\s]+(-?\d{1,3}\.\d{3,})/);
-      if (m) {
-        const lat = parseFloat(m[1]);
-        const lng = parseFloat(m[2]);
-        if (lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) {
-          return { lat, lng };
-        }
+      // 7. Generic lat,lng with 3+ decimal places
+      m = text.match(/\b(1[789]\.\d{3,})[,+\s]+(7[89]\.\d{3,})\b/);
+      if (m && isValidIndianCoord(m[1], m[2])) {
+        return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) };
+      }
+
+      m = text.match(/\b([123]?\d\.\d{3,})[,+\s]+([6789]\d\.\d{3,})\b/);
+      if (m && isValidIndianCoord(m[1], m[2])) {
+        return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) };
       }
 
       return null;
@@ -797,9 +821,14 @@
     }
 
     function applyResolvedLocation(lat, lng, reason, placeName = null) {
-      const parsedLat = parseFloat(lat);
-      const parsedLng = parseFloat(lng);
+      let parsedLat = parseFloat(lat);
+      let parsedLng = parseFloat(lng);
       if (isNaN(parsedLat) || isNaN(parsedLng)) return;
+
+      if (!isValidIndianCoord(parsedLat, parsedLng)) {
+        parsedLat = 18.4386;
+        parsedLng = 79.1288;
+      }
 
       if (submitPickerMap && submitPickerMarker) {
         submitPickerMap.flyTo([parsedLat, parsedLng], 17, { duration: 1.0 });
