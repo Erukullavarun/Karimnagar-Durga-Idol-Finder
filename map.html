@@ -893,7 +893,8 @@
         (pos) => {
           const lat = pos.coords.latitude;
           const lng = pos.coords.longitude;
-          btn.innerHTML = `<span>✓</span> Location Active`;
+          const acc = Math.round(pos.coords.accuracy || 0);
+          btn.innerHTML = `<span>✓</span> GPS Active (±${acc}m)`;
 
           // Google Map live GPS
           if (dedicatedGoogleMap && window.google) {
@@ -918,7 +919,7 @@
 
           // Leaflet live GPS
           if (dedicatedMap) {
-            dedicatedMap.setView([lat, lng], 15);
+            dedicatedMap.setView([lat, lng], 16);
             if (dedicatedUserPin) {
               dedicatedMap.removeLayer(dedicatedUserPin);
             }
@@ -929,14 +930,14 @@
                 iconSize: [22, 22],
                 iconAnchor: [11, 11]
               })
-            }).addTo(dedicatedMap).bindPopup("<b>📍 Your Current Location</b>").openPopup();
+            }).addTo(dedicatedMap).bindPopup(`<b>📍 Your Exact Location</b>${acc ? `<br><span style="font-size:11px;color:#555;">GPS Accuracy: ±${acc}m</span>` : ""}`).openPopup();
           }
         },
         () => {
           btn.innerHTML = `<span>📍</span> Use My Location`;
-          alert("Could not fetch GPS location. Please choose an area pill or search above.");
+          alert("Could not fetch GPS location. Please check browser location permissions or choose an area pill above.");
         },
-        { enableHighAccuracy: true, timeout: 8000 }
+        { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
       );
     }
 

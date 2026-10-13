@@ -270,6 +270,88 @@ app.get('/api/analytics/stats', (req, res) => {
   });
 });
 
+// Resolve Google Maps links (including maps.app.goo.gl and goo.gl/maps short links) to exact lat/lng
+app.get('/api/resolve-maps-url', async (req, res) => {
+  const rawUrl = req.query.url;
+  if (!rawUrl || typeof rawUrl !== 'string') {
+    return res.status(400).json({ success: false, message: 'URL parameter is required' });
+  }
+
+  const cleanUrl = rawUrl.trim();
+
+  // Helper to extract coordinates from string/URL
+  const extractCoords = (str) => {
+    if (!str) return null;
+    try {
+      str = decodeURIComponent(str);
+    } catch (e) {}
+
+    // 1. @18.4386,79.1288
+    let m = str.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+    if (m) return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) };
+
+    // 2. !3d18.4386!4d79.1288 (standard Google Maps protobuf)
+    m = str.match(/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/);
+    if (m) return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) };
+
+    // 3. query/destination/ll/q parameter
+    m = str.match(/[?&](?:q|query|destination|ll|center|daddr|saddr|loc:)=(-?\d+\.\d+)[,+](-?\d+\.\d+)/i);
+    if (m) return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) };
+
+    // 4. /dir/.../lat,lng
+    m = str.match(/\/dir\/.*?\/(-?\d+\.\d+)[,+](-?\d+\.\d+)/i);
+    if (m) return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) };
+
+    // 5. Plain coordinates format "18.4386, 79.1288" or "18.4386 79.1288"
+    m = str.match(/(-?\d{1,2}\.\d+)[,\s]+(-?\d{1,3}\.\d+)/);
+    if (m) {
+      const lat = parseFloat(m[1]);
+      const lng = parseFloat(m[2]);
+      if (lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) {
+        return { lat, lng };
+      }
+    }
+
+    return null;
+  };
+
+  const direct = extractCoords(cleanUrl);
+  if (direct) {
+    return res.json({ success: true, lat: direct.lat, lng: direct.lng, resolvedUrl: cleanUrl });
+  }
+
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 7000);
+
+    const response = await fetch(cleanUrl, {
+      method: 'GET',
+      redirect: 'follow',
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+      },
+      signal: controller.signal
+    });
+    clearTimeout(timeout);
+
+    const finalUrl = response.url || cleanUrl;
+    let coords = extractCoords(finalUrl);
+
+    if (!coords) {
+      const text = await response.text();
+      coords = extractCoords(text);
+    }
+
+    if (coords) {
+      return res.json({ success: true, lat: coords.lat, lng: coords.lng, resolvedUrl: finalUrl });
+    }
+
+    return res.json({ success: false, message: 'Could not extract coordinates from link', resolvedUrl: finalUrl });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: err.message || 'Failed to resolve URL' });
+  }
+});
+
 // --------------------------------------------------------------------------
 // Admin API Endpoints (Admin Panel Control)
 // --------------------------------------------------------------------------

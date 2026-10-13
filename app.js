@@ -715,7 +715,7 @@ function handleUseMyLocation() {
   }
 
   const btn = document.getElementById("btn-use-location");
-  if (btn) btn.innerHTML = "<span>⏳ Locating...</span>";
+  if (btn) btn.innerHTML = "<span>⏳ Acquiring exact GPS...</span>";
 
   navigator.geolocation.getCurrentPosition(
     (pos) => {
@@ -723,17 +723,18 @@ function handleUseMyLocation() {
         lat: pos.coords.latitude,
         lng: pos.coords.longitude
       };
-      if (btn) btn.innerHTML = "<span>✓ Location Active</span>";
+      const acc = Math.round(pos.coords.accuracy || 0);
+      if (btn) btn.innerHTML = `<span>✓ GPS Active (±${acc}m)</span>`;
       renderMandapamsDirectory();
       const dirSection = document.getElementById("directory-section");
       if (dirSection) dirSection.scrollIntoView({ behavior: "smooth" });
     },
     (err) => {
       console.warn("Location error:", err);
-      alert("Could not detect your GPS location. Please choose an area from the list.");
+      alert("Could not detect your exact GPS location. Please choose an area from the list.");
       if (btn) btn.innerHTML = "<span>📍 Use My Location</span>";
     },
-    { timeout: 8000 }
+    { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
   );
 }
 
