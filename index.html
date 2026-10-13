@@ -205,19 +205,20 @@
 
             <!-- Search Form with Geolocation -->
             <div class="mt-8 max-w-xl">
-              <div class="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
-                <form id="main-search-form" class="flex flex-1 items-center gap-2 rounded-full border border-cream-300 bg-white p-2 pl-4 sm:p-2 sm:pl-5 shadow-card min-h-[48px]">
+              <div class="flex flex-col gap-3 items-stretch">
+                <form id="main-search-form" class="flex items-center gap-2 rounded-full border border-cream-300 bg-white p-1.5 pl-4 shadow-card">
                   <svg class="h-5 w-5 text-ink-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                  <input id="main-search-input" type="search" placeholder="Search Durga mandapam, area (e.g. Tower Circle, Mukarampura)..." class="w-full bg-transparent py-1 text-sm text-ink-800 outline-none placeholder:text-ink-500" />
-                  <button type="submit" class="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-saffron-500 text-white shadow-glow hover:bg-saffron-600 transition" aria-label="Search">
+                  <input id="main-search-input" type="search" placeholder="Search Durga mandapam, area (e.g. Tower Circle, Mukarampura)..." class="w-full bg-transparent py-2 text-sm text-ink-800 outline-none placeholder:text-ink-500" />
+                  <button type="submit" class="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-saffron-500 text-white shadow-glow hover:bg-saffron-600 transition">
                     <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                   </button>
                 </form>
-                <button id="btn-use-location" type="button" onclick="handleUseMyLocation()" class="btn-soft shrink-0 !py-3 !px-4 text-xs sm:text-sm font-bold min-h-[48px] flex items-center justify-center gap-2">
-                  <svg class="h-4 w-4 text-saffron-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                <button id="btn-use-location" type="button" onclick="handleUseMyLocation()" class="btn-soft w-full !py-3 text-xs sm:text-sm flex items-center justify-center gap-2">
+                  <svg class="h-4 w-4 text-saffron-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                   <span>Use My Location</span>
                 </button>
               </div>
+              <div id="gps-status-banner-container" class="mt-3"></div>
             </div>
 
             <!-- Quick Action Cards Grid -->
@@ -343,15 +344,6 @@
 
           <div class="lg:col-span-8">
             <div class="rounded-3xl border border-cream-300 bg-white p-3 sm:p-4 shadow-card overflow-hidden">
-              <!-- Colony & Area Map Navigation Controls -->
-              <div class="flex items-center justify-between gap-2.5 mb-3">
-                <div class="flex items-center gap-2 flex-1">
-                  <span class="text-xs font-bold text-ink-700 whitespace-nowrap">📍 Browse Area:</span>
-                  <select id="map-colony-select" onchange="handleMapColonyChange(this.value)" class="w-full sm:w-auto flex-1 rounded-xl border border-cream-300 bg-cream-50 px-3 py-1.5 text-xs font-medium text-ink-900 outline-none focus:border-saffron-500 focus:bg-white transition cursor-pointer">
-                    <option value="all">🗺️ All Karimnagar Areas</option>
-                  </select>
-                </div>
-              </div>
               <div id="leaflet-map-container" class="w-full h-[380px] sm:h-[440px] rounded-2xl z-10"></div>
             </div>
           </div>
@@ -418,8 +410,8 @@
           </div>
         </div>
 
-        <!-- Directory Grid Container (Mobile 2-column grid-cols-2) -->
-        <div id="mandapams-grid" class="mt-8 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4 lg:gap-6">
+        <!-- Directory Grid Container -->
+        <div id="mandapams-grid" class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           <!-- Populated by JavaScript -->
         </div>
       </section>
@@ -478,7 +470,7 @@
 
       <!-- Bottom Copyright Bar -->
       <div class="border-t border-cream-300 bg-cream-200">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center gap-3 py-4 pb-28 sm:pb-4 text-center text-[11px] text-ink-600 sm:flex-row sm:justify-between sm:text-left">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center gap-3 py-4 pb-24 sm:pb-4 text-center text-[11px] text-ink-600 sm:flex-row sm:justify-between sm:text-left">
           <p id="footer-copyright">Karimnagar Durga Idol Finder © 2026 &nbsp;|&nbsp; Celebrate Culture &nbsp;|&nbsp; Support Local &nbsp;|&nbsp; Keep Karimnagar Beautiful</p>
           <div class="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
             <span class="font-medium text-saffron-800">🔱 శ్రీ కరీంనగర్ దుర్గా నవరాత్రోత్సవాలు</span>
@@ -488,30 +480,30 @@
     </footer>
 
     <!-- MOBILE BOTTOM NAVIGATION -->
-    <nav class="fixed inset-x-0 bottom-0 z-[1200] border-t border-cream-300 bg-white/95 backdrop-blur sm:hidden mobile-nav-safe shadow-lg">
-      <div class="grid grid-cols-5 items-center px-2 py-1.5 text-[10px] font-medium text-center">
-        <a href="index.html" class="py-1.5 text-saffron-600 font-bold flex flex-col items-center justify-center min-h-[44px]">
-          <span class="text-lg">🏠</span>
+    <nav class="fixed inset-x-0 bottom-0 z-[1200] border-t border-cream-300 bg-white/95 backdrop-blur sm:hidden">
+      <div class="grid grid-cols-5 items-center px-2 py-1 text-[10px] font-medium text-center">
+        <a href="index.html" class="py-1 text-saffron-600 font-bold flex flex-col items-center justify-center">
+          <span class="text-base">🏠</span>
           <span>Home</span>
         </a>
-        <a href="map.html" class="py-1.5 text-ink-600 flex flex-col items-center justify-center min-h-[44px]">
+        <a href="map.html" class="py-1 text-ink-600 flex flex-col items-center justify-center">
           <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none">
             <path d="M12 2C8.134 2 5 5.134 5 9C5 13.9 10.4 19.8 11.45 20.89C11.75 21.2 12.25 21.2 12.55 20.89C13.6 19.8 19 13.9 19 9C19 5.134 15.866 2 12 2Z" fill="#EA4335"/>
             <circle cx="12" cy="8.8" r="2.7" fill="#FFFFFF"/>
           </svg>
           <span>Map</span>
         </a>
-        <div class="flex justify-center -mt-6">
-          <a href="submit.html" class="h-12 w-12 rounded-full bg-saffron-500 text-white shadow-lift flex items-center justify-center text-xl font-bold ring-4 ring-white" aria-label="Add Durga Mandapam">
+        <div class="flex justify-center -mt-5">
+          <a href="submit.html" class="h-12 w-12 rounded-full bg-saffron-500 text-white shadow-lift flex items-center justify-center text-xl font-bold ring-4 ring-white">
             +
           </a>
         </div>
-        <a href="gallery.html" class="py-1.5 text-ink-600 flex flex-col items-center justify-center min-h-[44px]">
-          <span class="text-lg">📸</span>
+        <a href="gallery.html" class="py-1 text-ink-600 flex flex-col items-center justify-center">
+          <span class="text-base">📸</span>
           <span>Gallery</span>
         </a>
-        <a href="about.html" class="py-1.5 text-ink-600 flex flex-col items-center justify-center min-h-[44px]">
-          <span class="text-lg">ℹ️</span>
+        <a href="about.html" class="py-1 text-ink-600 flex flex-col items-center justify-center">
+          <span class="text-base">ℹ️</span>
           <span>About</span>
         </a>
       </div>
@@ -708,7 +700,7 @@
       pandals.forEach(item => {
         const lat = parseFloat(item.latitude);
         const lng = parseFloat(item.longitude);
-        if (isNaN(lat) || isNaN(lng) || lat < 8.0 || lat > 37.5 || lng < 68.0 || lng > 97.5) return;
+        if (isNaN(lat) || isNaN(lng)) return;
         const key = `${lat.toFixed(4)},${lng.toFixed(4)}`;
         if (!groups.has(key)) {
           groups.set(key, { lat, lng, items: [] });
@@ -718,15 +710,15 @@
       return Array.from(groups.values());
     }
 
-    // Build Trishul info popup content (Clean divine text with Trishul symbol - NO images floating over map)
+    // Build Trishul info popup content (supports single & multi-pandals)
     function buildPandalPopupHtml(items) {
       if (!items || items.length === 0) return "";
       const isMulti = items.length > 1;
       let header = "";
       if (isMulti) {
-        header = `<div style="background:linear-gradient(135deg, #770e17, #b8232e); color:#fff; padding:8px 12px; border-radius:10px 10px 0 0; margin:-2px -2px 10px -2px; font-size:12px; font-weight:bold; display:flex; justify-content:space-between; align-items:center;">
-          <span>🔱 ${items.length} Durga Mata Pandals</span>
-          <span style="background:#d4af37; color:#770e17; padding:2px 8px; border-radius:999px; font-size:11px; font-weight:800;">Same Spot</span>
+        header = `<div style="background:#770e17; color:#fff; padding:6px 10px; border-radius:8px 8px 0 0; margin:-2px -2px 8px -2px; font-size:12px; font-weight:bold; display:flex; justify-content:space-between; align-items:center;">
+          <span>🔱 ${items.length} Durga Pandals Here</span>
+          <span style="background:#d4af37; color:#770e17; padding:1px 6px; border-radius:999px; font-size:11px;">Same Spot</span>
         </div>`;
       }
       const listContent = items.map((item, idx) => {
@@ -735,22 +727,23 @@
         const mapUrl = typeof getGoogleMapsUrl === "function"
           ? getGoogleMapsUrl(item)
           : `https://www.google.com/maps/dir/?api=1&destination=${lat.toFixed(5)},${lng.toFixed(5)}`;
+        const rawPhoto = (item.photos && item.photos.length > 0)
+          ? (typeof item.photos[0] === 'string' ? item.photos[0] : (item.photos[0].url || item.photos[0].image_url))
+          : "assets/images/hero-durga.jpg";
+        const photo = typeof resolveMediaUrl === "function" ? resolveMediaUrl(rawPhoto) : rawPhoto;
         return `
           <div style="${idx > 0 ? 'margin-top:10px; padding-top:10px; border-top:1px dashed #eaab9d;' : ''}">
             <a href="pandal.html?id=${encodeURIComponent(item.id)}" style="display:block; text-decoration:none;">
-              <h4 style="font-weight:800; font-size:14px; color:#140b0d; margin:0 0 3px 0; display:flex; align-items:center; gap:5px;">
-                <span style="color:#b8232e;">🔱</span> ${item.name}
-              </h4>
+              <img src="${photo}" alt="${item.name}" style="width:100%; height:110px; object-fit:cover; border-radius:8px; margin-bottom:6px; cursor:pointer;" onerror="this.src='assets/images/hero-durga.jpg'" />
+              <h4 style="font-weight:bold; font-size:13px; color:#140b0d; margin:0 0 3px 0;">${item.name}</h4>
             </a>
-            ${item.teluguName ? `<p style="font-size:12px; color:#770e17; font-weight:bold; margin:0 0 4px 0;">${item.teluguName}</p>` : ''}
-            <p style="font-size:11px; color:#655257; font-weight:600; margin:0 0 8px 0;">📍 ${item.area}${item.address ? ' • ' + item.address : ''}</p>
-            <div style="display:flex; flex-direction:column; gap:5px;">
-              <a href="pandal.html?id=${encodeURIComponent(item.id)}" style="display:block; background:#fdf4f2; border:1px solid #eaab9d; color:#770e17; text-align:center; padding:6px; border-radius:8px; font-size:11px; font-weight:bold; text-decoration:none;">
-                🔱 View Full Details
-              </a>
-              <a href="${mapUrl}" target="_blank" rel="noopener noreferrer" style="display:block; background:linear-gradient(135deg, #b8232e, #770e17); color:white; text-align:center; padding:6px; border-radius:8px; font-size:11px; font-weight:bold; text-decoration:none;">
+            <p style="font-size:11px; color:#770e17; font-weight:600; margin:0 0 6px 0;">📍 ${item.area}${item.address ? ' • ' + item.address : ''}</p>
+            <div style="display:flex; flex-direction:column; gap:4px;">
+              ${mapUrl ? `
+              <a href="${mapUrl}" target="_blank" rel="noopener noreferrer" style="display:block; background:#b8232e; color:white; text-align:center; padding:6px; border-radius:6px; font-size:11px; font-weight:bold; text-decoration:none;">
                 🚗 Google Maps Directions ➔
-              </a>
+              </a>` : `
+              <span style="display:block; background:#fdf4f2; color:#770e17; text-align:center; padding:5px; border-radius:6px; font-size:11px; font-weight:bold;">⚠️ Location link not available</span>`}
             </div>
           </div>
         `;
@@ -776,31 +769,10 @@
       if (currentVal) selectEl.value = currentVal;
     }
 
-    // Update Result Banner (e.g. "Vidyanagar — 5 Durga Pandals Found" or "No approved Durga pandals found in this area.")
+    // Result banner removed per UI cleanup
     function updateMapResultBanner(areaName, count) {
-      let bannerEl = document.getElementById("map-result-count-banner");
-      if (!bannerEl) {
-        const container = document.getElementById("leaflet-map-container");
-        if (container && container.parentNode) {
-          bannerEl = document.createElement("div");
-          bannerEl.id = "map-result-count-banner";
-          bannerEl.className = "mb-2.5 px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center justify-between transition-all";
-          container.parentNode.insertBefore(bannerEl, container);
-        }
-      }
-      if (!bannerEl) return;
-      if (!areaName || areaName === "all") {
-        bannerEl.className = "mb-2.5 px-3.5 py-1.5 rounded-xl text-xs font-medium bg-cream-100 text-ink-700 flex items-center justify-between";
-        bannerEl.innerHTML = `<span>🗺️ Karimnagar — All Approved Pandals</span><span class="font-bold text-saffron-700">${count} Pandals Visible</span>`;
-        return;
-      }
-      if (count > 0) {
-        bannerEl.className = "mb-2.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-emerald-50 border border-emerald-200 text-emerald-900 flex items-center justify-between";
-        bannerEl.innerHTML = `<span>📍 <strong>${areaName}</strong> — ${count} Durga Pandal${count > 1 ? 's' : ''} Found</span><span class="text-[10px] bg-emerald-600 text-white px-2 py-0.5 rounded-full font-bold">Approved</span>`;
-      } else {
-        bannerEl.className = "mb-2.5 px-3.5 py-2 rounded-xl text-xs font-medium bg-amber-50 border border-amber-200 text-amber-900 flex items-center justify-between";
-        bannerEl.innerHTML = `<span>⚠️ No approved Durga pandals found in <strong>${areaName}</strong> yet.</span><a href="submit.html" class="text-[11px] font-bold text-saffron-700 hover:underline">+ Add Durga</a>`;
-      }
+      const bannerEl = document.getElementById("map-result-count-banner");
+      if (bannerEl) bannerEl.remove();
     }
 
     // Unified Map Initializer
@@ -830,6 +802,7 @@
               zoomControl: true
             });
             homeGoogleInfoWindow = new google.maps.InfoWindow();
+            window.homeGoogleMap = homeGoogleMap;
           }
 
           // Clear previous Google markers
@@ -838,29 +811,31 @@
 
           groupedPandals.forEach(group => {
             const count = group.items.length;
-            const markerIcon = (typeof getGoogleMapsMarkerIcon === "function")
-              ? getGoogleMapsMarkerIcon(count)
-              : null;
+            const badgeSvg = count > 1
+              ? `<circle cx="28" cy="10" r="9" fill="#d4af37" stroke="#ffffff" stroke-width="2"/><text x="28" y="13" font-size="10" font-weight="bold" fill="#770e17" text-anchor="middle">${count}</text>`
+              : '';
+            const svgIcon = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
+              <svg xmlns="http://www.w3.org/2000/svg" width="38" height="38" viewBox="0 0 38 38">
+                <circle cx="19" cy="19" r="16" fill="#b8232e" stroke="#d4af37" stroke-width="2.5"/>
+                <text x="19" y="24" font-size="17" text-anchor="middle" fill="#ffffff">🔱</text>
+                ${badgeSvg}
+              </svg>
+            `)}`;
 
             const marker = new google.maps.Marker({
               position: { lat: group.lat, lng: group.lng },
               map: homeGoogleMap,
-              icon: markerIcon
+              title: group.items.map(i => i.name).join(", "),
+              icon: {
+                url: svgIcon,
+                scaledSize: new google.maps.Size(38, 38),
+                anchor: new google.maps.Point(19, 19)
+              }
             });
 
             marker.addListener("click", () => {
-              if (group.items.length === 1 && group.items[0].id) {
-                window.location.href = `pandal.html?id=${encodeURIComponent(group.items[0].id)}`;
-              } else if (group.items.length > 1) {
-                const area = group.items[0].area;
-                if (typeof handleFilterByArea === 'function' && area) {
-                  handleFilterByArea(area);
-                  const dir = document.getElementById("directory-section");
-                  if (dir) dir.scrollIntoView({ behavior: 'smooth' });
-                } else {
-                  window.location.href = `pandal.html?id=${encodeURIComponent(group.items[0].id)}`;
-                }
-              }
+              homeGoogleInfoWindow.setContent(buildPandalPopupHtml(group.items));
+              homeGoogleInfoWindow.open(homeGoogleMap, marker);
             });
 
             marker._pandalItems = group.items;
@@ -896,17 +871,12 @@
             zoomControl: true,
             attributionControl: true
           });
-
-          const googleRoadLayer = L.tileLayer("https://mt{s}.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}", {
-            subdomains: ['0', '1', '2', '3'],
-            maxZoom: 20,
-            attribution: '&copy; Google Maps'
-          }).addTo(homeLeafletMap);
+          window.homeLeafletMap = homeLeafletMap;
 
           const osmLayer = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
             maxZoom: 19,
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors'
-          });
+          }).addTo(homeLeafletMap);
 
           const satelliteLayer = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
             maxZoom: 19,
@@ -914,7 +884,7 @@
           });
 
           L.control.layers(
-            { "🗺️ Google Roadmap": googleRoadLayer, "📍 OpenStreetMap": osmLayer, "🛰️ Satellite": satelliteLayer },
+            { "📍 OpenStreetMap": osmLayer, "🛰️ Satellite": satelliteLayer },
             null,
             { position: "topright" }
           ).addTo(homeLeafletMap);
@@ -936,33 +906,21 @@
 
         groupedPandals.forEach(group => {
           const count = group.items.length;
-          const pinIcon = (typeof createGoogleMapsLeafletIcon === "function")
-            ? createGoogleMapsLeafletIcon(count)
-            : L.divIcon({
-                className: "google-maps-pin-marker",
-                html: (typeof getGoogleMapsPinSvg === "function") ? getGoogleMapsPinSvg(count, 30, 42) : '<div style="background:#EA4335;width:24px;height:24px;border-radius:50%;"></div>',
-                iconSize: [30, 42],
-                iconAnchor: [15, 40]
-              });
+          const badgeHtml = count > 1
+            ? `<span style="position:absolute; top:-4px; right:-6px; background:#d4af37; color:#770e17; font-weight:800; font-size:10px; width:18px; height:18px; border-radius:50%; display:grid; place-items:center; border:2px solid #fff; box-shadow:0 2px 5px rgba(0,0,0,0.3);">${count}</span>`
+            : '';
 
-          const marker = L.marker([group.lat, group.lng], { icon: pinIcon }).addTo(homeLeafletMap);
-
-          // Direct pandal view or area filter on click - no popups or labels on map
-          marker.on("click", () => {
-            if (group.items.length === 1 && group.items[0].id) {
-              window.location.href = `pandal.html?id=${encodeURIComponent(group.items[0].id)}`;
-            } else if (group.items.length > 1) {
-              const area = group.items[0].area;
-              if (typeof handleFilterByArea === 'function' && area) {
-                handleFilterByArea(area);
-                const dir = document.getElementById("directory-section");
-                if (dir) dir.scrollIntoView({ behavior: 'smooth' });
-              } else {
-                window.location.href = `pandal.html?id=${encodeURIComponent(group.items[0].id)}`;
-              }
-            }
+          const trishulIcon = L.divIcon({
+            className: "trishul-marker-icon",
+            html: `<div style="position:relative; background:linear-gradient(135deg, #b8232e, #770e17); color:#fff; width:36px; height:36px; border-radius:50%; display:grid; place-items:center; font-size:18px; border:2.5px solid #d4af37; box-shadow:0 4px 14px rgba(126,12,28,0.55); cursor:pointer;">
+              🔱${badgeHtml}
+            </div>`,
+            iconSize: [36, 36],
+            iconAnchor: [18, 18]
           });
 
+          const marker = L.marker([group.lat, group.lng], { icon: trishulIcon }).addTo(homeLeafletMap);
+          marker.bindPopup(buildPandalPopupHtml(group.items));
           marker._pandalItems = group.items;
           homeMapMarkers.push(marker);
         });
@@ -1003,12 +961,21 @@
         if (area === "Vijayanagar" || area === "Vidyanagar") {
           homeGoogleMap.panTo({ lat: 18.4280, lng: 79.1290 });
           homeGoogleMap.setZoom(16);
+          const targetMarker = homeGoogleMarkers.find(m => m._pandalItems && m._pandalItems.some(i => i.area === "Vijayanagar" || i.area === "Vidyanagar"));
+          if (targetMarker && homeGoogleInfoWindow) {
+            homeGoogleInfoWindow.setContent(buildPandalPopupHtml(targetMarker._pandalItems));
+            homeGoogleInfoWindow.open(homeGoogleMap, targetMarker);
+          }
           return;
         }
         const marker = homeGoogleMarkers.find(m => m._pandalItems && m._pandalItems.some(i => i.area === area));
         if (marker) {
           homeGoogleMap.panTo(marker.getPosition());
           homeGoogleMap.setZoom(16);
+          if (homeGoogleInfoWindow) {
+            homeGoogleInfoWindow.setContent(buildPandalPopupHtml(marker._pandalItems));
+            homeGoogleInfoWindow.open(homeGoogleMap, marker);
+          }
           return;
         }
         if (KARIMNAGAR_COLONY_COORDS && KARIMNAGAR_COLONY_COORDS[area]) {
@@ -1027,12 +994,15 @@
       }
       if (area === "Vijayanagar" || area === "Vidyanagar") {
         homeLeafletMap.flyTo([18.4280, 79.1290], 16, { duration: 1.5 });
+        const marker = homeMapMarkers.find(m => m._pandalItems && m._pandalItems.some(i => i.area === "Vijayanagar" || i.area === "Vidyanagar"));
+        if (marker) marker.openPopup();
         return;
       }
       const marker = homeMapMarkers.find(m => m._pandalItems && m._pandalItems.some(i => i.area === area));
       if (marker) {
         const pos = marker.getLatLng();
         homeLeafletMap.flyTo([pos.lat, pos.lng], 16, { duration: 1.2 });
+        marker.openPopup();
         return;
       }
       if (KARIMNAGAR_COLONY_COORDS && KARIMNAGAR_COLONY_COORDS[area]) {
@@ -1072,6 +1042,10 @@
         if (matched) {
           homeGoogleMap.panTo(matched.getPosition());
           homeGoogleMap.setZoom(16);
+          if (homeGoogleInfoWindow) {
+            homeGoogleInfoWindow.setContent(buildPandalPopupHtml(matched._pandalItems));
+            homeGoogleInfoWindow.open(homeGoogleMap, matched);
+          }
           return;
         }
       }
@@ -1083,6 +1057,7 @@
         if (matchedMarker) {
           const pos = matchedMarker.getLatLng();
           homeLeafletMap.flyTo([pos.lat, pos.lng], 16, { duration: 1.2 });
+          matchedMarker.openPopup();
           return;
         }
       }
@@ -1091,79 +1066,6 @@
       if (matchedColony) {
         handleMapColonyChange(matchedColony);
       }
-    };
-
-    // Enhanced Use My Location (centers homepage map and shows pulsing user location)
-    const prevUseMyLocation = typeof handleUseMyLocation === "function" ? handleUseMyLocation : null;
-    window.handleUseMyLocation = function() {
-      if (prevUseMyLocation) {
-        try { prevUseMyLocation(); } catch (e) {}
-      }
-      if (!navigator.geolocation) {
-        alert("Geolocation is not supported by your browser.");
-        return;
-      }
-      if (window.isSecureContext === false && location.hostname !== "localhost" && location.hostname !== "127.0.0.1") {
-        alert("Location detection requires a secure HTTPS connection. Please access this website using https://");
-        return;
-      }
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          const lat = pos.coords.latitude;
-          const lng = pos.coords.longitude;
-
-          // Google Map live GPS pin
-          if (homeGoogleMap && window.google) {
-            homeGoogleMap.panTo({ lat, lng });
-            homeGoogleMap.setZoom(16);
-            if (homeUserLocationMarker) {
-              if (homeUserLocationMarker.setMap) homeUserLocationMarker.setMap(null);
-            }
-            homeUserLocationMarker = new google.maps.Marker({
-              position: { lat, lng },
-              map: homeGoogleMap,
-              icon: {
-                path: google.maps.SymbolPath.CIRCLE,
-                scale: 9,
-                fillColor: "#2563eb",
-                fillOpacity: 1,
-                strokeColor: "#ffffff",
-                strokeWeight: 3
-              }
-            });
-            return;
-          }
-
-          // Leaflet live GPS pin
-          if (homeLeafletMap) {
-            homeLeafletMap.flyTo([lat, lng], 16, { duration: 1.2 });
-            if (homeUserLocationMarker && homeLeafletMap.removeLayer) {
-              try { homeLeafletMap.removeLayer(homeUserLocationMarker); } catch (e) {}
-            }
-            homeUserLocationMarker = L.marker([lat, lng], {
-              icon: L.divIcon({
-                className: "user-loc-pin",
-                html: `<div style="background:#2563eb; width:22px; height:22px; border-radius:50%; border:3px solid white; box-shadow:0 0 14px rgba(37,99,235,0.8);"></div>`,
-                iconSize: [22, 22],
-                iconAnchor: [11, 11]
-              })
-            }).addTo(homeLeafletMap);
-          }
-        },
-        (err) => {
-          console.warn("GPS notice:", err);
-          if (err.code === 1) {
-            alert("Location access was denied. Please allow location permissions in your browser to view your live GPS position.");
-          } else if (err.code === 2) {
-            alert("GPS signal unavailable. Please ensure location services are enabled on your device.");
-          } else if (err.code === 3) {
-            alert("Location request timed out. Please try again or select an area from the dropdown.");
-          } else {
-            alert("Could not detect your exact GPS location. Please select an area from the dropdown.");
-          }
-        },
-        { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
-      );
     };
   </script>
 </body>

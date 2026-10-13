@@ -72,7 +72,7 @@
     }
   </script>
   <link rel="stylesheet" href="styles.css" />
-  </head>
+</head>
 <body class="bg-cream-50 text-ink-900 flex flex-col min-h-screen">
 
   <!-- Top Sacred Bar -->
@@ -186,39 +186,27 @@
             <label class="block text-xs font-bold text-ink-800 mb-1.5">Exact Address & Nearby Landmark *</label>
             <input id="sub-address" required type="text" placeholder="e.g. Near Old Clock Tower, Main Road, Beside Hanuman Temple" class="w-full rounded-2xl border border-cream-300 p-3.5 text-xs text-ink-900 outline-none focus:border-saffron-500 bg-cream-50/50" />
           </div>
-          <!-- Google Maps Location Link (Optional) -->
-          <div>
-            <label class="block text-xs font-bold text-ink-800 mb-1.5 flex items-center justify-between">
-              <span class="flex items-center gap-1.5">
-                <span>📍</span> Google Maps Location Link (Optional)
-              </span>
-              <span class="text-[11px] text-ink-500">Paste Google Maps link if available</span>
-            </label>
-            <input id="sub-maps-url" type="url" oninput="handleMapsUrlInput(this.value)" placeholder="e.g. https://maps.app.goo.gl/... or https://goo.gl/maps/..." class="w-full rounded-2xl border border-cream-300 p-3.5 text-xs text-ink-900 outline-none focus:border-saffron-500 bg-cream-50/50" />
-            <input id="sub-lat" type="hidden" value="18.4386" />
-            <input id="sub-lng" type="hidden" value="79.1288" />
-          </div>
 
-          <!-- Durga Idol Photo URL (Web image reference or direct photo link) -->
-          <div class="space-y-1.5">
-            <label class="block text-xs font-bold text-ink-800">
-              Durga Idol Image URL (Optional - paste direct image or web link)
+          <!-- Google Maps Location URL (Required) -->
+          <div class="p-5 rounded-2xl bg-cream-50 border border-saffron-300 space-y-3">
+            <label class="block text-xs font-bold text-ink-800 mb-1 flex items-center justify-between">
+              <span class="flex items-center gap-1.5">
+                <span>📍</span> Exact Google Maps Location URL *
+              </span>
+              <span class="text-[11px] text-saffron-700 font-bold bg-saffron-100 px-2 py-0.5 rounded-full">Required</span>
             </label>
-            <div class="flex items-center gap-2.5">
-              <input id="sub-image-url" type="url" placeholder="https://example.com/durga-idol.jpg" oninput="handleImageUrlInput(this.value)" class="flex-1 rounded-2xl border border-cream-300 p-3.5 text-xs text-ink-900 outline-none focus:border-saffron-500 bg-cream-50/50" />
-              <img id="sub-image-url-preview" src="" alt="Photo Preview" class="h-11 w-11 rounded-xl object-cover border border-cream-300 hidden shrink-0 shadow-soft" onerror="this.classList.add('hidden')" />
-            </div>
-            <p class="text-[11px] text-ink-500">Provide an image URL, or browse local photos from your device below.</p>
+            <input id="sub-maps-url" required type="url" placeholder="https://maps.app.goo.gl/... or https://goo.gl/maps/..." class="w-full rounded-2xl border border-cream-300 p-3.5 text-xs text-ink-900 outline-none focus:border-saffron-500 bg-white" />
+            <p class="text-[11px] text-ink-500 mt-1">Open Google Maps on phone or PC → Find pandal spot → Tap Share → Copy link and paste it here.</p>
           </div>
 
           <!-- 3-Photo Upload Area -->
           <div class="p-5 rounded-2xl bg-cream-50 border border-saffron-300 space-y-4">
             <div class="flex items-center justify-between">
               <div>
-                <label class="block text-xs font-bold text-ink-900">Durga Photos (Upload 2-3 photos, or provide Image URL above)</label>
+                <label class="block text-xs font-bold text-ink-900">Durga Photos (Upload min 2 photos for approval) *</label>
                 <p class="text-[11px] text-ink-500">Browse directly from your device storage</p>
               </div>
-              <span class="chip bg-saffron-100 text-saffron-800 font-bold text-[10px]">Photo Upload</span>
+              <span class="chip bg-saffron-100 text-saffron-800 font-bold text-[10px]">Min 2 Photos</span>
             </div>
 
             <!-- Photo 1: Main Idol -->
@@ -267,7 +255,7 @@
             <textarea id="sub-desc" rows="3" placeholder="Describe the avatar alankaram, special Chandi Homam timings, Bathukamma events, Maha Aarti schedule..." class="w-full rounded-2xl border border-cream-300 p-3.5 text-xs text-ink-900 outline-none focus:border-saffron-500 bg-cream-50/50"></textarea>
           </div>
 
-          <button type="submit" class="btn-primary w-full !py-4 text-sm sm:text-base font-bold shadow-lift min-h-[50px] flex items-center justify-center gap-2 cursor-pointer">
+          <button type="submit" class="btn-primary w-full !py-3.5 text-sm font-bold shadow-lift">
             <span>🔱</span> Submit Durga Mandapam
           </button>
 
@@ -312,7 +300,7 @@
     </div>
 
     <div class="border-t border-cream-300 bg-cream-200">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center gap-3 py-4 pb-28 sm:pb-4 text-center text-[11px] text-ink-600 sm:flex-row sm:justify-between sm:text-left">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center gap-3 py-4 pb-24 sm:pb-4 text-center text-[11px] text-ink-600 sm:flex-row sm:justify-between sm:text-left">
         <p>Karimnagar Durga Idol Finder © 2026 &nbsp;|&nbsp; Celebrate Culture &nbsp;|&nbsp; Support Local &nbsp;|&nbsp; Keep Karimnagar Beautiful</p>
         <div class="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
           <span class="font-medium text-saffron-800">🔱 శ్రీ కరీంనగర్ దుర్గా నవరాత్రోత్సవాలు</span>
@@ -322,94 +310,35 @@
   </footer>
 
   <!-- MOBILE BOTTOM NAVIGATION -->
-  <nav class="fixed inset-x-0 bottom-0 z-[1200] border-t border-cream-300 bg-white/95 backdrop-blur sm:hidden mobile-nav-safe shadow-lg">
-    <div class="grid grid-cols-5 items-center px-2 py-1.5 text-[10px] font-medium text-center">
-      <a href="index.html" class="py-1.5 text-ink-600 flex flex-col items-center justify-center min-h-[44px]">
-        <span class="text-lg">🏠</span>
+  <nav class="fixed inset-x-0 bottom-0 z-[1200] border-t border-cream-300 bg-white/95 backdrop-blur sm:hidden">
+    <div class="grid grid-cols-5 items-center px-2 py-1 text-[10px] font-medium text-center">
+      <a href="index.html" class="py-1 text-ink-600 flex flex-col items-center">
+        <span class="text-base">🏠</span>
         <span>Home</span>
       </a>
-      <a href="map.html" class="py-1.5 text-ink-600 flex flex-col items-center justify-center min-h-[44px]">
-        <span class="text-lg">🗺️</span>
+      <a href="map.html" class="py-1 text-ink-600 flex flex-col items-center">
+        <span class="text-base">🗺️</span>
         <span>Map</span>
       </a>
-      <div class="flex justify-center -mt-6">
+      <div class="flex justify-center -mt-5">
         <a href="submit.html" class="h-12 w-12 rounded-full bg-saffron-500 text-white shadow-lift flex items-center justify-center text-xl font-bold ring-4 ring-white">
           +
         </a>
       </div>
-      <a href="gallery.html" class="py-1.5 text-ink-600 flex flex-col items-center justify-center min-h-[44px]">
-        <span class="text-lg">📸</span>
+      <a href="gallery.html" class="py-1 text-ink-600 flex flex-col items-center">
+        <span class="text-base">📸</span>
         <span>Gallery</span>
       </a>
-      <a href="about.html" class="py-1.5 text-ink-600 flex flex-col items-center justify-center min-h-[44px]">
-        <span class="text-lg">ℹ️</span>
+      <a href="about.html" class="py-1 text-ink-600 flex flex-col items-center">
+        <span class="text-base">ℹ️</span>
         <span>About</span>
       </a>
     </div>
   </nav>
 
   <script src="data.js"></script>
+  <script src="app.js"></script>
   <script>
-
-    function handleImageUrlInput(val) {
-      const prev = document.getElementById("sub-image-url-preview");
-      if (!prev) return;
-      if (val && val.trim().startsWith("http")) {
-        prev.src = val.trim();
-        prev.classList.remove("hidden");
-      } else {
-        prev.src = "";
-        prev.classList.add("hidden");
-      }
-    }
-    function isValidIndianCoord(lat, lng) {
-      const nLat = parseFloat(lat);
-      const nLng = parseFloat(lng);
-      if (isNaN(nLat) || isNaN(nLng)) return false;
-      return nLat >= 8.0 && nLat <= 37.5 && nLng >= 68.0 && nLng <= 97.5;
-    }
-
-    // Extract coordinates from text or any Google Maps URL format
-    function extractCoordinatesFromText(text) {
-      if (!text || typeof text !== "string") return null;
-      text = text.trim();
-
-      // 1. Raw coordinates pattern: "18.4386, 79.1288"
-      const rawMatch = text.match(/^([+-]?\d{1,2}\.\d+)[,\s]+([+-]?\d{1,3}\.\d+)$/);
-      if (rawMatch) {
-        const lat = parseFloat(rawMatch[1]);
-        const lng = parseFloat(rawMatch[2]);
-        if (isValidIndianCoord(lat, lng)) {
-          return { lat, lng };
-        }
-      }
-
-      // 2. Google Maps URL coordinates: @lat,lng
-      const atMatch = text.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
-      if (atMatch && isValidIndianCoord(atMatch[1], atMatch[2])) {
-        return { lat: parseFloat(atMatch[1]), lng: parseFloat(atMatch[2]) };
-      }
-
-      // 3. Google Maps q=lat,lng or query=lat,lng or destination=lat,lng
-      const qMatch = text.match(/[?&](?:q|query|destination|ll)=(-?\d+\.\d+),(-?\d+\.\d+)/);
-      if (qMatch && isValidIndianCoord(qMatch[1], qMatch[2])) {
-        return { lat: parseFloat(qMatch[1]), lng: parseFloat(qMatch[2]) };
-      }
-
-      return null;
-    }
-
-    function handleMapsUrlInput(val) {
-      if (!val || typeof val !== "string") return;
-      const coords = extractCoordinatesFromText(val.trim());
-      if (coords) {
-        const latInput = document.getElementById("sub-lat");
-        const lngInput = document.getElementById("sub-lng");
-        if (latInput) latInput.value = coords.lat;
-        if (lngInput) lngInput.value = coords.lng;
-      }
-    }
-
     // Populate Area dropdown
     function populateSubmitAreaOptions() {
       const select = document.getElementById("sub-area-select");
@@ -435,13 +364,6 @@
         if (input) {
           input.required = false;
           input.value = "";
-        }
-        if (typeof KARIMNAGAR_COLONY_COORDS !== "undefined" && KARIMNAGAR_COLONY_COORDS[val]) {
-          const [cLat, cLng] = KARIMNAGAR_COLONY_COORDS[val];
-          const latInput = document.getElementById("sub-lat");
-          const lngInput = document.getElementById("sub-lng");
-          if (latInput) latInput.value = cLat;
-          if (lngInput) lngInput.value = cLng;
         }
       }
     }
@@ -488,33 +410,58 @@
 
       const category = document.getElementById("sub-category").value;
       const address = document.getElementById("sub-address").value.trim();
-      const mapsUrl = document.getElementById("sub-maps-url") ? document.getElementById("sub-maps-url").value.trim() : "";
-      const rawLat = parseFloat(document.getElementById("sub-lat")?.value);
-      const rawLng = parseFloat(document.getElementById("sub-lng")?.value);
-      const lat = (!isNaN(rawLat) && isValidIndianCoord(rawLat, rawLng || 79.1288)) ? rawLat : 18.4386;
-      const lng = (!isNaN(rawLng) && isValidIndianCoord(rawLat || 18.4386, rawLng)) ? rawLng : 79.1288;
+
+      // Location URL Validation
+      const rawMapsUrl = document.getElementById("sub-maps-url") ? document.getElementById("sub-maps-url").value.trim() : "";
+      if (!rawMapsUrl) {
+        alert("⚠️ Please provide the exact Google Maps location URL for this pandal.");
+        document.getElementById("sub-maps-url").focus();
+        return;
+      }
+
+      let formattedMapsUrl = (rawMapsUrl.startsWith("http://") || rawMapsUrl.startsWith("https://")) ? rawMapsUrl : `https://${rawMapsUrl}`;
+      try {
+        const parsed = new URL(formattedMapsUrl);
+        if (!parsed.protocol.startsWith("http") || !parsed.hostname.includes(".")) {
+          throw new Error("Invalid URL");
+        }
+      } catch (err) {
+        alert("⚠️ Please enter a valid Google Maps location URL (e.g. https://maps.app.goo.gl/... or https://goo.gl/maps/...)");
+        document.getElementById("sub-maps-url").focus();
+        return;
+      }
+
+      // Extract coords from URL if present in URL query/path, else null (never default to 18.4386/79.1288)
+      let lat = null;
+      let lng = null;
+      const atMatch = formattedMapsUrl.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+      if (atMatch) {
+        lat = parseFloat(atMatch[1]);
+        lng = parseFloat(atMatch[2]);
+      } else {
+        const qMatch = formattedMapsUrl.match(/[?&](?:q|query|ll|destination)=(-?\d+\.\d+),(-?\d+\.\d+)/);
+        if (qMatch) {
+          lat = parseFloat(qMatch[1]);
+          lng = parseFloat(qMatch[2]);
+        }
+      }
+
       const instagram = document.getElementById("sub-instagram").value.trim();
       const desc = document.getElementById("sub-desc").value.trim();
 
-      const imageUrl = document.getElementById("sub-image-url") ? document.getElementById("sub-image-url").value.trim() : "";
       const p1 = document.getElementById("page-photo-1") ? document.getElementById("page-photo-1").value.trim() : "";
       const p2 = document.getElementById("page-photo-2") ? document.getElementById("page-photo-2").value.trim() : "";
       const p3 = document.getElementById("page-photo-3") ? document.getElementById("page-photo-3").value.trim() : "";
 
-      if (!imageUrl && (!p1 || !p2)) {
-        alert("⚠️ Please upload at least 2 photos (Photo 1: Main Idol and Photo 2: Pandal View) or provide a valid Photo URL for this Durga Idol.");
+      if (!p1 || !p2) {
+        alert("⚠️ Please upload at least 2 photos (Photo 1: Main Idol and Photo 2: Pandal View) to submit this Durga Idol for approval.");
         return;
       }
 
       const photos = [];
-      if (p1) photos.push({ url: p1, caption: `${name} Main Idol`, isPublished: true });
-      if (p2) photos.push({ url: p2, caption: `${name} Pandal View`, isPublished: true });
+      photos.push({ url: p1, caption: `${name} Main Idol`, isPublished: true });
+      photos.push({ url: p2, caption: `${name} Pandal View`, isPublished: true });
       if (p3) photos.push({ url: p3, caption: `${name} Aarti & Celebration`, isPublished: true });
-      if (imageUrl && photos.length === 0) {
-        photos.push({ url: imageUrl, caption: `${name} Main Idol`, isPublished: true });
-      }
-
-      const primaryPhoto = (photos.length > 0 && photos[0].url) ? photos[0].url : (imageUrl || "assets/images/hero-durga.jpg");
 
       const newPandal = {
         id: "m-" + Date.now(),
@@ -523,8 +470,8 @@
         teluguName: teluguName,
         area: area,
         address: address,
-        mapsUrl: mapsUrl,
-        googleMapsUrl: mapsUrl,
+        mapsUrl: formattedMapsUrl,
+        googleMapsUrl: formattedMapsUrl,
         latitude: lat,
         longitude: lng,
         description: desc,
@@ -534,8 +481,6 @@
         isMustVisit: false,
         categories: [category, "unique"],
         category: category,
-        imageUrl: primaryPhoto,
-        photoUrl: primaryPhoto,
         photos: photos,
         videoUrl: "",
         instagramUrl: instagram ? `https://instagram.com/${instagram.replace('@','')}` : "",
@@ -554,7 +499,7 @@
         });
         const data = await res.json();
         if (data && data.success) {
-          alert("🔱 Thank you! Your Durga Mandapam has been submitted successfully.\n\nArea: " + area + "\nLocation pinned with Google Maps navigation!\n\nOnce reviewed and accepted by the admin, it will be published live!");
+          alert("🔱 Thank you! Your Durga Mandapam has been submitted successfully.\n\nArea: " + area + "\nLocation URL saved: " + formattedMapsUrl + "\n\nOnce reviewed and accepted by the admin, it will be published live!");
           window.location.href = "index.html";
           return;
         }
@@ -575,45 +520,6 @@
     // Auto-init on page load
     document.addEventListener("DOMContentLoaded", () => {
       populateSubmitAreaOptions();
-      try {
-        const params = new URLSearchParams(window.location.search);
-        const sharedUrl = params.get("mapsUrl") || params.get("url") || params.get("link") || params.get("q");
-        const paramLat = params.get("lat");
-        const paramLng = params.get("lng");
-        const paramColony = params.get("colony") || params.get("area");
-
-        if (sharedUrl) {
-          const urlInput = document.getElementById("sub-maps-url");
-          if (urlInput) {
-            urlInput.value = sharedUrl;
-            handleMapsUrlInput(sharedUrl);
-          }
-        }
-        if (paramLat && paramLng) {
-          const pLat = parseFloat(paramLat);
-          const pLng = parseFloat(paramLng);
-          if (!isNaN(pLat) && !isNaN(pLng) && isValidIndianCoord(pLat, pLng)) {
-            const latEl = document.getElementById("sub-lat");
-            const lngEl = document.getElementById("sub-lng");
-            if (latEl) latEl.value = pLat;
-            if (lngEl) lngEl.value = pLng;
-          }
-        }
-        if (paramColony) {
-          const areaSelect = document.getElementById("sub-area-select");
-          if (areaSelect) {
-            for (let i = 0; i < areaSelect.options.length; i++) {
-              if (areaSelect.options[i].value.toLowerCase() === paramColony.toLowerCase()) {
-                areaSelect.selectedIndex = i;
-                handleAreaSelectChange(areaSelect.value);
-                break;
-              }
-            }
-          }
-        }
-      } catch (e) {
-        console.warn("URL params parse warning:", e);
-      }
     });
   </script>
 </body>

@@ -238,53 +238,13 @@ function saveSiteConfig(config) {
   syncAllToServer();
 }
 
-// Ensure coordinates are strictly within valid Indian geographic boundaries (lat: 8 to 37.5, lng: 68 to 97.5)
-function sanitizePandalCoords(item) {
-  if (!item) return item;
-  let lat = parseFloat(item.latitude);
-  let lng = parseFloat(item.longitude);
-  const isValid = !isNaN(lat) && !isNaN(lng) && lat >= 8.0 && lat <= 37.5 && lng >= 68.0 && lng <= 97.5;
-
-  if (!isValid) {
-    const url = item.mapsUrl || item.googleMapsUrl || '';
-    let extracted = null;
-    if (url && typeof url === 'string') {
-      let m = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
-      if (!m) m = url.match(/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/);
-      if (!m) m = url.match(/[?&](?:q|destination|query|ll)=(-?\d+\.\d+)[,+](-?\d+\.\d+)/i);
-      if (!m) m = url.match(/\/dir\/.*?\/(-?\d+\.\d+)[,+](-?\d+\.\d+)/i);
-      if (!m) m = url.match(/\b(1[789]\.\d{3,})[,+\s]+(7[89]\.\d{3,})\b/);
-      if (m) {
-        const eLat = parseFloat(m[1]), eLng = parseFloat(m[2]);
-        if (eLat >= 8.0 && eLat <= 37.5 && eLng >= 68.0 && eLng <= 97.5) {
-          extracted = { lat: eLat, lng: eLng };
-        }
-      }
-    }
-
-    if (extracted) {
-      item.latitude = extracted.lat;
-      item.longitude = extracted.lng;
-    } else if (item.area && typeof window !== "undefined" && window.KARIMNAGAR_COLONY_COORDS && window.KARIMNAGAR_COLONY_COORDS[item.area]) {
-      item.latitude = window.KARIMNAGAR_COLONY_COORDS[item.area][0];
-      item.longitude = window.KARIMNAGAR_COLONY_COORDS[item.area][1];
-    } else {
-      item.latitude = 18.4386;
-      item.longitude = 79.1288;
-    }
-  }
-  return item;
-}
-
 function getMandapams() {
   try {
     const saved = localStorage.getItem(STORAGE_KEYS.MANDAPAMS);
     if (saved) {
       const parsed = JSON.parse(saved);
       if (Array.isArray(parsed)) {
-        return parsed
-          .filter(m => m && m.id && !String(m.id).startsWith("kd-") && !String(m.name || '').includes("Mankammathota Durga Samithi"))
-          .map(sanitizePandalCoords);
+        return parsed.filter(m => m && m.id && !String(m.id).startsWith("kd-") && !String(m.name || '').includes("Mankammathota Durga Samithi"));
       }
     }
   } catch (e) {
@@ -297,8 +257,7 @@ function getMandapams() {
 function safeSaveMandapams(mandapams) {
   if (!Array.isArray(mandapams)) return;
   try {
-    const sanitized = mandapams.map(sanitizePandalCoords);
-    localStorage.setItem(STORAGE_KEYS.MANDAPAMS, JSON.stringify(sanitized));
+    localStorage.setItem(STORAGE_KEYS.MANDAPAMS, JSON.stringify(mandapams));
   } catch (quotaErr) {
     console.warn("LocalStorage storage notice:", quotaErr);
   }
@@ -331,54 +290,40 @@ function saveAreasList(areas) {
   syncAllToServer();
 }
 
-// Google Maps Explorer & Navigation URL Helper: Direct turn-by-turn GPS destination navigation
+// Google Maps Explorer & Navigation URL Helper: Returns the exact submitted location URL
 function getGoogleMapsUrl(item) {
-  if (!item) return "https://www.google.com/maps/dir/?api=1&destination=18.4386,79.1288";
+  if (!item) return "";
 
-  // If submitter provided an exact custom Google Maps link, preserve and prioritize that exact URL
-  const explicitUrl = (item.mapsUrl && typeof item.mapsUrl === "string" && item.mapsUrl.startsWith("http")) ? item.mapsUrl :
-                      (item.googleMapsUrl && typeof item.googleMapsUrl === "string" && item.googleMapsUrl.startsWith("http")) ? item.googleMapsUrl : null;
-
-  const sanitized = sanitizePandalCoords(item);
-  const lat = sanitized.latitude;
-  const lng = sanitized.longitude;
-
-  // If valid coordinates exist, direct turn-by-turn navigation directly to the exact spot!
-  if (lat && lng && !isNaN(parseFloat(lat)) && !isNaN(parseFloat(lng)) && parseFloat(lat) >= 8.0 && parseFloat(lng) >= 68.0) {
-    return `https://www.google.com/maps/dir/?api=1&destination=${parseFloat(lat).toFixed(6)},${parseFloat(lng).toFixed(6)}`;
+  // Priority: Always return the exact submitted Google Maps URL
+  const raw = item.mapsUrl || item.googleMapsUrl;
+  if (raw && typeof raw === "string" && raw.trim()) {
+    const trimmed = raw.trim();
+    return (trimmed.startsWith("http://") || trimmed.startsWith("https://")) ? trimmed : `https://${trimmed}`;
   }
 
-  if (explicitUrl) {
-    return explicitUrl;
+  // If coordinates are explicitly available and not the generic Karimnagar center
+  let lat = item.latitude || (item.coordinates && item.coordinates.lat);
+  let lng = item.longitude || (item.coordinates && item.coordinates.lng);
+  if (lat && lng && !isNaN(parseFloat(lat)) && !isNaN(parseFloat(lng))) {
+    const pLat = parseFloat(lat);
+    const pLng = parseFloat(lng);
+    if (pLat !== 18.4386 || pLng !== 79.1288) {
+      return `https://www.google.com/maps/dir/?api=1&destination=${pLat.toFixed(5)},${pLng.toFixed(5)}`;
+    }
   }
 
-  const queryName = encodeURIComponent(`${item.name || 'Durga Mandapam'} ${item.area || ''} Karimnagar`.trim());
-  return `https://www.google.com/maps/dir/?api=1&destination=${queryName}`;
-}
-
-// Dedicated directions URL helper: Always navigates from visitor's current location to the pandal
-function getGoogleDirectionsUrl(item) {
-  if (!item) return "https://www.google.com/maps/dir/?api=1&destination=18.4386,79.1288";
-  const sanitized = sanitizePandalCoords(item);
-  const lat = sanitized.latitude;
-  const lng = sanitized.longitude;
-
-  if (lat && lng && !isNaN(parseFloat(lat)) && !isNaN(parseFloat(lng)) && parseFloat(lat) >= 8.0 && parseFloat(lng) >= 68.0) {
-    return `https://www.google.com/maps/dir/?api=1&destination=${parseFloat(lat).toFixed(6)},${parseFloat(lng).toFixed(6)}`;
-  }
-
-  const queryName = encodeURIComponent(`${item.name || 'Durga Mandapam'} ${item.area || ''} Karimnagar`.trim());
-  return `https://www.google.com/maps/dir/?api=1&destination=${queryName}`;
+  // Never return default coordinates or automatically substituted landmark locations
+  return "";
 }
 
 // Google Street View 360 Panorama Helper
 function getGoogleStreetViewUrl(item) {
-  if (!item) return "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=18.4386,79.1288";
-  const sanitized = sanitizePandalCoords(item);
-  const lat = sanitized.latitude;
-  const lng = sanitized.longitude;
-
-  return `https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${parseFloat(lat).toFixed(6)},${parseFloat(lng).toFixed(6)}`;
+  if (!item) return "";
+  let lat = item.latitude || (item.coordinates && item.coordinates.lat);
+  let lng = item.longitude || (item.coordinates && item.coordinates.lng);
+  if (!lat || !lng || isNaN(parseFloat(lat)) || isNaN(parseFloat(lng))) return "";
+  if (parseFloat(lat) === 18.4386 && parseFloat(lng) === 79.1288) return "";
+  return `https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${parseFloat(lat).toFixed(5)},${parseFloat(lng).toFixed(5)}`;
 }
 
 // Photo Gallery Helpers
@@ -653,6 +598,224 @@ function openInstagramApp(handleOrUrl = 'chintuvarun_3008') {
 }
 
 // --------------------------------------------------------------------------
+// Robust GPS Location Detection Engine with Two-Tier Fallback & Specific Error Handling
+// --------------------------------------------------------------------------
+let isGpsDetectionRunning = false;
+
+function detectUserGpsLocation(callbacks = {}) {
+  const { onStart, onSuccess, onError, onStatus } = callbacks;
+
+  // 1. Guard against concurrent in-flight requests
+  if (isGpsDetectionRunning) {
+    if (onStatus) onStatus("GPS detection in progress...");
+    return;
+  }
+
+  // 2. Check browser geolocation support
+  if (typeof navigator === "undefined" || !navigator.geolocation) {
+    if (onError) {
+      onError({
+        code: 0,
+        type: "unsupported",
+        title: "Geolocation Not Supported",
+        message: "Your web browser does not support GPS location detection. You can browse pandals by selecting an area from the list below.",
+        canRetry: false
+      });
+    }
+    return;
+  }
+
+  // 3. Check for secure context (HTTPS / localhost / 127.0.0.1)
+  const isSecure = (typeof window !== "undefined") && (
+    window.isSecureContext ||
+    location.hostname === "localhost" ||
+    location.hostname === "127.0.0.1" ||
+    location.protocol === "https:"
+  );
+
+  if (!isSecure) {
+    if (onError) {
+      onError({
+        code: 0,
+        type: "insecure",
+        title: "HTTPS Connection Required",
+        message: "Browser security requires a secure HTTPS connection to access device GPS. Please browse using HTTPS or choose an area from the list below.",
+        canRetry: false
+      });
+    }
+    return;
+  }
+
+  isGpsDetectionRunning = true;
+  if (onStart) onStart();
+  if (onStatus) onStatus("Acquiring GPS location...");
+
+  function mapGpsError(err) {
+    const code = err ? err.code : 0;
+    if (code === 1) { // PERMISSION_DENIED
+      return {
+        code: 1,
+        type: "permission_denied",
+        title: "Location Permission Denied",
+        message: "Location permission was blocked. To find Durga pandals near you, please allow location access in your browser settings (tap the lock 🔒 or site settings icon in the address bar and enable Location), or choose an area from the list below.",
+        canRetry: true
+      };
+    }
+    if (code === 2) { // POSITION_UNAVAILABLE
+      return {
+        code: 2,
+        type: "position_unavailable",
+        title: "GPS Position Unavailable",
+        message: "Your device was unable to determine its current GPS position. Please make sure device location/GPS is turned ON and try again, or choose an area from the list below.",
+        canRetry: true
+      };
+    }
+    if (code === 3) { // TIMEOUT
+      return {
+        code: 3,
+        type: "timeout",
+        title: "GPS Request Timed Out",
+        message: "GPS took too long to respond before retrieving coordinates. You can tap 'Retry GPS' below or choose an area from the list.",
+        canRetry: true
+      };
+    }
+    return {
+      code: code,
+      type: "unknown",
+      title: "Could Not Detect GPS Location",
+      message: (err && err.message) ? err.message : "Unable to acquire current location. Please choose an area from the list below.",
+      canRetry: true
+    };
+  }
+
+  // Tier 1: Try high-accuracy GPS with 10s timeout
+  const tier1Options = {
+    enableHighAccuracy: true,
+    timeout: 10000,
+    maximumAge: 60000
+  };
+
+  // Tier 2: Low-accuracy / Wi-Fi / cellular fallback with 12s timeout
+  const tier2Options = {
+    enableHighAccuracy: false,
+    timeout: 12000,
+    maximumAge: 300000
+  };
+
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      isGpsDetectionRunning = false;
+      if (onSuccess) onSuccess(pos);
+    },
+    (err1) => {
+      // If user explicitly denied permission, do not retry Tier 2
+      if (err1 && err1.code === 1) {
+        isGpsDetectionRunning = false;
+        if (onError) onError(mapGpsError(err1));
+        return;
+      }
+
+      // If timeout or unavailable, attempt Tier 2 standard network location fallback
+      if (onStatus) onStatus("Connecting to network positioning...");
+      navigator.geolocation.getCurrentPosition(
+        (fallbackPos) => {
+          isGpsDetectionRunning = false;
+          if (onSuccess) onSuccess(fallbackPos);
+        },
+        (err2) => {
+          isGpsDetectionRunning = false;
+          if (onError) onError(mapGpsError(err2 || err1));
+        },
+        tier2Options
+      );
+    },
+    tier1Options
+  );
+}
+
+function showGpsNotificationBanner(errorInfo, onRetry) {
+  if (typeof document === "undefined") return;
+
+  let container = document.getElementById("gps-status-banner-container");
+  if (!container) {
+    const heroSearch = document.getElementById("main-search-form");
+    if (heroSearch && heroSearch.parentNode && heroSearch.parentNode.parentNode) {
+      container = document.createElement("div");
+      container.id = "gps-status-banner-container";
+      container.className = "mt-3 max-w-xl";
+      heroSearch.parentNode.parentNode.appendChild(container);
+    }
+  }
+
+  if (!container) {
+    if (errorInfo && errorInfo.message) alert(errorInfo.message);
+    return;
+  }
+
+  const icon = errorInfo.type === "permission_denied" ? "🔒"
+    : errorInfo.type === "insecure" ? "🛡️"
+    : errorInfo.type === "timeout" ? "⏳"
+    : "📍";
+
+  container.innerHTML = `
+    <div id="gps-status-banner" class="rounded-2xl border border-amber-300 bg-amber-50/95 p-3.5 shadow-soft backdrop-blur text-left transition-all">
+      <div class="flex items-start justify-between gap-3">
+        <div class="flex items-start gap-2.5 min-w-0">
+          <span class="text-lg shrink-0 mt-0.5">${icon}</span>
+          <div class="min-w-0">
+            <h4 class="font-bold text-xs sm:text-sm text-ink-900 leading-snug">${errorInfo.title || "Location Notice"}</h4>
+            <p class="text-xs text-ink-700 leading-relaxed mt-1">${errorInfo.message}</p>
+          </div>
+        </div>
+        <button type="button" onclick="hideGpsNotificationBanner()" class="h-6 w-6 rounded-full bg-amber-100 hover:bg-amber-200 text-ink-600 grid place-items-center text-xs shrink-0 cursor-pointer" title="Dismiss">✕</button>
+      </div>
+      <div class="mt-3 pt-2.5 border-t border-amber-200/70 flex flex-wrap items-center gap-2">
+        ${errorInfo.canRetry ? `
+        <button type="button" id="btn-gps-banner-retry" class="px-3 py-1.5 rounded-xl bg-saffron-500 hover:bg-saffron-600 text-white font-bold text-xs shadow-soft transition cursor-pointer flex items-center gap-1.5">
+          <span>🔄</span> <span>Retry GPS</span>
+        </button>` : ''}
+        <button type="button" onclick="scrollToAreaSelection()" class="px-3 py-1.5 rounded-xl bg-white hover:bg-cream-100 text-saffron-800 border border-saffron-300 font-bold text-xs transition cursor-pointer flex items-center gap-1.5">
+          <span>📍</span> <span>Browse Areas Below</span>
+        </button>
+      </div>
+    </div>
+  `;
+
+  if (errorInfo.canRetry && typeof onRetry === "function") {
+    const retryBtn = document.getElementById("btn-gps-banner-retry");
+    if (retryBtn) {
+      retryBtn.onclick = (e) => {
+        e.preventDefault();
+        hideGpsNotificationBanner();
+        onRetry();
+      };
+    }
+  }
+}
+
+function hideGpsNotificationBanner() {
+  if (typeof document === "undefined") return;
+  const banner = document.getElementById("gps-status-banner");
+  if (banner) banner.remove();
+}
+
+function scrollToAreaSelection() {
+  if (typeof document === "undefined") return;
+  hideGpsNotificationBanner();
+  const el = document.getElementById("area-filter-pills") || document.getElementById("area-pills-container") || document.getElementById("directory-section");
+  if (el) {
+    el.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+}
+
+if (typeof window !== "undefined") {
+  window.detectUserGpsLocation = detectUserGpsLocation;
+  window.showGpsNotificationBanner = showGpsNotificationBanner;
+  window.hideGpsNotificationBanner = hideGpsNotificationBanner;
+  window.scrollToAreaSelection = scrollToAreaSelection;
+}
+
+// --------------------------------------------------------------------------
 // Automatic Page View Tracking & SEO/Analytics Helper
 // --------------------------------------------------------------------------
 (function initAnalyticsAndTracking() {
@@ -702,47 +865,3 @@ function openInstagramApp(handleOrUrl = 'chintuvarun_3008') {
     }
   } catch (e) {}
 })();
-
-// Shared Google Maps-style Location Pin Marker Components
-function getGoogleMapsPinSvg(count = 1, width = 30, height = 42, color = "#EA4335") {
-  const badgeSvg = (count && count > 1)
-    ? `<g transform="translate(18, -3)">
-        <circle cx="7" cy="7" r="7.5" fill="#D4AF37" stroke="#FFFFFF" stroke-width="2"/>
-        <text x="7" y="10.5" font-size="9" font-weight="800" fill="#770E17" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif">${count}</text>
-       </g>`
-    : '';
-
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 30 42" style="display:block; overflow:visible;">
-    <ellipse cx="15" cy="40.5" rx="5.5" ry="2" fill="rgba(0,0,0,0.25)"/>
-    <path d="M15 0C8.373 0 3 5.373 3 12c0 9.25 12 28 12 28s12-18.75 12-28c0-6.627-5.373-12-12-12z" fill="${color}" stroke="#B31412" stroke-width="0.8" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));"/>
-    <circle cx="15" cy="12" r="4.8" fill="#FFFFFF"/>
-    <circle cx="15" cy="12" r="1.8" fill="${color === '#EA4335' ? '#B31412' : '#0B57D0'}"/>
-    ${badgeSvg}
-  </svg>`;
-}
-
-function createGoogleMapsLeafletIcon(count = 1, color = "#EA4335") {
-  if (typeof L === "undefined") return null;
-  return L.divIcon({
-    className: "google-maps-pin-marker",
-    html: getGoogleMapsPinSvg(count, 30, 42, color),
-    iconSize: [30, 42],
-    iconAnchor: [15, 40],
-    popupAnchor: [0, -36]
-  });
-}
-
-function getGoogleMapsMarkerIcon(count = 1, color = "#EA4335") {
-  const svg = getGoogleMapsPinSvg(count, 30, 42, color);
-  return {
-    url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg),
-    scaledSize: (typeof google !== "undefined" && google.maps) ? new google.maps.Size(30, 42) : null,
-    anchor: (typeof google !== "undefined" && google.maps) ? new google.maps.Point(15, 40) : null
-  };
-}
-
-if (typeof window !== "undefined") {
-  window.getGoogleMapsPinSvg = getGoogleMapsPinSvg;
-  window.createGoogleMapsLeafletIcon = createGoogleMapsLeafletIcon;
-  window.getGoogleMapsMarkerIcon = getGoogleMapsMarkerIcon;
-}

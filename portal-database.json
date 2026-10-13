@@ -80,11 +80,14 @@
       "area": "Laxmipur shivalayam",
       "address": "F37J 79J Shivalayam, Lakshmipur, Telangana 505451",
       "category": "famous",
-      "categories": ["famous", "unique"],
+      "categories": [
+        "famous",
+        "unique"
+      ],
       "mapsUrl": "https://maps.app.goo.gl/Z6fxE2jdKMusmeWa8?g_st=ac",
       "googleMapsUrl": "https://maps.app.goo.gl/Z6fxE2jdKMusmeWa8?g_st=ac",
-      "latitude": 18.4386,
-      "longitude": 79.1288,
+      "latitude": null,
+      "longitude": null,
       "description": "Sacred Durga Mata idol at Shivalayam, Lakshmipur, Karimnagar.",
       "instagramHandle": "",
       "instagramUrl": "",

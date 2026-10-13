@@ -574,8 +574,8 @@ function openEditMandapamModal(id) {
 
   document.getElementById("edit-m-maps-url").value = m.mapsUrl || m.googleMapsUrl || "";
   document.getElementById("edit-m-address").value = m.address || "";
-  document.getElementById("edit-m-lat").value = m.latitude || 18.4386;
-  document.getElementById("edit-m-lng").value = m.longitude || 79.1288;
+  document.getElementById("edit-m-lat").value = (m.latitude !== null && m.latitude !== undefined) ? m.latitude : "";
+  document.getElementById("edit-m-lng").value = (m.longitude !== null && m.longitude !== undefined) ? m.longitude : "";
   document.getElementById("edit-m-priority").value = m.priority || 1;
   document.getElementById("edit-m-desc").value = m.description || "";
   
@@ -649,8 +649,10 @@ function handleSaveMandapam(e) {
 
   const mapsUrl = document.getElementById("edit-m-maps-url").value.trim();
   const address = document.getElementById("edit-m-address").value.trim();
-  const lat = parseFloat(document.getElementById("edit-m-lat").value) || 18.4386;
-  const lng = parseFloat(document.getElementById("edit-m-lng").value) || 79.1288;
+  const rawLat = parseFloat(document.getElementById("edit-m-lat").value);
+  const rawLng = parseFloat(document.getElementById("edit-m-lng").value);
+  const lat = !isNaN(rawLat) ? rawLat : null;
+  const lng = !isNaN(rawLng) ? rawLng : null;
   const priority = parseInt(document.getElementById("edit-m-priority").value) || 1;
   const desc = document.getElementById("edit-m-desc").value.trim();
   const p1 = document.getElementById("edit-m-photo").value.trim();

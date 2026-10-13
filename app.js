@@ -16,6 +16,11 @@ document.addEventListener("DOMContentLoaded", () => {
   // 1. Initial immediate render from local cache so page is never blank
   initApp();
 
+  // Show Follow Developer popup while entering the website
+  setTimeout(() => {
+    openDeveloperPopup();
+  }, 400);
+
   // 2. Pull server data and fresh approved pandals from backend
   syncIndexData();
   setupEventListeners();
@@ -179,15 +184,13 @@ function renderMustVisitRail() {
   if (countBadge) countBadge.textContent = `${mustVisitList.length} Priority Pandals`;
 
   container.innerHTML = mustVisitList.map((item, idx) => {
-    const rawPhoto = (item.photos && item.photos.length > 0)
-      ? (typeof item.photos[0] === 'string' ? item.photos[0] : item.photos[0].url)
-      : (item.imageUrl || item.photoUrl || "assets/images/hero-durga.jpg");
+    const rawPhoto = (item.photos && item.photos.length > 0) ? (typeof item.photos[0] === 'string' ? item.photos[0] : item.photos[0].url) : "assets/images/hero-durga.jpg";
     const photo = typeof resolveMediaUrl === "function" ? resolveMediaUrl(rawPhoto) : rawPhoto;
     const rank = item.priority || idx + 1;
     const mapUrl = getGoogleMapsUrl(item);
 
     return `
-      <div class="group flex flex-col overflow-hidden rounded-2xl border border-cream-300/80 bg-white shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-lift w-[78vw] sm:w-[280px] md:w-[310px] shrink-0 snap-start">
+      <div class="group flex flex-col overflow-hidden rounded-2xl border border-cream-300/80 bg-white shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-lift w-[78vw] sm:w-[280px] md:w-[310px] shrink-0 snap-start cursor-pointer" onclick="openPandalDetailsModal('${item.id}')">
         <div class="relative aspect-[4/3.1] overflow-hidden bg-cream-100">
           <img src="${photo}" alt="${item.name}" loading="lazy" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" onerror="this.src='assets/images/hero-durga.jpg'" />
           <div class="absolute left-2.5 top-2.5 flex items-center gap-1.5">
@@ -199,23 +202,27 @@ function renderMustVisitRail() {
           <div>
             <h3 class="font-display text-[16px] font-bold leading-snug text-ink-900 group-hover:text-saffron-700 transition-colors">${item.name}</h3>
             ${item.teluguName ? `<p class="font-telugu text-xs text-saffron-700 mt-0.5 font-medium">${item.teluguName}</p>` : ''}
-            <p class="mt-1 flex items-center gap-1 text-xs text-ink-600 font-semibold">
+            <p class="mt-1 flex items-center gap-1 text-xs text-ink-600">
               <svg class="h-3.5 w-3.5 shrink-0 text-saffron-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-              <span>${item.area}</span>
+              ${item.area}
             </p>
-            ${(item.address && item.address.trim() && item.address.trim().toLowerCase() !== item.area.trim().toLowerCase()) ? `<p class="text-[11px] text-ink-500 truncate mt-0.5">📍 ${item.address}</p>` : ''}
-            <p class="mt-2 text-xs text-ink-600 line-clamp-2 leading-relaxed">${item.description || 'Explore darshan timings, special alankarams and location.'}</p>
+            <p class="mt-2 text-xs text-ink-500 line-clamp-2 leading-relaxed">${item.description || item.address || 'Explore darshan timings, special alankarams and location.'}</p>
           </div>
 
-          <div class="pt-3 border-t border-cream-200 mt-3 flex items-center gap-2">
-            <a href="${mapUrl}" target="_blank" rel="noopener noreferrer" class="card-action-btn flex-1 bg-saffron-600 hover:bg-saffron-700 text-white shadow-xs">
+          <div class="pt-3 border-t border-cream-200 mt-3 flex items-center gap-2" onclick="event.stopPropagation()">
+            ${mapUrl ? `
+            <a href="${mapUrl}" target="_blank" rel="noopener noreferrer" class="btn-primary !py-2 !px-3 text-xs flex-1 flex items-center justify-center gap-1 font-bold shadow-sm">
               <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none">
                 <path d="M12 2C8.134 2 5 5.134 5 9C5 13.9 10.4 19.8 11.45 20.89C11.75 21.2 12.25 21.2 12.55 20.89C13.6 19.8 19 13.9 19 9C19 5.134 15.866 2 12 2Z" fill="#EA4335"/>
                 <circle cx="12" cy="8.8" r="2.7" fill="#FFFFFF"/>
               </svg>
-              <span>Maps</span>
-            </a>
-            <button type="button" onclick="handleWhatsAppShareItem('${item.name}', '${item.area}', '${mapUrl}', '${item.id}')" class="icon-action-btn bg-emerald-50 text-[#25D366] hover:bg-[#25D366] hover:text-white border border-emerald-300 shadow-soft" title="Share on WhatsApp">
+              <span>Google Maps ➔</span>
+            </a>` : `
+            <span class="text-xs text-ink-400 font-medium italic flex-1 text-center py-1.5">Location link not available</span>`}
+            <button type="button" onclick="handleWhatsAppShareItem('${item.name}', '${item.area}', '${mapUrl}', '${item.id}')" class="h-8 w-8 rounded-xl bg-emerald-50 text-[#25D366] hover:bg-[#25D366] hover:text-white border border-emerald-300 grid place-items-center text-xs shadow-soft transition cursor-pointer" title="Share on WhatsApp">
+              <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+            </button>
+          </div>
               <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
             </button>
           </div>
@@ -251,139 +258,15 @@ function renderAreaPills() {
   }).join("");
 }
 
-// Helper to match typed search query to a Karimnagar location, colony, or coordinates
-function findLocationMatch(query) {
-  if (!query || typeof query !== "string") return null;
-  const q = query.trim().toLowerCase();
-  if (!q) return null;
-
-  // 1. Raw GPS coordinates: e.g. "18.4386, 79.1288" or "18.4386 79.1288"
-  const rawMatch = q.match(/^([+-]?\d{1,2}\.\d+)[,\s]+([+-]?\d{1,3}\.\d+)$/);
-  if (rawMatch) {
-    const lat = parseFloat(rawMatch[1]);
-    const lng = parseFloat(rawMatch[2]);
-    if (!isNaN(lat) && !isNaN(lng) && lat >= 17.5 && lat <= 19.5 && lng >= 78.0 && lng <= 80.5) {
-      return {
-        name: `${lat.toFixed(4)}°N, ${lng.toFixed(4)}°E`,
-        lat: lat,
-        lng: lng,
-        isCoords: true
-      };
-    }
-  }
-
-  // 2. Karimnagar Colony presets matching
-  const coordsObj = window.KARIMNAGAR_COLONY_COORDS || (typeof KARIMNAGAR_COLONY_COORDS !== "undefined" ? KARIMNAGAR_COLONY_COORDS : null);
-  if (coordsObj) {
-    // Exact match
-    for (const [colony, coords] of Object.entries(coordsObj)) {
-      if (colony.toLowerCase() === q) {
-        return { name: colony, lat: coords[0], lng: coords[1] };
-      }
-    }
-
-    // Common synonyms & aliases
-    const aliases = {
-      "tower": "Tower Circle",
-      "circle": "Tower Circle",
-      "clock tower": "Tower Circle",
-      "old clock tower": "Tower Circle",
-      "collector": "Collectorate Chowrasta",
-      "collectorate": "Collectorate Chowrasta",
-      "collector office": "Collectorate Chowrasta",
-      "bus stand": "Karimnagar Bus Stand",
-      "rtc bus stand": "Karimnagar Bus Stand",
-      "railway": "Karimnagar Railway Station",
-      "railway station": "Karimnagar Railway Station",
-      "train": "Karimnagar Railway Station",
-      "hospital": "Civil Hospital",
-      "civil hospital": "Civil Hospital",
-      "circus": "Circus Ground",
-      "circus ground": "Circus Ground",
-      "kaman": "Kaman Chowrasta",
-      "kaman chowrasta": "Kaman Chowrasta",
-      "geetha bhavan": "Geetha Bhavan",
-      "githa bhavan": "Geetha Bhavan",
-      "sapthagiri": "Sapthagiri Colony",
-      "mukarampura": "Mukarampura",
-      "mankamma": "Mankammathota",
-      "mankammathota": "Mankammathota",
-      "court": "Court Road",
-      "court road": "Court Road",
-      "housing board": "Housing Board Colony",
-      "bhagath": "Bhagathnagar",
-      "bhagathnagar": "Bhagathnagar",
-      "kishan nagar": "Kishan Nagar",
-      "kishannagar": "Kishan Nagar",
-      "sawaran": "Sawaran Street",
-      "sawaran street": "Sawaran Street",
-      "sitarampur": "Sitarampur",
-      "lmd": "Lower Manair Dam (LMD)",
-      "dam": "Lower Manair Dam (LMD)",
-      "ujwala": "Ujwala Park",
-      "ujwala park": "Ujwala Park",
-      "deer park": "Deer Park",
-      "kothapalli": "Kothapalli",
-      "rekurthi": "Rekurthi",
-      "alugunoor": "Alugunoor",
-      "alugunur": "Alugunoor",
-      "subhash": "Subhashnagar",
-      "subhash nagar": "Subhashnagar",
-      "subhashnagar": "Subhashnagar",
-      "padmanagar": "Padmanagar",
-      "padma nagar": "Padmanagar",
-      "chinthakunta": "Chinthakunta",
-      "ganesh nagar": "Ganeshnagar",
-      "ganeshnagar": "Ganeshnagar",
-      "ramnagar": "Ramnagar",
-      "ram nagar": "Ramnagar",
-      "kashmirgadda": "Kashmirgadda",
-      "kashmir gadda": "Kashmirgadda",
-      "karkhanagadda": "Karkhanagadda",
-      "vidyanagar": "Vidyanagar",
-      "vijayanagar": "Vijayanagar"
-    };
-
-    for (const [alias, canonical] of Object.entries(aliases)) {
-      if (q === alias || q.includes(alias)) {
-        if (coordsObj[canonical]) {
-          return { name: canonical, lat: coordsObj[canonical][0], lng: coordsObj[canonical][1] };
-        }
-      }
-    }
-
-    // Substring match in colony names
-    for (const [colony, coords] of Object.entries(coordsObj)) {
-      if (colony.toLowerCase().includes(q)) {
-        return { name: colony, lat: coords[0], lng: coords[1] };
-      }
-    }
-  }
-
-  return null;
-}
-
-function clearLocationSearch() {
-  searchQuery = "";
-  const inp = document.getElementById("main-search-input");
-  if (inp) inp.value = "";
-  renderMandapamsDirectory();
-}
-
-// 5. Render All Durga Pandals Directory (Rich Interactive Grid with Nearest Distance Sorting)
+// 5. Render All Durga Pandals Directory (Rich Interactive Card with View Details & Direct Maps)
 function renderMandapamsDirectory() {
   const container = document.getElementById("mandapams-grid");
   const countEl = document.getElementById("directory-count");
   if (!container) return;
 
-  const locMatch = findLocationMatch(searchQuery);
-  const effectiveRefLocation = locMatch ? { lat: locMatch.lat, lng: locMatch.lng, name: locMatch.name } : userLocation;
-
   let filtered = currentMandapams.filter(item => {
-    // If user searched a location name or coordinates, do not filter out pandals by text mismatch;
-    // instead show all pandals sorted by nearest distance!
-    // If user typed a non-location term (e.g. pandal name or deity), filter by text:
-    if (searchQuery.trim() && !locMatch) {
+    // Search query match
+    if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase().trim();
       const matchName = item.name && item.name.toLowerCase().includes(q);
       const matchTelugu = item.teluguName && item.teluguName.toLowerCase().includes(q);
@@ -411,18 +294,15 @@ function renderMandapamsDirectory() {
     return true;
   });
 
-  // Calculate distances if reference location is known (from typed location or GPS)
-  if (effectiveRefLocation && typeof effectiveRefLocation.lat === "number" && typeof effectiveRefLocation.lng === "number") {
+  // Calculate distances if user location is known
+  if (userLocation) {
     filtered.forEach(item => {
       if (item.latitude && item.longitude) {
-        item.distanceKm = calculateDistance(effectiveRefLocation.lat, effectiveRefLocation.lng, item.latitude, item.longitude);
-        item.distanceRefName = effectiveRefLocation.name || null;
+        item.distanceKm = calculateDistance(userLocation.lat, userLocation.lng, item.latitude, item.longitude);
       } else {
         item.distanceKm = 9999;
-        item.distanceRefName = null;
       }
     });
-    // Sort strictly nearest first
     filtered.sort((a, b) => (a.distanceKm || 9999) - (b.distanceKm || 9999));
   } else {
     filtered.sort((a, b) => (a.priority || 99) - (b.priority || 99));
@@ -450,115 +330,47 @@ function renderMandapamsDirectory() {
     return;
   }
 
-  // Location banner when user searched an exact location or colony
-  let locationBannerHtml = "";
-  if (locMatch) {
-    locationBannerHtml = `
-      <div class="col-span-full mb-2 p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-300 text-amber-950 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xs">
-        <div class="flex items-center gap-3">
-          <span class="text-2xl sm:text-3xl">📍</span>
-          <div>
-            <h4 class="font-display font-bold text-sm sm:text-base text-ink-900 leading-tight">
-              Showing Nearest Pandals to <span class="text-saffron-700 underline font-extrabold">${locMatch.name}</span>
-            </h4>
-            <p class="text-xs text-amber-800 mt-0.5">
-              Ranked in order of closest walking & driving proximity in Karimnagar.
-            </p>
-          </div>
-        </div>
-        <button type="button" onclick="clearLocationSearch()" class="shrink-0 text-xs font-bold text-saffron-700 hover:text-white hover:bg-saffron-600 bg-white px-3.5 py-2 rounded-xl border border-amber-300 shadow-xs transition cursor-pointer">
-          ✕ Clear / Show All
-        </button>
-      </div>
-    `;
-  }
-
-  container.innerHTML = locationBannerHtml + filtered.map(item => {
-    const rawPhoto = (item.photos && item.photos.length > 0)
-      ? (typeof item.photos[0] === 'string' ? item.photos[0] : item.photos[0].url)
-      : (item.imageUrl || item.photoUrl || "assets/images/hero-durga.jpg");
-    const photo = typeof resolveMediaUrl === "function" ? resolveMediaUrl(rawPhoto) : rawPhoto;
+  container.innerHTML = filtered.map(item => {
+    const photo = (item.photos && item.photos.length > 0) ? (typeof item.photos[0] === 'string' ? item.photos[0] : item.photos[0].url) : "assets/images/hero-durga.jpg";
     const mapUrl = getGoogleMapsUrl(item);
     const isMv = item.isMustVisit || item.category === 'must-visit' || (item.categories && item.categories.includes('must-visit'));
-    
-    // Category label & badge
-    const cat = item.category || (item.categories && item.categories[0]) || "traditional";
-    const catLabels = {
-      'unique': '✨ Unique',
-      'famous': '👑 Famous',
-      'traditional': '🪔 Traditional',
-      'eco-friendly': '🌿 Eco-Friendly',
-      'must-visit': '★ Must Visit'
-    };
-    const catName = catLabels[cat] || 'Durga Pandal';
-
-    let distanceBadge = '';
-    if (typeof item.distanceKm === 'number' && item.distanceKm < 999) {
-      if (item.distanceRefName) {
-        if (item.distanceKm < 1) {
-          distanceBadge = `<span class="chip bg-emerald-600 text-white font-bold text-[9px] sm:text-[10px] shadow-xs">📍 ${Math.round(item.distanceKm * 1000)}m from ${item.distanceRefName}</span>`;
-        } else {
-          distanceBadge = `<span class="chip bg-emerald-600 text-white font-bold text-[9px] sm:text-[10px] shadow-xs">📍 ${item.distanceKm.toFixed(1)} km from ${item.distanceRefName}</span>`;
-        }
-      } else {
-        if (item.distanceKm < 1) {
-          distanceBadge = `<span class="chip bg-emerald-600 text-white font-bold text-[9px] sm:text-[10px] shadow-xs">📍 ${Math.round(item.distanceKm * 1000)}m away</span>`;
-        } else {
-          distanceBadge = `<span class="chip bg-emerald-600 text-white font-bold text-[9px] sm:text-[10px] shadow-xs">📍 ${item.distanceKm.toFixed(1)} km away</span>`;
-        }
-      }
-    }
+    const distanceBadge = (typeof item.distanceKm === 'number' && item.distanceKm < 999)
+      ? `<span class="chip bg-emerald-600 text-white font-bold text-[10px]">📍 ${item.distanceKm.toFixed(1)} km away</span>`
+      : '';
 
     return `
-      <div class="group flex flex-col overflow-hidden rounded-2xl border border-cream-300/90 bg-white shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-lift">
+      <div class="group flex flex-col overflow-hidden rounded-2xl border border-cream-300/90 bg-white shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-lift cursor-pointer" onclick="openPandalDetailsModal('${item.id}')">
         <div class="relative aspect-[4/3] overflow-hidden bg-cream-100">
           <img src="${photo}" alt="${item.name}" loading="lazy" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" onerror="this.src='assets/images/hero-durga.jpg'" />
-          <div class="absolute left-2 top-2 sm:left-2.5 sm:top-2.5 flex flex-wrap items-center gap-1 sm:gap-1.5">
-            ${isMv ? '<span class="chip bg-amber-500 text-ink-900 font-extrabold text-[9px] sm:text-[10px]">★ Must Visit</span>' : ''}
-            <span class="chip bg-white/90 backdrop-blur-xs text-ink-800 font-bold text-[9px] sm:text-[10px] shadow-xs border border-cream-200">${catName}</span>
+          <div class="absolute left-2.5 top-2.5 flex items-center gap-1.5">
+            ${isMv ? '<span class="chip bg-amber-500 text-ink-900 font-extrabold text-[10px]">★ Must Visit</span>' : ''}
             ${distanceBadge}
           </div>
         </div>
-        <div class="flex flex-1 flex-col p-2.5 sm:p-4 justify-between">
+        <div class="flex flex-1 flex-col p-4 justify-between">
           <div>
-            <h3 class="font-display text-xs sm:text-[15px] font-bold leading-tight text-ink-900 group-hover:text-saffron-700 transition-colors line-clamp-1">${item.name}</h3>
-            ${item.teluguName ? `<p class="font-telugu text-[10px] sm:text-xs text-saffron-700 mt-0.5 font-medium line-clamp-1">${item.teluguName}</p>` : ''}
-            
-            <p class="mt-1 sm:mt-1.5 flex items-center gap-1 text-[11px] sm:text-xs text-ink-700 font-semibold">
-              <svg class="h-3 w-3 sm:h-3.5 sm:w-3.5 shrink-0 text-saffron-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-              <span class="truncate">${item.area}</span>
+            <h3 class="font-display text-[15px] font-bold leading-snug text-ink-900 group-hover:text-saffron-700 transition-colors">${item.name}</h3>
+            ${item.teluguName ? `<p class="font-telugu text-xs text-saffron-700 mt-0.5 font-medium">${item.teluguName}</p>` : ''}
+            <p class="mt-2 flex items-center gap-1.5 text-xs text-ink-600">
+              <svg class="h-3.5 w-3.5 shrink-0 text-saffron-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+              ${item.area}
             </p>
-
-            ${(item.address && item.address.trim() && item.address.trim().toLowerCase() !== item.area.trim().toLowerCase()) ? `
-              <p class="text-[10px] sm:text-[11px] text-ink-500 line-clamp-1 mt-0.5">
-                <span class="text-ink-400">📍</span> ${item.address}
-              </p>
-            ` : ''}
-
-            ${item.description ? `
-              <p class="mt-1 text-[10px] sm:text-[11px] text-ink-600 line-clamp-2 leading-relaxed">
-                ${item.description}
-              </p>
-            ` : ''}
-
-            ${(item.instagramHandle || item.instagramUrl) ? `
-              <p class="text-[10px] sm:text-[11px] text-rose-600 font-bold mt-1 flex items-center gap-1">
-                <span>📸</span> <span class="truncate">@${(item.instagramHandle || item.instagramUrl).replace(/^@/,'').replace(/https?:\/\/(www\.)?instagram\.com\//,'').replace(/\/$/,'')}</span>
-              </p>
-            ` : ''}
+            <p class="mt-2 text-xs text-ink-500 line-clamp-2 leading-relaxed">${item.description || item.address || 'Explore darshan timings and location.'}</p>
           </div>
 
-          <!-- Direct Map & WhatsApp Actions with proper responsive buttons -->
-          <div class="pt-2 border-t border-cream-200 mt-2 flex items-center gap-1 sm:gap-1.5">
-            <a href="${mapUrl}" target="_blank" rel="noopener noreferrer" class="card-action-btn flex-1 bg-saffron-600 hover:bg-saffron-700 text-white shadow-xs">
-              <svg class="w-3 h-3 shrink-0" viewBox="0 0 24 24" fill="none">
+          <!-- Direct Map & WhatsApp Actions -->
+          <div class="pt-3 border-t border-cream-200 mt-3 flex items-center gap-2" onclick="event.stopPropagation()">
+            ${mapUrl ? `
+            <a href="${mapUrl}" target="_blank" rel="noopener noreferrer" class="btn-primary !py-2 !px-3 text-xs flex-1 flex items-center justify-center gap-1 font-bold shadow-sm">
+              <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none">
                 <path d="M12 2C8.134 2 5 5.134 5 9C5 13.9 10.4 19.8 11.45 20.89C11.75 21.2 12.25 21.2 12.55 20.89C13.6 19.8 19 13.9 19 9C19 5.134 15.866 2 12 2Z" fill="#EA4335"/>
                 <circle cx="12" cy="8.8" r="2.7" fill="#FFFFFF"/>
               </svg>
-              <span>Maps</span>
-            </a>
-            <button type="button" onclick="handleWhatsAppShareItem('${item.name}', '${item.area}', '${mapUrl}', '${item.id}')" class="icon-action-btn bg-emerald-50 text-[#25D366] hover:bg-[#25D366] hover:text-white border border-emerald-300 shadow-soft" title="Share on WhatsApp">
-              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+              <span>Google Maps ➔</span>
+            </a>` : `
+            <span class="text-xs text-ink-400 font-medium italic flex-1 text-center py-1.5">Location link not available</span>`}
+            <button type="button" onclick="handleWhatsAppShareItem('${item.name}', '${item.area}', '${mapUrl}', '${item.id}')" class="h-8 w-8 rounded-xl bg-emerald-50 text-[#25D366] hover:bg-[#25D366] hover:text-white border border-emerald-300 grid place-items-center text-xs shadow-soft transition cursor-pointer" title="Share on WhatsApp">
+              <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
             </button>
           </div>
         </div>
@@ -661,28 +473,31 @@ function initLeafletMap() {
       attributionControl: false
     });
 
-    // Authentic Google Maps Roadmap & Satellite Layers
-    const googleRoadLayer = L.tileLayer('https://mt{s}.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}', {
-      subdomains: ['0', '1', '2', '3'],
-      maxZoom: 20,
-      attribution: '&copy; Google Maps'
-    }).addTo(leafletMap);
+    // 100% Free Authentic Google Maps Tiles & Layer Switcher
+    const googleTiles = typeof createGoogleTileLayers === "function" ? createGoogleTileLayers() : {
+      roadmap: L.tileLayer('https://mt{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+        subdomains: ['0', '1', '2', '3'],
+        maxZoom: 20,
+        attribution: '&copy; Google Maps'
+      }),
+      hybrid: L.tileLayer('https://mt{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
+        subdomains: ['0', '1', '2', '3'],
+        maxZoom: 20,
+        attribution: '&copy; Google Maps Satellite'
+      }),
+      terrain: L.tileLayer('https://mt{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}', {
+        subdomains: ['0', '1', '2', '3'],
+        maxZoom: 20,
+        attribution: '&copy; Google Maps Terrain'
+      })
+    };
 
-    const osmLayer = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      maxZoom: 19,
-      attribution: '&copy; OpenStreetMap'
-    });
-
-    const satelliteLayer = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
-      maxZoom: 19,
-      attribution: "Tiles &copy; Esri"
-    });
-
+    googleTiles.roadmap.addTo(leafletMap);
     try {
       L.control.layers({
-        "🗺️ Google Roadmap": googleRoadLayer,
-        "📍 OpenStreetMap": osmLayer,
-        "🛰️ Google Satellite": satelliteLayer
+        "🗺️ Google Roadmap": googleTiles.roadmap,
+        "🛰️ Google Satellite": googleTiles.hybrid,
+        "⛰️ Google Terrain": googleTiles.terrain
       }, null, { position: 'topright' }).addTo(leafletMap);
     } catch (e) {}
 
@@ -690,63 +505,59 @@ function initLeafletMap() {
       if (leafletMap) leafletMap.invalidateSize();
     }, 250);
 
-    mapMarkers = [];
+  mapMarkers = [];
 
-    // Filter valid approved pandals
-    const validPandals = currentMandapams.filter(item => {
-      const lat = parseFloat(item.latitude);
-      const lng = parseFloat(item.longitude);
-      return !isNaN(lat) && !isNaN(lng) && lat >= 8.0 && lat <= 37.5 && lng >= 68.0 && lng <= 97.5;
+  currentMandapams.forEach(item => {
+    if (!item.latitude || !item.longitude) return;
+
+    const mapUrl = getGoogleMapsUrl(item);
+    const photo = (item.photos && item.photos.length > 0) ? (typeof item.photos[0] === 'string' ? item.photos[0] : item.photos[0].url) : "assets/images/hero-durga.jpg";
+
+    const customIcon = L.divIcon({
+      className: "custom-map-marker",
+      html: `
+        <div style="background:#b8232e; color:white; padding:6px; border-radius:50%; width:34px; height:34px; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 10px rgba(0,0,0,0.3); border:2px solid #d4af37; font-size:14px;">
+          🔱
+        </div>
+      `,
+      iconSize: [34, 34],
+      iconAnchor: [17, 17]
     });
 
-    // Group pandals at same location
-    const groups = new Map();
-    validPandals.forEach(item => {
-      const lat = parseFloat(item.latitude);
-      const lng = parseFloat(item.longitude);
-      const key = `${lat.toFixed(4)},${lng.toFixed(4)}`;
-      if (!groups.has(key)) {
-        groups.set(key, { lat, lng, items: [] });
-      }
-      groups.get(key).items.push(item);
-    });
+    const marker = L.marker([item.latitude, item.longitude], { icon: customIcon }).addTo(leafletMap);
 
-    groups.forEach(group => {
-      const count = group.items.length;
-      const pinIcon = (typeof createGoogleMapsLeafletIcon === "function")
-        ? createGoogleMapsLeafletIcon(count)
-        : L.divIcon({
-            className: "google-maps-pin-marker",
-            html: (typeof getGoogleMapsPinSvg === "function") ? getGoogleMapsPinSvg(count, 30, 42) : '<div style="background:#EA4335;width:24px;height:24px;border-radius:50%;"></div>',
-            iconSize: [30, 42],
-            iconAnchor: [15, 40]
-          });
+    const streetViewUrl = (item.latitude && item.longitude)
+      ? `https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${item.latitude},${item.longitude}`
+      : mapUrl;
 
-      const marker = L.marker([group.lat, group.lng], { icon: pinIcon }).addTo(leafletMap);
+    const popupHtml = `
+      <div style="font-family:system-ui, sans-serif; width:230px; padding:2px;">
+        <a href="pandal.html?id=${encodeURIComponent(item.id)}" style="display:block; text-decoration:none;">
+          <img src="${photo}" alt="${item.name}" style="width:100%; height:110px; object-fit:cover; border-radius:10px; margin-bottom:8px; cursor:pointer;" onerror="this.src='assets/images/hero-durga.jpg'" />
+          <h4 style="font-weight:bold; font-size:13px; color:#140b0d; margin:0 0 4px 0;">${item.name}</h4>
+        </a>
+        <p style="font-size:11px; color:#770e17; font-weight:600; margin:0 0 6px 0;">📍 ${item.area}</p>
+        <div style="display:flex; flex-direction:column; gap:4px;">
+          <a href="pandal.html?id=${encodeURIComponent(item.id)}" style="display:block; background:#fdf4f2; border:1px solid #eaab9d; color:#770e17; text-align:center; padding:6px; border-radius:8px; font-size:11px; font-weight:bold; text-decoration:none;">
+            🔱 Explore Idol in Full Screen
+          </a>
+          <a href="${mapUrl}" target="_blank" rel="noopener noreferrer" style="display:block; background:#b8232e; color:white; text-align:center; padding:6px; border-radius:8px; font-size:11px; font-weight:bold; text-decoration:none;">
+            🚗 Google Maps Directions ➔
+          </a>
+          <a href="${streetViewUrl}" target="_blank" rel="noopener noreferrer" style="display:block; background:#1e293b; color:white; text-align:center; padding:6px; border-radius:8px; font-size:11px; font-weight:bold; text-decoration:none;">
+            👁️ Open Free Street View ➔
+          </a>
+        </div>
+      </div>
+    `;
 
-      // On click, direct navigate to the pandal details page without displaying any information popups or cards on the map
-      marker.on("click", () => {
-        if (group.items.length === 1 && group.items[0].id) {
-          window.location.href = `pandal.html?id=${encodeURIComponent(group.items[0].id)}`;
-        } else if (group.items.length > 1) {
-          const area = group.items[0].area;
-          if (typeof handleFilterByArea === 'function' && area) {
-            handleFilterByArea(area);
-            const dir = document.getElementById("directory-section");
-            if (dir) dir.scrollIntoView({ behavior: 'smooth' });
-          } else {
-            window.location.href = `pandal.html?id=${encodeURIComponent(group.items[0].id)}`;
-          }
-        }
-      });
+    marker.bindPopup(popupHtml);
+    marker._pandalData = item;
+    mapMarkers.push(marker);
+  });
 
-      marker._pandalData = group.items[0];
-      marker._pandalItems = group.items;
-      mapMarkers.push(marker);
-    });
-
-    // Populate map colony dropdown
-    populateMapColonySelect();
+  // Populate map colony dropdown
+  populateMapColonySelect();
   } catch (mapErr) {
     console.warn("Map init notice:", mapErr);
   }
@@ -776,6 +587,11 @@ function handleMapColonyChange(area) {
   if (matching.length > 0) {
     const first = matching[0];
     leafletMap.flyTo([first.latitude, first.longitude], 16, { duration: 1.2 });
+    // Open popup of first marker
+    const marker = mapMarkers.find(m => m._pandalData && m._pandalData.id === first.id);
+    if (marker) {
+      setTimeout(() => marker.openPopup(), 1300);
+    }
   } else if (typeof KARIMNAGAR_COLONY_COORDS !== "undefined" && KARIMNAGAR_COLONY_COORDS[area]) {
     const coords = KARIMNAGAR_COLONY_COORDS[area];
     leafletMap.flyTo(coords, 16, { duration: 1.2 });
@@ -801,6 +617,10 @@ async function handleMapQuickSearch(query) {
   );
   if (match) {
     leafletMap.flyTo([match.latitude, match.longitude], 16, { duration: 1.2 });
+    const marker = mapMarkers.find(m => m._pandalData && m._pandalData.id === match.id);
+    if (marker) {
+      setTimeout(() => marker.openPopup(), 1300);
+    }
     return;
   }
   if (typeof KARIMNAGAR_COLONY_COORDS !== "undefined") {
@@ -870,6 +690,9 @@ function filterByCategory(cat) {
 
 function filterByArea(area) {
   activeAreaFilter = area;
+  if (typeof hideGpsNotificationBanner === "function") {
+    hideGpsNotificationBanner();
+  }
   renderAreaPills();
   renderMandapamsDirectory();
   const dirSection = document.getElementById("directory-section");
@@ -880,6 +703,9 @@ function clearAllFilters() {
   searchQuery = "";
   activeCategoryFilter = "all";
   activeAreaFilter = "all";
+  if (typeof hideGpsNotificationBanner === "function") {
+    hideGpsNotificationBanner();
+  }
   const searchInput = document.getElementById("main-search-input");
   if (searchInput) searchInput.value = "";
   renderAreaPills();
@@ -887,46 +713,107 @@ function clearAllFilters() {
 }
 
 function handleUseMyLocation() {
-  if (!navigator.geolocation) {
-    alert("Geolocation is not supported by your browser.");
-    return;
-  }
-
-  if (window.isSecureContext === false && location.hostname !== "localhost" && location.hostname !== "127.0.0.1") {
-    alert("Location detection requires a secure HTTPS connection. Please access this website using https://");
-    return;
-  }
-
   const btn = document.getElementById("btn-use-location");
-  if (btn) btn.innerHTML = "<span>⏳ Acquiring GPS location...</span>";
+  const origBtnHtml = btn ? btn.innerHTML : "<span>📍 Use My Location</span>";
 
-  navigator.geolocation.getCurrentPosition(
-    (pos) => {
-      userLocation = {
-        lat: pos.coords.latitude,
-        lng: pos.coords.longitude
-      };
-      const acc = Math.round(pos.coords.accuracy || 0);
-      if (btn) btn.innerHTML = `<span>✓ GPS Active (±${acc}m)</span>`;
-      renderMandapamsDirectory();
-      const dirSection = document.getElementById("directory-section");
-      if (dirSection) dirSection.scrollIntoView({ behavior: "smooth" });
-    },
-    (err) => {
-      console.warn("Location error:", err);
-      if (btn) btn.innerHTML = "<span>📍 Use My Location</span>";
-      if (err.code === 1) {
-        alert("Location access was denied. Please allow location permissions in your browser to find nearest pandals.");
-      } else if (err.code === 2) {
-        alert("GPS position unavailable. Please ensure location services are enabled on your device.");
-      } else if (err.code === 3) {
-        alert("Location request timed out. Please try again or choose an area from the list.");
-      } else {
-        alert("Could not detect your exact GPS location. Please choose an area from the list.");
+  if (typeof detectUserGpsLocation !== "function") {
+    console.error("detectUserGpsLocation is not defined");
+    return;
+  }
+
+  detectUserGpsLocation({
+    onStart: () => {
+      if (btn) {
+        btn.innerHTML = `<span class="inline-flex items-center gap-1.5"><svg class="animate-spin w-4 h-4 text-saffron-600" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg> <span>Locating GPS...</span></span>`;
+        btn.disabled = true;
+      }
+      if (typeof hideGpsNotificationBanner === "function") {
+        hideGpsNotificationBanner();
       }
     },
-    { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
-  );
+    onStatus: (msg) => {
+      if (btn) {
+        const textSpan = btn.querySelector("span span");
+        if (textSpan) textSpan.textContent = msg;
+      }
+    },
+    onSuccess: (pos) => {
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = `<span class="text-emerald-700 font-bold flex items-center gap-1"><span>✓</span> <span>Near You</span></span>`;
+      }
+      if (typeof hideGpsNotificationBanner === "function") {
+        hideGpsNotificationBanner();
+      }
+
+      const lat = pos.coords.latitude;
+      const lng = pos.coords.longitude;
+      const accuracy = pos.coords.accuracy;
+
+      userLocation = { lat, lng, accuracy };
+
+      // Update directory with distance sorting
+      renderMandapamsDirectory();
+
+      // Pan & update map if present on page
+      if (typeof homeGoogleMap !== "undefined" && homeGoogleMap && window.google) {
+        homeGoogleMap.panTo({ lat, lng });
+        homeGoogleMap.setZoom(15);
+        if (typeof homeUserLocationMarker !== "undefined" && homeUserLocationMarker) {
+          if (homeUserLocationMarker.setMap) homeUserLocationMarker.setMap(null);
+        }
+        homeUserLocationMarker = new google.maps.Marker({
+          position: { lat, lng },
+          map: homeGoogleMap,
+          title: "Your Current Location",
+          icon: {
+            path: google.maps.SymbolPath.CIRCLE,
+            scale: 9,
+            fillColor: "#2563eb",
+            fillOpacity: 1,
+            strokeColor: "#ffffff",
+            strokeWeight: 3
+          }
+        });
+      } else if (typeof homeLeafletMap !== "undefined" && homeLeafletMap) {
+        homeLeafletMap.flyTo([lat, lng], 15, { duration: 1.2 });
+        if (typeof homeUserLocationMarker !== "undefined" && homeUserLocationMarker) {
+          try { homeLeafletMap.removeLayer(homeUserLocationMarker); } catch (e) {}
+        }
+        homeUserLocationMarker = L.marker([lat, lng], {
+          icon: L.divIcon({
+            className: "user-loc-pin",
+            html: `<div style="background:#2563eb; width:22px; height:22px; border-radius:50%; border:3px solid white; box-shadow:0 0 14px rgba(37,99,235,0.8);"></div>`,
+            iconSize: [22, 22],
+            iconAnchor: [11, 11]
+          })
+        }).addTo(homeLeafletMap).bindPopup("<b>📍 Your Current Location</b>");
+      } else if (typeof leafletMap !== "undefined" && leafletMap) {
+        leafletMap.flyTo([lat, lng], 15, { duration: 1.2 });
+      }
+
+      // Smooth scroll to directory to view nearby pandals
+      const dirSection = document.getElementById("directory-section");
+      if (dirSection) {
+        dirSection.scrollIntoView({ behavior: "smooth" });
+      }
+    },
+    onError: (errInfo) => {
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = origBtnHtml || `<span>📍 Use My Location</span>`;
+      }
+      if (typeof showGpsNotificationBanner === "function") {
+        showGpsNotificationBanner(errInfo, handleUseMyLocation);
+      } else if (errInfo && errInfo.message) {
+        alert(errInfo.message);
+      }
+    }
+  });
+}
+
+if (typeof window !== "undefined") {
+  window.handleUseMyLocation = handleUseMyLocation;
 }
 
 function calculateDistance(lat1, lon1, lat2, lon2) {

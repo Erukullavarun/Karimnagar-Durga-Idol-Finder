@@ -632,18 +632,21 @@
 
     function handleMapUseLocation() {
       const btn = document.getElementById("map-btn-location");
-      if (!navigator.geolocation) return alert("Geolocation not supported.");
-      btn.innerHTML = `<span>⏳</span> Locating...`;
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          btn.innerHTML = `<span>✓</span> Location Active`;
+      const origHtml = btn ? btn.innerHTML : "<span>📍</span> Use My Location";
+
+      detectUserGpsLocation({
+        onStart: () => {
+          if (btn) btn.innerHTML = `<span>⏳</span> Locating GPS...`;
+        },
+        onSuccess: (pos) => {
+          if (btn) btn.innerHTML = `<span>✓</span> Location Active`;
           updateGoogleMapEmbed(`${pos.coords.latitude},${pos.coords.longitude}`, 16);
         },
-        () => {
-          btn.innerHTML = `<span>📍</span> Use My Location`;
-          alert("Could not fetch location.");
+        onError: (errInfo) => {
+          if (btn) btn.innerHTML = origHtml;
+          alert(errInfo.message);
         }
-      );
+      });
     }
 
     function handleUrlParameters() {
