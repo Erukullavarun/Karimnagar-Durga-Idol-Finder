@@ -507,28 +507,40 @@ function initLeafletMap() {
     // Sacred Trishul Map Pin Marker
     const safeId = String(item.id || Math.random()).replace(/[^a-zA-Z0-9_-]/g, '_');
     const trishulPinHtml = `
-      <div class="trishul-map-pin" style="position:relative; width:38px; height:50px; cursor:pointer; filter:drop-shadow(0 4px 10px rgba(126,12,28,0.55));">
-        <svg viewBox="0 0 38 50" width="38" height="50" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <ellipse cx="19" cy="48" rx="8" ry="2" fill="rgba(0,0,0,0.25)"/>
-          <path d="M19 0C8.5 0 0 8.5 0 19C0 31.5 17.2 47.8 17.9 48.5C18.5 49.1 19.5 49.1 20.1 48.5C20.8 47.8 38 31.5 38 19C38 8.5 29.5 0 19 0Z" fill="url(#sacredGrad_${safeId})" stroke="#fef08a" stroke-width="1.8"/>
-          <circle cx="19" cy="19" r="14.5" fill="#ffffff" stroke="#d4af37" stroke-width="1.8"/>
+      <div class="trishul-pin-marker" style="position:relative; width:40px; height:52px; cursor:pointer; filter:drop-shadow(0 4px 10px rgba(126,12,28,0.55));">
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="52" viewBox="0 0 40 52">
           <defs>
-            <linearGradient id="sacredGrad_${safeId}" x1="0" y1="0" x2="38" y2="50" gradientUnits="userSpaceOnUse">
-              <stop stop-color="#dc2626"/>
-              <stop offset="0.6" stop-color="#b91c1c"/>
-              <stop offset="1" stop-color="#7f1d1d"/>
+            <linearGradient id="pinGradApp_${safeId}" x1="0" y1="0" x2="40" y2="52" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#dc2626"/>
+              <stop offset="45%" stop-color="#b91c1c"/>
+              <stop offset="100%" stop-color="#7f1d1d"/>
+            </linearGradient>
+            <linearGradient id="goldTrishApp_${safeId}" x1="0" y1="0" x2="0" y2="24" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#fef08a"/>
+              <stop offset="50%" stop-color="#eab308"/>
+              <stop offset="100%" stop-color="#ca8a04"/>
             </linearGradient>
           </defs>
+          <path d="M20 1C9.5 1 1 9.5 1 20C1 33.5 18 50 19.2 51.1C19.6 51.5 20.4 51.5 20.8 51.1C22 50 39 33.5 39 20C39 9.5 30.5 1 20 1Z" 
+                fill="url(#pinGradApp_${safeId})" stroke="#ffd700" stroke-width="2"/>
+          <circle cx="20" cy="20" r="13.5" fill="#ffffff" stroke="#f59e0b" stroke-width="1.8"/>
+          <g transform="translate(8, 8)">
+            <path d="M12 1.5 L14.2 6.5 L12.9 6.5 L12.9 15 L11.1 15 L11.1 6.5 L9.8 6.5 Z" fill="url(#goldTrishApp_${safeId})"/>
+            <path d="M4.5 4 C4.2 8.5 7.8 12.8 11.1 13.5 L11.1 11.5 C8.5 11 6.5 8 6.8 5 C7.8 6.8 9.3 7.8 11.1 8.2 L11.1 6.8 C9 6.3 7.2 5 6.5 4 Z" fill="url(#goldTrishApp_${safeId})"/>
+            <path d="M19.5 4 C19.8 8.5 16.2 12.8 12.9 13.5 L12.9 11.5 C15.5 11 17.5 8 17.2 5 C16.2 6.8 14.7 7.8 12.9 8.2 L12.9 6.8 C15 6.3 16.8 5 17.5 4 Z" fill="url(#goldTrishApp_${safeId})"/>
+            <ellipse cx="12" cy="14.5" rx="3.8" ry="1.2" fill="#d97706"/>
+            <rect x="11.1" y="14.5" width="1.8" height="7.5" fill="url(#goldTrishApp_${safeId})"/>
+            <circle cx="12" cy="22.5" r="1.3" fill="#d97706"/>
+          </g>
         </svg>
-        <div style="position:absolute; top:7px; left:0; width:38px; text-align:center; font-size:17px; line-height:24px; user-select:none; pointer-events:none;">🔱</div>
       </div>
     `;
 
     const customIcon = L.divIcon({
-      className: "custom-trishul-pin",
+      className: "trishul-pin-marker",
       html: trishulPinHtml,
-      iconSize: [38, 50],
-      iconAnchor: [19, 49],
+      iconSize: [40, 52],
+      iconAnchor: [20, 51],
       popupAnchor: [0, -48]
     });
 

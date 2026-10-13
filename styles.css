@@ -416,3 +416,13 @@ a.btn-soft {
   padding: 6px 10px !important;
 }
 
+/* Sacred Trishul Map Pin Marker styling (Zero border/white box) */
+.trishul-pin-marker,
+.trishul-marker-icon,
+.custom-trishul-pin,
+.custom-map-pin,
+.leaflet-div-icon {
+  background: transparent !important;
+  border: none !important;
+}
+
