@@ -426,3 +426,12 @@ a.btn-soft {
   border: none !important;
 }
 
+/* Ensure no WhatsApp share buttons can ever display on homepage cards */
+#mandapams-grid button[title*="WhatsApp"],
+#must-visit-rail button[title*="WhatsApp"],
+button[onclick*="handleWhatsAppShareItem"] {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+
