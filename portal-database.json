@@ -99,6 +99,8 @@
       "isMustVisit": true,
       "isVerified": true,
       "status": "approved",
+      "imageUrl": "assets/images/hero-durga.jpg",
+      "photoUrl": "assets/images/hero-durga.jpg",
       "createdAt": "2026-10-13T09:00:42.794Z",
       "approvedAt": "2026-10-13T09:01:22.920Z"
     }
@@ -132,7 +134,7 @@
     "Bhagathnagar",
     "Sawaran Street",
     "Sitarampur",
-    "xyz"
+    "Laxmipur shivalayam"
   ],
-  "updatedAt": "2026-10-11T05:52:07.294Z"
+  "updatedAt": "2026-10-13T09:45:00.000Z"
 }

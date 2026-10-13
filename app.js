@@ -179,13 +179,15 @@ function renderMustVisitRail() {
   if (countBadge) countBadge.textContent = `${mustVisitList.length} Priority Pandals`;
 
   container.innerHTML = mustVisitList.map((item, idx) => {
-    const rawPhoto = (item.photos && item.photos.length > 0) ? (typeof item.photos[0] === 'string' ? item.photos[0] : item.photos[0].url) : "assets/images/hero-durga.jpg";
+    const rawPhoto = (item.photos && item.photos.length > 0)
+      ? (typeof item.photos[0] === 'string' ? item.photos[0] : item.photos[0].url)
+      : (item.imageUrl || item.photoUrl || "assets/images/hero-durga.jpg");
     const photo = typeof resolveMediaUrl === "function" ? resolveMediaUrl(rawPhoto) : rawPhoto;
     const rank = item.priority || idx + 1;
     const mapUrl = getGoogleMapsUrl(item);
 
     return `
-      <div class="group flex flex-col overflow-hidden rounded-2xl border border-cream-300/80 bg-white shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-lift w-[78vw] sm:w-[280px] md:w-[310px] shrink-0 snap-start cursor-pointer" onclick="openPandalDetailsModal('${item.id}')">
+      <div class="group flex flex-col overflow-hidden rounded-2xl border border-cream-300/80 bg-white shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-lift w-[78vw] sm:w-[280px] md:w-[310px] shrink-0 snap-start">
         <div class="relative aspect-[4/3.1] overflow-hidden bg-cream-100">
           <img src="${photo}" alt="${item.name}" loading="lazy" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" onerror="this.src='assets/images/hero-durga.jpg'" />
           <div class="absolute left-2.5 top-2.5 flex items-center gap-1.5">
@@ -197,25 +199,23 @@ function renderMustVisitRail() {
           <div>
             <h3 class="font-display text-[16px] font-bold leading-snug text-ink-900 group-hover:text-saffron-700 transition-colors">${item.name}</h3>
             ${item.teluguName ? `<p class="font-telugu text-xs text-saffron-700 mt-0.5 font-medium">${item.teluguName}</p>` : ''}
-            <p class="mt-1 flex items-center gap-1 text-xs text-ink-600">
+            <p class="mt-1 flex items-center gap-1 text-xs text-ink-600 font-semibold">
               <svg class="h-3.5 w-3.5 shrink-0 text-saffron-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-              ${item.area}
+              <span>${item.area}</span>
             </p>
-            <p class="mt-2 text-xs text-ink-500 line-clamp-2 leading-relaxed">${item.description || item.address || 'Explore darshan timings, special alankarams and location.'}</p>
+            ${(item.address && item.address.trim() && item.address.trim().toLowerCase() !== item.area.trim().toLowerCase()) ? `<p class="text-[11px] text-ink-500 truncate mt-0.5">📍 ${item.address}</p>` : ''}
+            <p class="mt-2 text-xs text-ink-600 line-clamp-2 leading-relaxed">${item.description || 'Explore darshan timings, special alankarams and location.'}</p>
           </div>
 
-          <div class="pt-3 border-t border-cream-200 mt-3 flex items-center gap-2" onclick="event.stopPropagation()">
-            <a href="pandal.html?id=${encodeURIComponent(item.id)}" class="px-3.5 py-2.5 rounded-xl bg-saffron-50 text-saffron-700 border border-saffron-200 text-xs font-bold hover:bg-saffron-100 transition min-h-[42px] flex items-center justify-center">
-              View Details
-            </a>
-            <a href="${mapUrl}" target="_blank" rel="noopener noreferrer" class="btn-primary !py-2.5 !px-3.5 text-xs flex-1 flex items-center justify-center gap-1.5 font-bold shadow-sm min-h-[42px]">
+          <div class="pt-3 border-t border-cream-200 mt-3 flex items-center gap-2">
+            <a href="${mapUrl}" target="_blank" rel="noopener noreferrer" class="card-action-btn flex-1 bg-saffron-600 hover:bg-saffron-700 text-white shadow-xs">
               <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none">
                 <path d="M12 2C8.134 2 5 5.134 5 9C5 13.9 10.4 19.8 11.45 20.89C11.75 21.2 12.25 21.2 12.55 20.89C13.6 19.8 19 13.9 19 9C19 5.134 15.866 2 12 2Z" fill="#EA4335"/>
                 <circle cx="12" cy="8.8" r="2.7" fill="#FFFFFF"/>
               </svg>
               <span>Maps</span>
             </a>
-            <button type="button" onclick="handleWhatsAppShareItem('${item.name}', '${item.area}', '${mapUrl}', '${item.id}')" class="h-10 w-10 min-w-[40px] min-h-[40px] rounded-xl bg-emerald-50 text-[#25D366] hover:bg-[#25D366] hover:text-white border border-emerald-300 grid place-items-center text-xs shadow-soft transition cursor-pointer" title="Share on WhatsApp">
+            <button type="button" onclick="handleWhatsAppShareItem('${item.name}', '${item.area}', '${mapUrl}', '${item.id}')" class="icon-action-btn bg-emerald-50 text-[#25D366] hover:bg-[#25D366] hover:text-white border border-emerald-300 shadow-soft" title="Share on WhatsApp">
               <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
             </button>
           </div>
@@ -474,63 +474,90 @@ function renderMandapamsDirectory() {
   }
 
   container.innerHTML = locationBannerHtml + filtered.map(item => {
-    const photo = (item.photos && item.photos.length > 0) ? (typeof item.photos[0] === 'string' ? item.photos[0] : item.photos[0].url) : "assets/images/hero-durga.jpg";
+    const rawPhoto = (item.photos && item.photos.length > 0)
+      ? (typeof item.photos[0] === 'string' ? item.photos[0] : item.photos[0].url)
+      : (item.imageUrl || item.photoUrl || "assets/images/hero-durga.jpg");
+    const photo = typeof resolveMediaUrl === "function" ? resolveMediaUrl(rawPhoto) : rawPhoto;
     const mapUrl = getGoogleMapsUrl(item);
     const isMv = item.isMustVisit || item.category === 'must-visit' || (item.categories && item.categories.includes('must-visit'));
     
+    // Category label & badge
+    const cat = item.category || (item.categories && item.categories[0]) || "traditional";
+    const catLabels = {
+      'unique': '✨ Unique',
+      'famous': '👑 Famous',
+      'traditional': '🪔 Traditional',
+      'eco-friendly': '🌿 Eco-Friendly',
+      'must-visit': '★ Must Visit'
+    };
+    const catName = catLabels[cat] || 'Durga Pandal';
+
     let distanceBadge = '';
     if (typeof item.distanceKm === 'number' && item.distanceKm < 999) {
       if (item.distanceRefName) {
         if (item.distanceKm < 1) {
-          distanceBadge = `<span class="chip bg-emerald-600 text-white font-bold text-[10px] shadow-xs">📍 ${Math.round(item.distanceKm * 1000)}m from ${item.distanceRefName}</span>`;
+          distanceBadge = `<span class="chip bg-emerald-600 text-white font-bold text-[9px] sm:text-[10px] shadow-xs">📍 ${Math.round(item.distanceKm * 1000)}m from ${item.distanceRefName}</span>`;
         } else {
-          distanceBadge = `<span class="chip bg-emerald-600 text-white font-bold text-[10px] shadow-xs">📍 ${item.distanceKm.toFixed(1)} km from ${item.distanceRefName}</span>`;
+          distanceBadge = `<span class="chip bg-emerald-600 text-white font-bold text-[9px] sm:text-[10px] shadow-xs">📍 ${item.distanceKm.toFixed(1)} km from ${item.distanceRefName}</span>`;
         }
       } else {
         if (item.distanceKm < 1) {
-          distanceBadge = `<span class="chip bg-emerald-600 text-white font-bold text-[10px] shadow-xs">📍 ${Math.round(item.distanceKm * 1000)}m away</span>`;
+          distanceBadge = `<span class="chip bg-emerald-600 text-white font-bold text-[9px] sm:text-[10px] shadow-xs">📍 ${Math.round(item.distanceKm * 1000)}m away</span>`;
         } else {
-          distanceBadge = `<span class="chip bg-emerald-600 text-white font-bold text-[10px] shadow-xs">📍 ${item.distanceKm.toFixed(1)} km away</span>`;
+          distanceBadge = `<span class="chip bg-emerald-600 text-white font-bold text-[9px] sm:text-[10px] shadow-xs">📍 ${item.distanceKm.toFixed(1)} km away</span>`;
         }
       }
     }
 
     return `
-      <div class="group flex flex-col overflow-hidden rounded-2xl border border-cream-300/90 bg-white shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-lift cursor-pointer" onclick="openPandalDetailsModal('${item.id}')">
+      <div class="group flex flex-col overflow-hidden rounded-2xl border border-cream-300/90 bg-white shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-lift">
         <div class="relative aspect-[4/3] overflow-hidden bg-cream-100">
           <img src="${photo}" alt="${item.name}" loading="lazy" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" onerror="this.src='assets/images/hero-durga.jpg'" />
-          <div class="absolute left-2.5 top-2.5 flex flex-wrap items-center gap-1.5">
-            ${isMv ? '<span class="chip bg-amber-500 text-ink-900 font-extrabold text-[10px]">★ Must Visit</span>' : ''}
+          <div class="absolute left-2 top-2 sm:left-2.5 sm:top-2.5 flex flex-wrap items-center gap-1 sm:gap-1.5">
+            ${isMv ? '<span class="chip bg-amber-500 text-ink-900 font-extrabold text-[9px] sm:text-[10px]">★ Must Visit</span>' : ''}
+            <span class="chip bg-white/90 backdrop-blur-xs text-ink-800 font-bold text-[9px] sm:text-[10px] shadow-xs border border-cream-200">${catName}</span>
             ${distanceBadge}
-          </div>
-          <div class="absolute right-2.5 bottom-2.5">
-            <span class="chip bg-black/60 backdrop-blur text-white text-[10px] font-semibold">🔍 View Details</span>
           </div>
         </div>
         <div class="flex flex-1 flex-col p-2.5 sm:p-4 justify-between">
           <div>
             <h3 class="font-display text-xs sm:text-[15px] font-bold leading-tight text-ink-900 group-hover:text-saffron-700 transition-colors line-clamp-1">${item.name}</h3>
-            ${item.teluguName ? `<p class="font-telugu text-[11px] sm:text-xs text-saffron-700 mt-0.5 font-medium line-clamp-1">${item.teluguName}</p>` : ''}
-            <p class="mt-1 sm:mt-1.5 flex items-center gap-1 text-[11px] sm:text-xs text-ink-600">
+            ${item.teluguName ? `<p class="font-telugu text-[10px] sm:text-xs text-saffron-700 mt-0.5 font-medium line-clamp-1">${item.teluguName}</p>` : ''}
+            
+            <p class="mt-1 sm:mt-1.5 flex items-center gap-1 text-[11px] sm:text-xs text-ink-700 font-semibold">
               <svg class="h-3 w-3 sm:h-3.5 sm:w-3.5 shrink-0 text-saffron-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
               <span class="truncate">${item.area}</span>
             </p>
-            <p class="mt-1 text-[11px] text-ink-500 line-clamp-1 sm:line-clamp-2 leading-relaxed hidden sm:block">${item.description || item.address || 'Explore darshan timings and location.'}</p>
+
+            ${(item.address && item.address.trim() && item.address.trim().toLowerCase() !== item.area.trim().toLowerCase()) ? `
+              <p class="text-[10px] sm:text-[11px] text-ink-500 line-clamp-1 mt-0.5">
+                <span class="text-ink-400">📍</span> ${item.address}
+              </p>
+            ` : ''}
+
+            ${item.description ? `
+              <p class="mt-1 text-[10px] sm:text-[11px] text-ink-600 line-clamp-2 leading-relaxed">
+                ${item.description}
+              </p>
+            ` : ''}
+
+            ${(item.instagramHandle || item.instagramUrl) ? `
+              <p class="text-[10px] sm:text-[11px] text-rose-600 font-bold mt-1 flex items-center gap-1">
+                <span>📸</span> <span class="truncate">@${(item.instagramHandle || item.instagramUrl).replace(/^@/,'').replace(/https?:\/\/(www\.)?instagram\.com\//,'').replace(/\/$/,'')}</span>
+              </p>
+            ` : ''}
           </div>
 
-          <!-- Direct Map & WhatsApp Actions & View Details -->
-          <div class="pt-2 border-t border-cream-200 mt-2 flex items-center gap-1.5" onclick="event.stopPropagation()">
-            <a href="pandal.html?id=${encodeURIComponent(item.id)}" class="flex-1 py-1.5 sm:py-2 px-1 rounded-xl bg-saffron-50 hover:bg-saffron-100 text-saffron-700 border border-saffron-200 text-[11px] sm:text-xs font-bold text-center transition min-h-[34px] sm:min-h-[38px] flex items-center justify-center">
-              Details
-            </a>
-            <a href="${mapUrl}" target="_blank" rel="noopener noreferrer" class="flex-1 py-1.5 sm:py-2 px-1 rounded-xl bg-saffron-600 hover:bg-saffron-700 text-white text-[11px] sm:text-xs font-bold text-center transition min-h-[34px] sm:min-h-[38px] flex items-center justify-center gap-1 shadow-xs">
+          <!-- Direct Map & WhatsApp Actions with proper responsive buttons -->
+          <div class="pt-2 border-t border-cream-200 mt-2 flex items-center gap-1 sm:gap-1.5">
+            <a href="${mapUrl}" target="_blank" rel="noopener noreferrer" class="card-action-btn flex-1 bg-saffron-600 hover:bg-saffron-700 text-white shadow-xs">
               <svg class="w-3 h-3 shrink-0" viewBox="0 0 24 24" fill="none">
                 <path d="M12 2C8.134 2 5 5.134 5 9C5 13.9 10.4 19.8 11.45 20.89C11.75 21.2 12.25 21.2 12.55 20.89C13.6 19.8 19 13.9 19 9C19 5.134 15.866 2 12 2Z" fill="#EA4335"/>
                 <circle cx="12" cy="8.8" r="2.7" fill="#FFFFFF"/>
               </svg>
               <span>Maps</span>
             </a>
-            <button type="button" onclick="handleWhatsAppShareItem('${item.name}', '${item.area}', '${mapUrl}', '${item.id}')" class="h-[34px] w-[34px] sm:h-[38px] sm:w-[38px] min-w-[34px] rounded-xl bg-emerald-50 text-[#25D366] hover:bg-[#25D366] hover:text-white border border-emerald-300 grid place-items-center text-xs shadow-soft transition cursor-pointer" title="Share on WhatsApp">
+            <button type="button" onclick="handleWhatsAppShareItem('${item.name}', '${item.area}', '${mapUrl}', '${item.id}')" class="icon-action-btn bg-emerald-50 text-[#25D366] hover:bg-[#25D366] hover:text-white border border-emerald-300 shadow-soft" title="Share on WhatsApp">
               <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
             </button>
           </div>

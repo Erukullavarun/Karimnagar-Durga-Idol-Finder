@@ -223,6 +223,11 @@ app.post('/api/mandapams', (req, res) => {
     const id = req.body.id || `m-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`;
     const isApproved = req.body.isVerified === true || req.body.status === 'approved';
     const processedPhotos = processAndSavePhotos(req.body.photos || [], id);
+    const directImageUrl = req.body.imageUrl || req.body.photoUrl || (typeof req.body.photo === 'string' ? req.body.photo : '');
+    let photosList = processedPhotos;
+    if ((!photosList || photosList.length === 0) && directImageUrl) {
+      photosList = [{ url: directImageUrl, caption: `${req.body.name || 'Durga'} Main Idol`, isPublished: true }];
+    }
 
     const newEntry = {
       id: id,
@@ -245,7 +250,9 @@ app.post('/api/mandapams', (req, res) => {
       description: req.body.description || '',
       instagramHandle: req.body.instagramHandle || req.body.instagram || '',
       instagramUrl: req.body.instagramUrl || '',
-      photos: processedPhotos,
+      imageUrl: directImageUrl || (photosList[0] ? (typeof photosList[0] === 'string' ? photosList[0] : photosList[0].url) : ''),
+      photoUrl: directImageUrl || (photosList[0] ? (typeof photosList[0] === 'string' ? photosList[0] : photosList[0].url) : ''),
+      photos: photosList,
       priority: parseInt(req.body.priority) || 10,
       isMustVisit: req.body.isMustVisit === true || req.body.category === 'must-visit',
       isVerified: isApproved, // Admin can set true directly, community submits default false

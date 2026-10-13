@@ -265,14 +265,26 @@
             </div>
           </div>
 
+          <!-- Durga Idol Photo URL (Web image reference or direct photo link) -->
+          <div class="space-y-1.5">
+            <label class="block text-xs font-bold text-ink-800">
+              Durga Idol Image URL (Optional - paste direct image or web link)
+            </label>
+            <div class="flex items-center gap-2.5">
+              <input id="sub-image-url" type="url" placeholder="https://example.com/durga-idol.jpg" oninput="handleImageUrlInput(this.value)" class="flex-1 rounded-2xl border border-cream-300 p-3.5 text-xs text-ink-900 outline-none focus:border-saffron-500 bg-cream-50/50" />
+              <img id="sub-image-url-preview" src="" alt="Photo Preview" class="h-11 w-11 rounded-xl object-cover border border-cream-300 hidden shrink-0 shadow-soft" onerror="this.classList.add('hidden')" />
+            </div>
+            <p class="text-[11px] text-ink-500">Provide an image URL, or browse local photos from your device below.</p>
+          </div>
+
           <!-- 3-Photo Upload Area -->
           <div class="p-5 rounded-2xl bg-cream-50 border border-saffron-300 space-y-4">
             <div class="flex items-center justify-between">
               <div>
-                <label class="block text-xs font-bold text-ink-900">Durga Photos (Upload min 2 photos for approval) *</label>
+                <label class="block text-xs font-bold text-ink-900">Durga Photos (Upload 2-3 photos, or provide Image URL above)</label>
                 <p class="text-[11px] text-ink-500">Browse directly from your device storage</p>
               </div>
-              <span class="chip bg-saffron-100 text-saffron-800 font-bold text-[10px]">Min 2 Photos</span>
+              <span class="chip bg-saffron-100 text-saffron-800 font-bold text-[10px]">Photo Upload</span>
             </div>
 
             <!-- Photo 1: Main Idol -->
@@ -410,6 +422,19 @@
     let submitPickerMarker = null;
     let submitPickerGoogleMap = null;
     let submitPickerGoogleMarker = null;
+    let hasUserPinnedExactSpot = false;
+
+    function handleImageUrlInput(val) {
+      const prev = document.getElementById("sub-image-url-preview");
+      if (!prev) return;
+      if (val && val.trim().startsWith("http")) {
+        prev.src = val.trim();
+        prev.classList.remove("hidden");
+      } else {
+        prev.src = "";
+        prev.classList.add("hidden");
+      }
+    }
 
     // Helper: Google Maps API key lookup
     function getGoogleMapsApiKey() {
@@ -517,10 +542,12 @@
           input.required = false;
           input.value = "";
         }
-        // Automatically sync map to selected colony!
-        if (KARIMNAGAR_COLONY_COORDS && KARIMNAGAR_COLONY_COORDS[val]) {
-          const [cLat, cLng] = KARIMNAGAR_COLONY_COORDS[val];
-          selectPickerSearchResult(val, cLat, cLng);
+        // ONLY sync map to selected colony center if user hasn't already pinned an exact spot!
+        if (!hasUserPinnedExactSpot) {
+          if (KARIMNAGAR_COLONY_COORDS && KARIMNAGAR_COLONY_COORDS[val]) {
+            const [cLat, cLng] = KARIMNAGAR_COLONY_COORDS[val];
+            selectPickerSearchResult(val, cLat, cLng, false);
+          }
         }
       }
     }
@@ -620,6 +647,7 @@
       }).addTo(submitPickerMap);
 
       submitPickerMap.on("click", function(e) {
+        hasUserPinnedExactSpot = true;
         const { lat, lng } = e.latlng;
         submitPickerMarker.setLatLng([lat, lng]);
         updatePinnedLocation(lat, lng);
@@ -627,6 +655,7 @@
       });
 
       submitPickerMarker.on("dragend", function(e) {
+        hasUserPinnedExactSpot = true;
         const latlng = submitPickerMarker.getLatLng();
         updatePinnedLocation(latlng.lat, latlng.lng);
         autoSelectNearestColony(latlng.lat, latlng.lng);
@@ -821,6 +850,7 @@
     }
 
     function applyResolvedLocation(lat, lng, reason, placeName = null) {
+      hasUserPinnedExactSpot = true;
       let parsedLat = parseFloat(lat);
       let parsedLng = parseFloat(lng);
       if (isNaN(parsedLat) || isNaN(parsedLng)) return;
@@ -906,6 +936,7 @@
 
         // Keep improving precision if a more accurate satellite fix arrives
         if (accuracy <= bestAccuracy || !bestLat) {
+          hasUserPinnedExactSpot = true;
           bestAccuracy = accuracy;
           bestLat = lat;
           bestLng = lng;
@@ -1135,7 +1166,10 @@
       }, 350);
     }
 
-    function selectPickerSearchResult(name, lat, lng) {
+    function selectPickerSearchResult(name, lat, lng, isUserExplicit = true) {
+      if (isUserExplicit) {
+        hasUserPinnedExactSpot = true;
+      }
       const searchInput = document.getElementById("picker-colony-search");
       if (searchInput) searchInput.value = name;
       const resultsEl = document.getElementById("picker-search-results");
@@ -1155,6 +1189,7 @@
       const latVal = parseFloat(document.getElementById("sub-lat")?.value);
       const lngVal = parseFloat(document.getElementById("sub-lng")?.value);
       if (!isNaN(latVal) && !isNaN(lngVal)) {
+        hasUserPinnedExactSpot = true;
         if (submitPickerMap && submitPickerMarker) {
           submitPickerMarker.setLatLng([latVal, lngVal]);
           submitPickerMap.panTo([latVal, lngVal]);
@@ -1208,24 +1243,32 @@
       const category = document.getElementById("sub-category").value;
       const address = document.getElementById("sub-address").value.trim();
       const mapsUrl = document.getElementById("sub-maps-url") ? document.getElementById("sub-maps-url").value.trim() : "";
-      const lat = parseFloat(document.getElementById("sub-lat")?.value) || 18.4386;
-      const lng = parseFloat(document.getElementById("sub-lng")?.value) || 79.1288;
+      const rawLat = parseFloat(document.getElementById("sub-lat")?.value);
+      const rawLng = parseFloat(document.getElementById("sub-lng")?.value);
+      const lat = (!isNaN(rawLat) && isValidIndianCoord(rawLat, rawLng || 79.1288)) ? rawLat : 18.4386;
+      const lng = (!isNaN(rawLng) && isValidIndianCoord(rawLat || 18.4386, rawLng)) ? rawLng : 79.1288;
       const instagram = document.getElementById("sub-instagram").value.trim();
       const desc = document.getElementById("sub-desc").value.trim();
 
+      const imageUrl = document.getElementById("sub-image-url") ? document.getElementById("sub-image-url").value.trim() : "";
       const p1 = document.getElementById("page-photo-1") ? document.getElementById("page-photo-1").value.trim() : "";
       const p2 = document.getElementById("page-photo-2") ? document.getElementById("page-photo-2").value.trim() : "";
       const p3 = document.getElementById("page-photo-3") ? document.getElementById("page-photo-3").value.trim() : "";
 
-      if (!p1 || !p2) {
-        alert("⚠️ Please upload at least 2 photos (Photo 1: Main Idol and Photo 2: Pandal View) to submit this Durga Idol for approval.");
+      if (!imageUrl && (!p1 || !p2)) {
+        alert("⚠️ Please upload at least 2 photos (Photo 1: Main Idol and Photo 2: Pandal View) or provide a valid Photo URL for this Durga Idol.");
         return;
       }
 
       const photos = [];
-      photos.push({ url: p1, caption: `${name} Main Idol`, isPublished: true });
-      photos.push({ url: p2, caption: `${name} Pandal View`, isPublished: true });
+      if (p1) photos.push({ url: p1, caption: `${name} Main Idol`, isPublished: true });
+      if (p2) photos.push({ url: p2, caption: `${name} Pandal View`, isPublished: true });
       if (p3) photos.push({ url: p3, caption: `${name} Aarti & Celebration`, isPublished: true });
+      if (imageUrl && photos.length === 0) {
+        photos.push({ url: imageUrl, caption: `${name} Main Idol`, isPublished: true });
+      }
+
+      const primaryPhoto = (photos.length > 0 && photos[0].url) ? photos[0].url : (imageUrl || "assets/images/hero-durga.jpg");
 
       const newPandal = {
         id: "m-" + Date.now(),
@@ -1245,6 +1288,8 @@
         isMustVisit: false,
         categories: [category, "unique"],
         category: category,
+        imageUrl: primaryPhoto,
+        photoUrl: primaryPhoto,
         photos: photos,
         videoUrl: "",
         instagramUrl: instagram ? `https://instagram.com/${instagram.replace('@','')}` : "",
@@ -1296,6 +1341,7 @@
           const paramColony = params.get("colony") || params.get("area");
 
           if (sharedUrl) {
+            hasUserPinnedExactSpot = true;
             const urlInput = document.getElementById("sub-maps-url");
             if (urlInput) urlInput.value = sharedUrl;
             resolveAndPinMapsUrl(sharedUrl, true);
@@ -1303,6 +1349,7 @@
             const pLat = parseFloat(paramLat);
             const pLng = parseFloat(paramLng);
             if (!isNaN(pLat) && !isNaN(pLng)) {
+              hasUserPinnedExactSpot = true;
               applyResolvedLocation(pLat, pLng, "Coordinates from URL parameter");
             }
           }

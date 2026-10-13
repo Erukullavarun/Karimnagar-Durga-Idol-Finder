@@ -160,6 +160,7 @@ a.btn-soft {
   cursor: pointer;
   border: 1px solid rgba(212, 175, 55, 0.5);
   text-decoration: none;
+  white-space: nowrap;
 }
 
 .btn-primary:hover {
@@ -183,6 +184,7 @@ a.btn-soft {
   transition: all 0.2s ease;
   cursor: pointer;
   text-decoration: none;
+  white-space: nowrap;
 }
 
 .btn-outline:hover {
@@ -204,11 +206,64 @@ a.btn-soft {
   border: 1px solid var(--color-saffron-200);
   transition: all 0.2s ease;
   cursor: pointer;
+  white-space: nowrap;
 }
 
 .btn-soft:hover {
   background: var(--color-saffron-100);
   border-color: var(--color-saffron-400);
+}
+
+/* Card Action Buttons (Mobile 2-column & Desktop Grid) */
+.card-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  font-weight: 700;
+  border-radius: 0.75rem;
+  transition: all 0.2s ease;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  white-space: nowrap;
+  text-align: center;
+  text-decoration: none;
+  min-height: 38px;
+  padding: 0.4rem 0.6rem;
+  font-size: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .card-action-btn {
+    min-height: 42px;
+    padding: 0.5rem 0.85rem;
+    font-size: 0.8rem;
+  }
+}
+
+/* Centered Icon Action Buttons (WhatsApp, Share, Close) */
+.icon-action-btn {
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
+  min-height: 38px;
+  border-radius: 0.75rem;
+  transition: all 0.2s ease;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  cursor: pointer;
+}
+
+@media (min-width: 640px) {
+  .icon-action-btn {
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
+    min-height: 42px;
+  }
 }
 
 /* Category Filter Tabs with Proper Touch Padding */
@@ -235,6 +290,7 @@ a.btn-soft {
   touch-action: manipulation;
   cursor: pointer;
   transition: all 0.2s ease;
+  white-space: nowrap;
 }
 
 /* Form inputs on mobile (prevent iOS zoom and ensure comfortable tapping) */
