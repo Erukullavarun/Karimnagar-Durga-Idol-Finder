@@ -122,7 +122,19 @@ input::-ms-clear {
   animation: floatSlow 4s ease-in-out infinite;
 }
 
-/* Buttons */
+/* Buttons & Touch Targets (Mobile & Desktop Responsive) */
+button,
+.btn-primary,
+.btn-outline,
+.btn-soft,
+a.btn-primary,
+a.btn-outline,
+a.btn-soft {
+  min-height: 44px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
 .btn-primary {
   display: inline-flex;
   align-items: center;
@@ -131,7 +143,7 @@ input::-ms-clear {
   background: linear-gradient(135deg, #b8232e 0%, #770e17 100%);
   color: #ffffff;
   font-weight: 700;
-  padding: 0.65rem 1.4rem;
+  padding: 0.75rem 1.5rem;
   border-radius: 9999px;
   box-shadow: 0 4px 18px rgba(184, 35, 46, 0.4);
   transition: all 0.25s ease;
@@ -154,7 +166,7 @@ input::-ms-clear {
   background: #ffffff;
   color: var(--color-ink-800);
   font-weight: 600;
-  padding: 0.55rem 1.25rem;
+  padding: 0.7rem 1.4rem;
   border-radius: 9999px;
   border: 1px solid var(--color-cream-300);
   box-shadow: 0 2px 8px rgba(0,0,0,0.03);
@@ -177,7 +189,7 @@ input::-ms-clear {
   background: var(--color-saffron-50);
   color: var(--color-saffron-700);
   font-weight: 600;
-  padding: 0.65rem 1.25rem;
+  padding: 0.7rem 1.35rem;
   border-radius: 9999px;
   border: 1px solid var(--color-saffron-200);
   transition: all 0.2s ease;
@@ -187,6 +199,50 @@ input::-ms-clear {
 .btn-soft:hover {
   background: var(--color-saffron-100);
   border-color: var(--color-saffron-400);
+}
+
+/* Category Filter Tabs with Proper Touch Padding */
+.category-filter-btn {
+  min-height: 40px;
+  padding: 0.55rem 1.1rem !important;
+  font-size: 0.8rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  touch-action: manipulation;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* Area Pills with Touch Ergonomics */
+.area-pill {
+  min-height: 42px;
+  padding: 0.55rem 1.15rem !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  touch-action: manipulation;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* Form inputs on mobile (prevent iOS zoom and ensure comfortable tapping) */
+@media (max-width: 639px) {
+  input[type="text"],
+  input[type="search"],
+  input[type="url"],
+  input[type="tel"],
+  input[type="number"],
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* Mobile navigation bar safe area */
+.mobile-nav-safe {
+  padding-bottom: max(10px, env(safe-area-inset-bottom, 8px));
 }
 
 /* Typography styles */
