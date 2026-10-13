@@ -253,9 +253,6 @@
             <a id="active-target-dir-link" href="#" target="_blank" rel="noopener noreferrer" class="btn-primary text-[11px] !py-1.5 !px-3 font-bold inline-flex items-center gap-1.5">
               🚗 Google Maps Directions ➔
             </a>
-            <a id="active-target-detail-link" href="#" class="btn-outline text-[11px] !py-1.5 !px-3 font-bold inline-flex items-center gap-1.5">
-              View Details
-            </a>
             <button id="active-target-share-btn" type="button" class="btn-soft text-[11px] !py-1.5 !px-3 font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 inline-flex items-center gap-1.5 cursor-pointer">
               WhatsApp
             </button>
@@ -565,7 +562,6 @@
                 <p class="text-[11px] text-saffron-700 font-semibold mt-0.5">📍 ${item.area}</p>
                 <p class="text-[10px] text-ink-500 truncate mt-0.5">${item.address || ''}</p>
                 <div class="mt-2 flex items-center gap-1.5" onclick="event.stopPropagation();">
-                  <a href="pandal.html?id=${encodeURIComponent(item.id)}" class="text-[10px] font-bold text-saffron-700 bg-saffron-50 hover:bg-saffron-100 border border-saffron-200 px-2 py-1 rounded-md">Details</a>
                   <button type="button" onclick="panToMandapam(${item.latitude || 'null'}, ${item.longitude || 'null'}, '${item.id}')" class="text-[10px] font-bold text-white bg-saffron-600 hover:bg-saffron-700 px-2.5 py-1 rounded-md inline-flex items-center gap-1 cursor-pointer">🗺️ Map View</button>
                   <a href="${mapUrl}" target="_blank" rel="noopener noreferrer" class="text-[10px] font-bold text-white bg-ink-800 hover:bg-black px-2 py-1 rounded-md inline-flex items-center gap-1">🚗 Directions</a>
                   <button type="button" onclick="handleWhatsAppShareItem('${item.name}', '${item.area}', '${mapUrl}')" class="text-[10px] font-bold text-white bg-[#25D366] hover:bg-[#1EBE5D] px-2 py-1 rounded-md inline-flex items-center gap-1 cursor-pointer" title="Share on WhatsApp">
