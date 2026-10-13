@@ -1,0 +1,108 @@
+{
+  "config": {
+    "header": {
+      "siteName": "Karimnagar Durga Idol Finder",
+      "siteLocation": "Karimnagar",
+      "tagline": "Find • Visit • Celebrate",
+      "logoImage": "assets/images/logo.jpg",
+      "contactEmail": "contact@karimnagardurgafinder.com"
+    },
+    "hero": {
+      "chantTelugu": "॥ ఓం శ్రీ దుర్గాయై నమః ॥",
+      "mainTitle": "Karimnagar Durga",
+      "titleHighlight": "Idol Finder",
+      "subtitle": "Find • Visit • Celebrate",
+      "description": "Find all sacred Durga Devi pandals, Navratri mandapams, and Bathukamma celebrations across Karimnagar. Explore divine idol themes, view photos, get GPS directions and celebrate Navratri with bliss.",
+      "bannerBadgeText": "॥ జై దుర్గా భవానీ • Jai Mata Di ॥",
+      "floatingCardTitle": "Karimnagar Navratri Utsav",
+      "floatingCardSubtitle": "One Divine City, Infinite Blessings",
+      "heroImage": "uploads/hero_durga_custom.jpg"
+    },
+    "stats": {
+      "locationsCount": 0,
+      "themesCount": 0,
+      "photosCount": 0,
+      "locationLabel": "Karimnagar",
+      "homeSublabel": "Our Sacred City",
+      "quoteTelugu": "“సకల శుభ ప్రదాయినీ శ్రీ దుర్గాదేవి”",
+      "quoteSub": "॥ శ్రీ మాత్రే నమః ॥"
+    },
+    "mapSection": {
+      "eyebrow": "Interactive Navratri Map",
+      "title": "Durga Pandals & Mandapams",
+      "titleHighlight": "in Karimnagar",
+      "description": "Find every verified Durga Mata pandal and Navratri mandapam across Karimnagar. View live photos, special alankarams, and get turn-by-turn GPS driving directions directly in Google Maps.",
+      "defaultCenter": [
+        18.4386,
+        79.1288
+      ],
+      "defaultZoom": 14
+    },
+    "mustVisitSection": {
+      "eyebrow": "Must Visit",
+      "title": "Must Visit Durga Pandals",
+      "description": "The top priority Durga mandapams and magnificent pandals you shouldn't miss this Navratri festival season across Karimnagar.",
+      "badgeText": "Priority Pandals"
+    },
+    "uniqueSection": {
+      "eyebrow": "Special Alankarams",
+      "title": "Unique Durga Idols & Themes",
+      "description": "Explore creatively themed Navadurga avatars, golden & silver alankarams, eco-friendly idols, and creative themes across Karimnagar."
+    },
+    "gallerySection": {
+      "eyebrow": "Navratri Gallery",
+      "title": "Moments from Across Karimnagar",
+      "description": "Photos from various Durga pandals, Bathukamma celebrations, Maha Aartis, and Dandiya nights."
+    },
+    "areasSection": {
+      "eyebrow": "Areas",
+      "title": "Browse by Area in Karimnagar",
+      "description": "Jump straight to any Karimnagar colony or neighbourhood to explore nearby pandals."
+    },
+    "ctaSection": {
+      "title": "Be a Part of the Navratri Celebration",
+      "description": "Know a Durga Mata pandal or Navratri mandapam that's not listed? Help us add it. Every submission is reviewed and approved by the admin before it appears on the live map and index directory.",
+      "quoteText": "“May Goddess Durga bring peace, health, and prosperity to every home in Karimnagar” 🔱",
+      "namasteImage": "assets/images/logo.jpg"
+    },
+    "footer": {
+      "developerNames": "@chintuvarun_3008",
+      "developerInstagram": "https://instagram.com/chintuvarun_3008",
+      "copyrightText": "Karimnagar Durga Idol Finder © 2026 | Celebrate Culture | Support Local | Keep Karimnagar Beautiful",
+      "version": "v4.0.0"
+    }
+  },
+  "mandapams": [],
+  "areas": [
+    "Tower Circle",
+    "Mukarampura",
+    "Mankammathota",
+    "Collectorate Chowrasta",
+    "Karkhanagadda",
+    "Jyothi Nagar",
+    "Sapthagiri Colony",
+    "Vavilalapalli",
+    "Geetha Bhavan",
+    "Court Road",
+    "Ramnagar",
+    "Vidyanagar",
+    "Kashmirgadda",
+    "Kaman Chowrasta",
+    "Housing Board Colony",
+    "Bhagyanagar",
+    "Padmanagar",
+    "Chinthakunta",
+    "Ganeshnagar",
+    "Alugunoor",
+    "Subhashnagar",
+    "Kishan Nagar",
+    "Gandhi Road",
+    "Adarsh Nagar",
+    "Bavapet",
+    "Bhagathnagar",
+    "Sawaran Street",
+    "Sitarampur",
+    "xyz"
+  ],
+  "updatedAt": "2026-10-11T05:52:07.294Z"
+}

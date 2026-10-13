@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Add Durga Mandapam - Submit Pandal | Karimnagar Durga Idol Finder</title>
+  <meta name="description" content="Submit your Durga Mata pandal, photos, and location for verified listing on Karimnagar Durga Idol Finder." />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/jpeg" href="assets/images/logo.jpg" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            saffron: {
+              50: '#fdf4f2',
+              100: '#fae5e0',
+              200: '#f4cdc4',
+              300: '#eaab9d',
+              400: '#d75d4f',
+              500: '#b8232e',
+              600: '#961621',
+              700: '#770e17',
+              800: '#5a0a11',
+              900: '#3f060b',
+            },
+            crimson: {
+              50: '#fdf2f4',
+              100: '#fbe4e8',
+              200: '#f7cbd2',
+              300: '#f0a3af',
+              400: '#e46b7f',
+              500: '#c51d34',
+              600: '#9e1025',
+              700: '#7e0c1c',
+              800: '#620a16',
+              900: '#46060f',
+            },
+            gold: {
+              50: '#fffef0',
+              100: '#fefbd8',
+              200: '#fef5b0',
+              300: '#fdec7d',
+              400: '#eac840',
+              500: '#d4af37',
+              600: '#b38c22',
+              700: '#8c6b16',
+              800: '#664c0f',
+              900: '#433107',
+            },
+            cream: {
+              50: '#fcfaf7',
+              100: '#f7f3ec',
+              200: '#ede5d8',
+              300: '#dfd2be',
+              400: '#cbb89e',
+            },
+            ink: {
+              500: '#8a787c',
+              600: '#655257',
+              700: '#443539',
+              800: '#281d20',
+              900: '#140b0d',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="styles.css" />
+  <!-- Leaflet CSS for Map Picker -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+</head>
+<body class="bg-cream-50 text-ink-900 flex flex-col min-h-screen">
+
+  <!-- Top Sacred Bar -->
+  <div class="bg-gradient-to-r from-crimson-700 via-saffron-600 to-amber-600 py-1.5 px-4 text-center text-xs font-semibold text-white tracking-wider flex items-center justify-between">
+    <span class="hidden sm:inline-block">🔱 ॥ ఓం శ్రీ దుర్గాయై నమః ॥</span>
+    <span class="mx-auto font-medium">శ్రీ కరీంనగర్ దుర్గా నవరాత్రి ఉత్సవాలు • Add Durga Mandapam</span>
+    <span class="hidden sm:inline-block">॥ జై దుర్గా భవానీ ॥ 🔱</span>
+  </div>
+
+  <!-- Header / Navbar -->
+  <header class="sticky top-0 z-[1000] bg-white/95 backdrop-blur-md border-b border-cream-300 shadow-soft">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+      
+      <!-- Logo -->
+      <a href="index.html" class="flex items-center gap-3 group">
+        <img src="assets/images/logo.jpg" alt="Karimnagar Durga Idol Finder Logo" class="w-12 h-12 rounded-full object-cover shadow-soft ring-2 ring-saffron-500/40 group-hover:scale-105 transition-transform" />
+        <div>
+          <span class="font-display font-black text-lg sm:text-xl text-ink-900 tracking-tight block leading-none site-logo-text">Karimnagar Durga</span>
+          <span class="text-[10px] uppercase font-bold tracking-widest text-saffron-600 block mt-0.5">Idol Finder • Navratri</span>
+        </div>
+      </a>
+
+      <!-- Desktop Navigation -->
+      <nav class="hidden md:flex items-center gap-7 text-sm font-medium">
+        <a href="index.html" class="text-ink-700 hover:text-saffron-600 transition-colors">Home</a>
+        <a href="map.html" class="text-ink-700 hover:text-saffron-600 transition-colors">Explore Map</a>
+        <a href="unique.html" class="text-ink-700 hover:text-saffron-600 transition-colors">Unique Durga</a>
+        <a href="gallery.html" class="text-ink-700 hover:text-saffron-600 transition-colors">Gallery</a>
+        <a href="about.html" class="text-ink-700 hover:text-saffron-600 transition-colors">About</a>
+      </nav>
+
+      <!-- Right Action Button -->
+      <div class="flex items-center gap-3">
+        <a href="submit.html" class="btn-primary text-xs sm:text-sm !py-2.5 !px-5 flex items-center gap-1.5 shadow-md">
+          <span>🔱</span>
+          <span>+ Add Durga</span>
+        </a>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- MAIN SUBMISSION CONTENT -->
+  <main class="flex-1 py-10 sm:py-16">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- Page Header -->
+      <div class="text-center mb-10">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-saffron-50 text-saffron-700 text-xs font-bold border border-saffron-200 mb-2.5">
+          <span>🔱</span> Community Listing Form
+        </span>
+        <h1 class="font-display text-3xl sm:text-4xl font-extrabold text-ink-900 leading-tight">
+          Add a Durga Mandapam <span class="text-saffron-600">in Karimnagar</span>
+        </h1>
+        <p class="text-xs sm:text-sm text-ink-600 mt-2 max-w-lg mx-auto leading-relaxed">
+          Submit your Navratri pandal details, address, and photos directly from your phone/PC for verified listing on the live map.
+        </p>
+      </div>
+
+      <!-- Submission Form Card -->
+      <div class="bg-white rounded-3xl p-6 sm:p-10 border border-cream-300 shadow-card">
+        
+        <form id="dedicated-submit-form" onsubmit="handleDedicatedSubmit(event)" class="space-y-6">
+          
+          <!-- Mandapam Name -->
+          <div>
+            <label class="block text-xs font-bold text-ink-800 mb-1.5">Durga Mandapam / Samithi Name *</label>
+            <input id="sub-name" required type="text" placeholder="e.g. Tower Circle Sri Kanaka Durga Youth Association" class="w-full rounded-2xl border border-cream-300 p-3.5 text-xs text-ink-900 outline-none focus:border-saffron-500 bg-cream-50/50" />
+          </div>
+
+          <!-- Telugu Name -->
+          <div>
+            <label class="block text-xs font-bold text-ink-800 mb-1.5">Telugu Name (Optional)</label>
+            <input id="sub-telugu" type="text" placeholder="e.g. శ్రీ కనకదుర్గా దేవి నవరాత్రి మండపం" class="w-full rounded-2xl border border-cream-300 p-3.5 text-xs text-ink-900 outline-none focus:border-saffron-500 font-telugu bg-cream-50/50" />
+          </div>
+
+          <!-- Area & Category -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-ink-800 mb-1.5 flex items-center justify-between">
+                <span>Area / Colony in Karimnagar *</span>
+                <span class="text-[10px] text-ink-500">Select or Choose "Other"</span>
+              </label>
+              <select id="sub-area-select" required onchange="handleAreaSelectChange(this.value)" class="w-full rounded-2xl border border-cream-300 p-3.5 text-xs text-ink-900 outline-none focus:border-saffron-500 bg-cream-50/50">
+                <!-- Dynamically populated -->
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-ink-800 mb-1.5">Category *</label>
+              <select id="sub-category" class="w-full rounded-2xl border border-cream-300 p-3.5 text-xs text-ink-900 outline-none focus:border-saffron-500 bg-cream-50/50">
+                <option value="famous">Famous Grand Pandal</option>
+                <option value="unique">Special Creative Theme</option>
+                <option value="traditional">Traditional Rituals</option>
+                <option value="eco-friendly">Eco-Friendly Clay</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Other Custom Area Input (Appears if user selects "Other") -->
+          <div id="sub-other-area-container" class="hidden p-4 rounded-2xl bg-amber-50/60 border border-amber-300 transition-all">
+            <label class="block text-xs font-bold text-ink-900 mb-1.5 flex items-center gap-1.5">
+              <span>✍️</span> Type Missing Area / Colony Name *
+            </label>
+            <input id="sub-other-area-input" type="text" placeholder="e.g. Padmanagar 2nd Lane, Housing Board Colony..." class="w-full rounded-xl border border-amber-300 bg-white p-3 text-xs text-ink-900 outline-none focus:border-saffron-500" />
+            <p class="text-[11px] text-ink-600 mt-1">If your colony is not in the list above, enter it here and it will be added to the directory.</p>
+          </div>
+
+          <!-- Address & Landmark -->
+          <div>
+            <label class="block text-xs font-bold text-ink-800 mb-1.5">Exact Address & Nearby Landmark *</label>
+            <input id="sub-address" required type="text" placeholder="e.g. Near Old Clock Tower, Main Road, Beside Hanuman Temple" class="w-full rounded-2xl border border-cream-300 p-3.5 text-xs text-ink-900 outline-none focus:border-saffron-500 bg-cream-50/50" />
+          </div>
+
+          <!-- Google Maps Link & Map Location Picker -->
+          <div class="p-5 rounded-2xl bg-cream-50 border border-saffron-200 space-y-4">
+            <div>
+              <label class="block text-xs font-bold text-ink-800 mb-1.5 flex items-center justify-between">
+                <span class="flex items-center gap-1.5">
+                  <span>📍</span> Google Maps Location Link (for easy GPS navigation)
+                </span>
+                <span class="text-[11px] text-saffron-700 font-semibold">Recommended</span>
+              </label>
+              <input id="sub-maps-url" type="url" placeholder="Paste link from Google Maps (e.g. https://maps.app.goo.gl/... or https://goo.gl/maps/...)" class="w-full rounded-2xl border border-cream-300 p-3.5 text-xs text-ink-900 outline-none focus:border-saffron-500 bg-white" />
+              <p class="text-[11px] text-ink-500 mt-1">Open Google Maps on your phone/PC → Share → Copy link and paste it here.</p>
+            </div>
+
+            <!-- Map Picker: Select Place on Map (Blinkit / Zepto / Rapido style) -->
+            <div class="border-t border-cream-300 pt-3 space-y-3">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div>
+                  <span class="block text-xs font-bold text-ink-900">🗺️ Set Exact Pandal Location on Google Map</span>
+                  <span class="text-[11px] text-ink-500">Search your colony or tap directly on the map to pin the exact pandal spot</span>
+                </div>
+                <button type="button" onclick="detectUserLocation()" class="self-start sm:self-auto px-3.5 py-1.5 rounded-xl bg-white border border-saffron-300 hover:bg-saffron-50 text-saffron-800 text-xs font-bold transition shadow-xs flex items-center gap-1.5 cursor-pointer">
+                  <span>🎯</span> Use Current GPS
+                </button>
+              </div>
+
+              <!-- Quick Colony Search Bar on Map -->
+              <div class="relative">
+                <input id="picker-colony-search" type="text" placeholder="🔍 Search colony, landmark or street (e.g. Mukarampura, Tower Circle, Sapthagiri...)" oninput="handlePickerSearch(this.value)" class="w-full rounded-xl border border-cream-300 bg-white pl-9 pr-3 py-2 text-xs text-ink-900 outline-none focus:border-saffron-500 shadow-sm" />
+                <svg class="absolute left-3 top-2.5 h-3.5 w-3.5 text-ink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                <div id="picker-search-results" class="hidden absolute top-full inset-x-0 mt-1 max-h-48 overflow-y-auto bg-white rounded-xl border border-cream-300 shadow-xl z-50 divide-y divide-cream-100 text-xs"></div>
+              </div>
+
+              <!-- Interactive Map Container -->
+              <div class="relative rounded-2xl overflow-hidden border border-cream-300 shadow-inner">
+                <div id="submit-map-picker" class="w-full h-64 z-10 relative"></div>
+                <!-- Pin instruction pill -->
+                <div class="absolute bottom-2 inset-x-2 z-20 pointer-events-none flex justify-center">
+                  <span class="bg-black/75 backdrop-blur-md text-white text-[10px] sm:text-[11px] font-semibold px-3 py-1 rounded-full shadow-lg">
+                    👆 Click anywhere on the map or drag 🔱 pin to adjust spot
+                  </span>
+                </div>
+              </div>
+
+              <!-- Selected Coordinates readout & Manual Lat/Lng for far-away areas -->
+              <div class="bg-white p-3 rounded-2xl border border-cream-200 space-y-2">
+                <div class="flex items-center justify-between text-[11px] text-ink-700">
+                  <span>📍 Selected Spot: <strong id="selected-coords-text" class="text-saffron-700">18.4386° N, 79.1288° E (Karimnagar)</strong></span>
+                  <span class="text-[10px] text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">✓ Location Pinned</span>
+                </div>
+
+                <!-- Manual text coordinates (for far-away villages or custom GPS) -->
+                <details class="text-xs text-ink-600 pt-1 border-t border-cream-100">
+                  <summary class="cursor-pointer font-bold text-saffron-700 hover:underline">
+                    ✍️ Enter coordinates manually in text format (for far-away areas / villages)
+                  </summary>
+                  <div class="grid grid-cols-2 gap-2.5 pt-2">
+                    <div>
+                      <label class="block text-[10px] font-bold text-ink-700 mb-0.5">Latitude (e.g. 18.4386)</label>
+                      <input id="sub-lat" type="number" step="any" value="18.4386" oninput="handleManualCoordsInput()" class="w-full rounded-lg border border-cream-300 p-2 text-xs font-mono bg-cream-50 focus:bg-white focus:border-saffron-500 outline-none" />
+                    </div>
+                    <div>
+                      <label class="block text-[10px] font-bold text-ink-700 mb-0.5">Longitude (e.g. 79.1288)</label>
+                      <input id="sub-lng" type="number" step="any" value="79.1288" oninput="handleManualCoordsInput()" class="w-full rounded-lg border border-cream-300 p-2 text-xs font-mono bg-cream-50 focus:bg-white focus:border-saffron-500 outline-none" />
+                    </div>
+                  </div>
+                </details>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3-Photo Upload Area -->
+          <div class="p-5 rounded-2xl bg-cream-50 border border-saffron-300 space-y-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <label class="block text-xs font-bold text-ink-900">Durga Photos (Upload min 2 photos for approval) *</label>
+                <p class="text-[11px] text-ink-500">Browse directly from your device storage</p>
+              </div>
+              <span class="chip bg-saffron-100 text-saffron-800 font-bold text-[10px]">Min 2 Photos</span>
+            </div>
+
+            <!-- Photo 1: Main Idol -->
+            <div class="flex items-center gap-3 p-2.5 bg-white rounded-xl border border-saffron-200">
+              <label class="flex items-center gap-2 px-3.5 py-2 rounded-lg border border-dashed border-saffron-500 bg-saffron-50 text-saffron-800 text-xs font-bold cursor-pointer hover:bg-saffron-100 transition shrink-0">
+                <span>📷</span> Photo 1 (Main Idol) *
+                <input id="page-photo-file-1" type="file" accept="image/*" onchange="handlePagePhotoBrowse(event, 1)" class="hidden" />
+              </label>
+              <img id="page-photo-preview-1" src="" alt="Preview 1" class="h-12 w-14 rounded-lg object-cover border border-cream-300 shadow-soft hidden" />
+              <input id="page-photo-1" type="hidden" />
+              <span id="page-photo-hint-1" class="text-xs text-ink-500 truncate">Front clear view of Durga Mata idol</span>
+            </div>
+
+            <!-- Photo 2: Pandal View -->
+            <div class="flex items-center gap-3 p-2.5 bg-white rounded-xl border border-saffron-200">
+              <label class="flex items-center gap-2 px-3.5 py-2 rounded-lg border border-dashed border-saffron-500 bg-saffron-50 text-saffron-800 text-xs font-bold cursor-pointer hover:bg-saffron-100 transition shrink-0">
+                <span>📷</span> Photo 2 (Pandal View) *
+                <input id="page-photo-file-2" type="file" accept="image/*" onchange="handlePagePhotoBrowse(event, 2)" class="hidden" />
+              </label>
+              <img id="page-photo-preview-2" src="" alt="Preview 2" class="h-12 w-14 rounded-lg object-cover border border-cream-300 shadow-soft hidden" />
+              <input id="page-photo-2" type="hidden" />
+              <span id="page-photo-hint-2" class="text-xs text-ink-500 truncate">Pandal stage, lighting, or full setup</span>
+            </div>
+
+            <!-- Photo 3: Optional Aarti -->
+            <div class="flex items-center gap-3 p-2.5 bg-white rounded-xl border border-cream-300">
+              <label class="flex items-center gap-2 px-3.5 py-2 rounded-lg border border-dashed border-cream-400 bg-cream-50 text-ink-700 text-xs font-bold cursor-pointer hover:bg-cream-100 transition shrink-0">
+                <span>📷</span> Photo 3 (Optional)
+                <input id="page-photo-file-3" type="file" accept="image/*" onchange="handlePagePhotoBrowse(event, 3)" class="hidden" />
+              </label>
+              <img id="page-photo-preview-3" src="" alt="Preview 3" class="h-12 w-14 rounded-lg object-cover border border-cream-300 shadow-soft hidden" />
+              <input id="page-photo-3" type="hidden" />
+              <span id="page-photo-hint-3" class="text-xs text-ink-500 truncate">Special puja, aarti, or decoration</span>
+            </div>
+          </div>
+
+          <!-- Instagram Handle -->
+          <div>
+            <label class="block text-xs font-bold text-ink-800 mb-1.5">Youth Committee Instagram Handle (Optional)</label>
+            <input id="sub-instagram" type="text" placeholder="@karimnagar_durga_youth" class="w-full rounded-2xl border border-cream-300 p-3.5 text-xs text-ink-900 outline-none focus:border-saffron-500 bg-cream-50/50" />
+          </div>
+
+          <!-- Description -->
+          <div>
+            <label class="block text-xs font-bold text-ink-800 mb-1.5">Special Highlights & Description</label>
+            <textarea id="sub-desc" rows="3" placeholder="Describe the avatar alankaram, special Chandi Homam timings, Bathukamma events, Maha Aarti schedule..." class="w-full rounded-2xl border border-cream-300 p-3.5 text-xs text-ink-900 outline-none focus:border-saffron-500 bg-cream-50/50"></textarea>
+          </div>
+
+          <button type="submit" class="btn-primary w-full !py-3.5 text-sm font-bold shadow-lift">
+            <span>🔱</span> Submit Durga Mandapam
+          </button>
+
+        </form>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="mt-auto">
+    <div class="border-t border-cream-300 bg-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col items-center text-center gap-6 lg:flex-row lg:justify-between lg:text-left">
+        
+        <a class="shrink-0 flex items-center gap-3" href="index.html">
+          <img src="assets/images/logo.jpg" alt="Karimnagar Durga" class="h-12 w-12 rounded-full object-cover shadow-soft ring-2 ring-saffron-400" />
+          <div class="text-left">
+            <span class="font-display font-black text-lg text-ink-900 block leading-tight site-logo-text">Karimnagar Durga</span>
+            <span class="text-[10px] text-saffron-600 font-bold uppercase tracking-wider block">Idol Finder • Navratri</span>
+          </div>
+        </a>
+
+        <nav class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-ink-600">
+          <a class="hover:text-saffron-600 transition-colors" href="index.html">Home</a>
+          <a class="hover:text-saffron-600 transition-colors" href="map.html">Explore Map</a>
+          <a class="hover:text-saffron-600 transition-colors" href="unique.html">Unique Durga</a>
+          <a class="hover:text-saffron-600 transition-colors" href="gallery.html">Gallery</a>
+          <a class="hover:text-saffron-600 transition-colors" href="about.html">About</a>
+          <a class="hover:text-saffron-600 transition-colors font-bold text-saffron-600" href="submit.html">Add Durga</a>
+        </nav>
+
+        <div class="flex items-center gap-2">
+          <span class="text-xs text-ink-600">Developer:</span>
+          <a href="https://instagram.com/chintuvarun_3008" target="_blank" rel="noopener noreferrer" class="group inline-flex items-center gap-1.5 rounded-full border border-saffron-200 bg-saffron-50 px-3.5 py-1 text-xs font-semibold text-saffron-700 shadow-xs hover:border-saffron-400 hover:bg-saffron-100 transition-all">
+            <span>📸</span>
+            <span id="footer-developers" class="font-bold">@chintuvarun_3008</span>
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="border-t border-cream-300 bg-cream-200">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center gap-3 py-4 pb-24 sm:pb-4 text-center text-[11px] text-ink-600 sm:flex-row sm:justify-between sm:text-left">
+        <p>Karimnagar Durga Idol Finder © 2026 &nbsp;|&nbsp; Celebrate Culture &nbsp;|&nbsp; Support Local &nbsp;|&nbsp; Keep Karimnagar Beautiful</p>
+        <div class="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
+          <span class="font-medium text-saffron-800">🔱 శ్రీ కరీంనగర్ దుర్గా నవరాత్రోత్సవాలు</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- MOBILE BOTTOM NAVIGATION -->
+  <nav class="fixed inset-x-0 bottom-0 z-[1200] border-t border-cream-300 bg-white/95 backdrop-blur sm:hidden">
+    <div class="grid grid-cols-5 items-center px-2 py-1 text-[10px] font-medium text-center">
+      <a href="index.html" class="py-1 text-ink-600 flex flex-col items-center">
+        <span class="text-base">🏠</span>
+        <span>Home</span>
+      </a>
+      <a href="map.html" class="py-1 text-ink-600 flex flex-col items-center">
+        <span class="text-base">🗺️</span>
+        <span>Map</span>
+      </a>
+      <div class="flex justify-center -mt-5">
+        <a href="submit.html" class="h-12 w-12 rounded-full bg-saffron-500 text-white shadow-lift flex items-center justify-center text-xl font-bold ring-4 ring-white">
+          +
+        </a>
+      </div>
+      <a href="gallery.html" class="py-1 text-ink-600 flex flex-col items-center">
+        <span class="text-base">📸</span>
+        <span>Gallery</span>
+      </a>
+      <a href="about.html" class="py-1 text-ink-600 flex flex-col items-center">
+        <span class="text-base">ℹ️</span>
+        <span>About</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Leaflet Maps Script for Map Picker -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+  <script>
+    let submitPickerMap = null;
+    let submitPickerMarker = null;
+    let submitPickerGoogleMap = null;
+    let submitPickerGoogleMarker = null;
+
+    // Helper: Google Maps API key lookup
+    function getGoogleMapsApiKey() {
+      if (typeof window !== "undefined") {
+        if (window.GOOGLE_MAPS_API_KEY) return window.GOOGLE_MAPS_API_KEY;
+        if (window.VITE_GOOGLE_MAPS_API_KEY) return window.VITE_GOOGLE_MAPS_API_KEY;
+        try {
+          const stored = localStorage.getItem("GOOGLE_MAPS_API_KEY") || localStorage.getItem("google_maps_api_key");
+          if (stored) return stored.trim();
+        } catch (e) {}
+      }
+      return "";
+    }
+
+    // Dynamic Google Maps Script Loader
+    function loadGoogleMapsScript(callback) {
+      if (typeof window === "undefined") return;
+      if (window.google && window.google.maps) {
+        if (callback) callback(window.google.maps);
+        return;
+      }
+      const apiKey = getGoogleMapsApiKey();
+      if (!apiKey) {
+        if (callback) callback(null);
+        return;
+      }
+      if (window._googleMapsLoading) {
+        window._googleMapsCallbacks = window._googleMapsCallbacks || [];
+        if (callback) window._googleMapsCallbacks.push(callback);
+        return;
+      }
+      window._googleMapsLoading = true;
+      window._googleMapsCallbacks = callback ? [callback] : [];
+      window._onGoogleMapsPlatformReady = function() {
+        window._googleMapsLoading = false;
+        const cbs = window._googleMapsCallbacks || [];
+        window._googleMapsCallbacks = [];
+        cbs.forEach(cb => { if (typeof cb === "function") cb(window.google.maps); });
+      };
+      const script = document.createElement("script");
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(apiKey)}&libraries=places,geometry&callback=_onGoogleMapsPlatformReady`;
+      script.async = true;
+      script.defer = true;
+      script.onerror = function() {
+        console.warn("Failed to load Google Maps script. Check API key.");
+        window._googleMapsLoading = false;
+        const cbs = window._googleMapsCallbacks || [];
+        window._googleMapsCallbacks = [];
+        cbs.forEach(cb => { if (typeof cb === "function") cb(null); });
+      };
+      document.head.appendChild(script);
+    }
+
+    function updatePinnedLocation(lat, lng) {
+      const fixedLat = Number(lat).toFixed(5);
+      const fixedLng = Number(lng).toFixed(5);
+      const latInput = document.getElementById("sub-lat");
+      const lngInput = document.getElementById("sub-lng");
+      if (latInput) latInput.value = fixedLat;
+      if (lngInput) lngInput.value = fixedLng;
+      const textEl = document.getElementById("selected-coords-text");
+      if (textEl) {
+        textEl.textContent = `${Number(lat).toFixed(4)}° N, ${Number(lng).toFixed(4)}° E`;
+      }
+      // Auto-generate Google Maps link if user hasn't typed one
+      const mapsUrlInput = document.getElementById("sub-maps-url");
+      if (mapsUrlInput && (!mapsUrlInput.value || mapsUrlInput.dataset.autoGenerated === "true")) {
+        mapsUrlInput.value = `https://www.google.com/maps/dir/?api=1&destination=${fixedLat},${fixedLng}`;
+        mapsUrlInput.dataset.autoGenerated = "true";
+      }
+    }
+
+    // Populate Area dropdown
+    function populateSubmitAreaOptions() {
+      const select = document.getElementById("sub-area-select");
+      if (!select) return;
+      const areas = getAreasList();
+      if (!areas.includes("Vijayanagar")) areas.unshift("Vijayanagar");
+      select.innerHTML = '<option value="" disabled selected>-- Select Area / Colony --</option>' +
+        areas.map(a => `<option value="${a}">📍 ${a}</option>`).join("") +
+        '<option value="__other__">➕ Other (Type missing colony)...</option>';
+    }
+
+    function handleAreaSelectChange(val) {
+      const container = document.getElementById("sub-other-area-container");
+      const input = document.getElementById("sub-other-area-input");
+      if (val === "__other__") {
+        if (container) container.classList.remove("hidden");
+        if (input) {
+          input.required = true;
+          input.focus();
+        }
+      } else {
+        if (container) container.classList.add("hidden");
+        if (input) {
+          input.required = false;
+          input.value = "";
+        }
+        // Automatically sync map to selected colony!
+        if (KARIMNAGAR_COLONY_COORDS && KARIMNAGAR_COLONY_COORDS[val]) {
+          const [cLat, cLng] = KARIMNAGAR_COLONY_COORDS[val];
+          selectPickerSearchResult(val, cLat, cLng);
+        }
+      }
+    }
+
+    function setupPickerPlacesAutocomplete() {
+      const searchInput = document.getElementById("picker-colony-search");
+      if (!searchInput) return;
+
+      if (window.google && window.google.maps && window.google.maps.places) {
+        const autocomplete = new google.maps.places.Autocomplete(searchInput, {
+          componentRestrictions: { country: "in" },
+          fields: ["geometry", "name", "formatted_address"],
+          bounds: new google.maps.LatLngBounds(
+            new google.maps.LatLng(18.35, 79.05),
+            new google.maps.LatLng(18.52, 79.22)
+          ),
+          strictBounds: false
+        });
+
+        autocomplete.addListener("place_changed", () => {
+          const place = autocomplete.getPlace();
+          if (!place || !place.geometry || !place.geometry.location) return;
+          const lat = place.geometry.location.lat();
+          const lng = place.geometry.location.lng();
+          const placeName = place.name || searchInput.value;
+          selectPickerSearchResult(placeName, lat, lng);
+        });
+      }
+    }
+
+    // Initialize Interactive Map Picker
+    function initSubmitMapPicker() {
+      const mapContainer = document.getElementById("submit-map-picker");
+      if (!mapContainer) return;
+
+      const initialLat = 18.4386;
+      const initialLng = 79.1288;
+
+      // 1. Google Maps Platform Engine
+      if (window.google && window.google.maps) {
+        if (!submitPickerGoogleMap) {
+          mapContainer.innerHTML = "";
+          submitPickerGoogleMap = new google.maps.Map(mapContainer, {
+            center: { lat: initialLat, lng: initialLng },
+            zoom: 15,
+            mapTypeId: "roadmap",
+            streetViewControl: false,
+            mapTypeControl: true,
+            zoomControl: true,
+            fullscreenControl: true
+          });
+
+          const trishulSvg = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40">
+              <circle cx="20" cy="20" r="18" fill="#b8232e" stroke="#ffffff" stroke-width="3"/>
+              <text x="20" y="26" font-size="19" text-anchor="middle" fill="#ffffff">🔱</text>
+            </svg>
+          `)}`;
+
+          submitPickerGoogleMarker = new google.maps.Marker({
+            position: { lat: initialLat, lng: initialLng },
+            map: submitPickerGoogleMap,
+            draggable: true,
+            title: "Drag to pin exact pandal spot",
+            icon: {
+              url: trishulSvg,
+              scaledSize: new google.maps.Size(40, 40),
+              anchor: new google.maps.Point(20, 20)
+            }
+          });
+
+          submitPickerGoogleMap.addListener("click", (e) => {
+            const lat = e.latLng.lat();
+            const lng = e.latLng.lng();
+            submitPickerGoogleMarker.setPosition({ lat, lng });
+            updatePinnedLocation(lat, lng);
+          });
+
+          submitPickerGoogleMarker.addListener("dragend", (e) => {
+            const lat = e.latLng.lat();
+            const lng = e.latLng.lng();
+            updatePinnedLocation(lat, lng);
+          });
+
+          setupPickerPlacesAutocomplete();
+        }
+        return;
+      }
+
+      // 2. Dynamic loader if API key is stored
+      const apiKey = getGoogleMapsApiKey();
+      if (apiKey && !window._googleMapsLoading && !window.google) {
+        loadGoogleMapsScript(() => {
+          if (window.google && window.google.maps) {
+            initSubmitMapPicker();
+          }
+        });
+      }
+
+      // 3. Leaflet Fallback Engine
+      if (typeof L === "undefined" || submitPickerMap) return;
+
+      submitPickerMap = L.map("submit-map-picker", {
+        center: [initialLat, initialLng],
+        zoom: 14,
+        maxZoom: 20,
+        zoomControl: true,
+        scrollWheelZoom: false,
+        attributionControl: true
+      });
+
+      const streetLayer = L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
+        subdomains: "abcd",
+        maxZoom: 20,
+        maxNativeZoom: 19,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>'
+      }).addTo(submitPickerMap);
+
+      const osmLayer = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors'
+      });
+
+      const satelliteLayer = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
+        maxZoom: 19,
+        attribution: "Tiles &copy; Esri"
+      });
+
+      L.control.layers(
+        { "🗺️ Street Map": streetLayer, "📍 OpenStreetMap": osmLayer, "🛰️ Satellite": satelliteLayer },
+        null,
+        { position: 'topright' }
+      ).addTo(submitPickerMap);
+
+      const pinIcon = L.divIcon({
+        className: 'submit-picker-pin',
+        html: `<div style="background:linear-gradient(135deg, #b8232e, #770e17);color:#fff;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-size:16px;border:3px solid #fff;box-shadow:0 6px 14px rgba(0,0,0,0.4);cursor:grab;">🔱</div>`,
+        iconSize: [34, 34],
+        iconAnchor: [17, 34]
+      });
+
+      submitPickerMarker = L.marker([initialLat, initialLng], {
+        icon: pinIcon,
+        draggable: true
+      }).addTo(submitPickerMap);
+
+      submitPickerMap.on("click", function(e) {
+        const { lat, lng } = e.latlng;
+        submitPickerMarker.setLatLng([lat, lng]);
+        updatePinnedLocation(lat, lng);
+      });
+
+      submitPickerMarker.on("dragend", function(e) {
+        const latlng = submitPickerMarker.getLatLng();
+        updatePinnedLocation(latlng.lat, latlng.lng);
+      });
+
+      setTimeout(() => {
+        if (submitPickerMap) submitPickerMap.invalidateSize();
+      }, 300);
+
+      window.addEventListener("resize", () => {
+        if (submitPickerMap) submitPickerMap.invalidateSize();
+      });
+    }
+
+    function detectUserLocation() {
+      if (!navigator.geolocation) {
+        alert("Geolocation is not supported by your browser.");
+        return;
+      }
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const lat = pos.coords.latitude;
+          const lng = pos.coords.longitude;
+
+          // Update Google Map Picker
+          if (submitPickerGoogleMap && submitPickerGoogleMarker && window.google) {
+            submitPickerGoogleMap.panTo({ lat, lng });
+            submitPickerGoogleMap.setZoom(16);
+            submitPickerGoogleMarker.setPosition({ lat, lng });
+            updatePinnedLocation(lat, lng);
+            return;
+          }
+
+          // Update Leaflet Map Picker
+          if (submitPickerMap && submitPickerMarker) {
+            submitPickerMap.setView([lat, lng], 16);
+            submitPickerMarker.setLatLng([lat, lng]);
+            updatePinnedLocation(lat, lng);
+          }
+        },
+        (err) => {
+          alert("Could not access GPS location. Please search your colony above or tap directly on the map to pin.");
+        },
+        { enableHighAccuracy: true, timeout: 8000 }
+      );
+    }
+
+    // Comprehensive Karimnagar Colony & Landmark Presets for instant search
+    window.KARIMNAGAR_COLONY_COORDS = window.KARIMNAGAR_COLONY_COORDS || {
+      "Vijayanagar": [18.4280, 79.1290],
+      "Vidyanagar": [18.4280, 79.1290],
+      "Tower Circle": [18.4386, 79.1288],
+      "Mukarampura": [18.4412, 79.1315],
+      "Mankammathota": [18.4335, 79.1245],
+      "Collectorate Chowrasta": [18.4428, 79.1352],
+      "Karkhanagadda": [18.4395, 79.1380],
+      "Jyothi Nagar": [18.4465, 79.1250],
+      "Sapthagiri Colony": [18.4510, 79.1320],
+      "Vavilalapalli": [18.4480, 79.1410],
+      "Geetha Bhavan": [18.4365, 79.1310],
+      "Court Road": [18.4400, 79.1270],
+      "Ramnagar": [18.4320, 79.1360],
+      "Vidyanagar": [18.4280, 79.1290],
+      "Kashmirgadda": [18.4450, 79.1390],
+      "Kaman Chowrasta": [18.4350, 79.1275],
+      "Housing Board Colony": [18.4550, 79.1380],
+      "Bhagyanagar": [18.4310, 79.1220],
+      "Padmanagar": [18.4250, 79.1180],
+      "Chinthakunta": [18.4600, 79.1450],
+      "Ganeshnagar": [18.4420, 79.1430],
+      "Alugunoor": [18.4100, 79.1550],
+      "Subhashnagar": [18.4370, 79.1220],
+      "Kishan Nagar": [18.4490, 79.1290],
+      "Gandhi Road": [18.4390, 79.1305],
+      "Adarsh Nagar": [18.4520, 79.1270],
+      "Bavapet": [18.4360, 79.1340],
+      "Bhagathnagar": [18.4440, 79.1260],
+      "Sawaran Street": [18.4405, 79.1325],
+      "Sitarampur": [18.4340, 79.1420],
+      "Rekurthi": [18.4650, 79.1120],
+      "Kothapalli": [18.4620, 79.0950],
+      "Lower Manair Dam (LMD)": [18.4050, 79.1480],
+      "Thimmapur": [18.3580, 79.1680],
+      "Karimnagar Bus Stand": [18.4367, 79.1332],
+      "Karimnagar Railway Station": [18.4216, 79.1518],
+      "Civil Hospital": [18.4392, 79.1310],
+      "Circus Ground": [18.4402, 79.1345],
+      "Ujwala Park": [18.4068, 79.1472],
+      "Deer Park": [18.4042, 79.1491],
+      "Katta Rampur": [18.4290, 79.1385],
+      "Auto Nagar": [18.4520, 79.1500],
+      "Christian Colony": [18.4355, 79.1215],
+      "SRR College": [18.4410, 79.1225]
+    };
+    var KARIMNAGAR_COLONY_COORDS = window.KARIMNAGAR_COLONY_COORDS;
+
+    let pickerSearchDebounceTimer = null;
+
+    function handlePickerSearch(query) {
+      const q = (query || "").toLowerCase().trim();
+      const resultsEl = document.getElementById("picker-search-results");
+      if (!resultsEl) return;
+      if (!q) {
+        resultsEl.classList.add("hidden");
+        resultsEl.innerHTML = "";
+        return;
+      }
+
+      // 1. Instant local preset matches
+      const matches = Object.keys(KARIMNAGAR_COLONY_COORDS).filter(colony =>
+        colony.toLowerCase().includes(q)
+      );
+
+      let html = matches.map(name => {
+        const coords = KARIMNAGAR_COLONY_COORDS[name];
+        return `
+          <div onclick="selectPickerSearchResult('${name}', ${coords[0]}, ${coords[1]})" class="p-2.5 hover:bg-saffron-50 cursor-pointer flex items-center justify-between text-ink-800 transition">
+            <span class="font-bold">📍 ${name}</span>
+            <span class="text-[10px] text-saffron-700 font-mono">${coords[0].toFixed(3)}°N, ${coords[1].toFixed(3)}°E</span>
+          </div>
+        `;
+      }).join("");
+
+      if (matches.length > 0) {
+        resultsEl.innerHTML = html;
+        resultsEl.classList.remove("hidden");
+      }
+
+      // 2. Debounced live OpenStreetMap Nominatim place lookup for Karimnagar
+      clearTimeout(pickerSearchDebounceTimer);
+      pickerSearchDebounceTimer = setTimeout(() => {
+        fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q + ', Karimnagar')}&viewbox=79.05,18.55,79.25,18.35&bounded=0&limit=5`, {
+          headers: { "Accept": "application/json" }
+        })
+          .then(res => res.json())
+          .then(osmPlaces => {
+            if (!Array.isArray(osmPlaces) || osmPlaces.length === 0) {
+              if (matches.length === 0) {
+                resultsEl.innerHTML = `
+                  <div class="p-3 text-ink-500 text-center">
+                    No colony preset found. Tap directly on the map or type manual coordinates below.
+                  </div>
+                `;
+                resultsEl.classList.remove("hidden");
+              }
+              return;
+            }
+
+            const osmHtml = osmPlaces.map(p => {
+              const displayName = p.display_name.split(",").slice(0, 3).join(",");
+              const lat = parseFloat(p.lat);
+              const lon = parseFloat(p.lon);
+              const safeName = (p.name || displayName).replace(/'/g, "\\'");
+              return `
+                <div onclick="selectPickerSearchResult('${safeName}', ${lat}, ${lon})" class="p-2.5 hover:bg-saffron-50 cursor-pointer flex items-center justify-between text-ink-800 transition">
+                  <div class="truncate mr-2">
+                    <span class="font-bold block truncate">🗺️ ${p.name || displayName}</span>
+                    <span class="text-[10px] text-ink-500 block truncate">${displayName}</span>
+                  </div>
+                  <span class="text-[10px] text-saffron-700 font-mono shrink-0">${lat.toFixed(3)}°N, ${lon.toFixed(3)}°E</span>
+                </div>
+              `;
+            }).join("");
+
+            resultsEl.innerHTML = (html ? html + `<div class="bg-cream-100 px-2 py-1 text-[10px] font-bold text-ink-600">OpenStreetMap Places:</div>` : "") + osmHtml;
+            resultsEl.classList.remove("hidden");
+          })
+          .catch(() => {
+            if (matches.length === 0) {
+              resultsEl.innerHTML = `
+                <div class="p-3 text-ink-500 text-center">
+                  Tap directly on the map or drag 🔱 pin to set exact coordinates.
+                </div>
+              `;
+              resultsEl.classList.remove("hidden");
+            }
+          });
+      }, 350);
+    }
+
+    function selectPickerSearchResult(name, lat, lng) {
+      const searchInput = document.getElementById("picker-colony-search");
+      if (searchInput) searchInput.value = name;
+      const resultsEl = document.getElementById("picker-search-results");
+      if (resultsEl) resultsEl.classList.add("hidden");
+
+      if (submitPickerGoogleMap && submitPickerGoogleMarker && window.google) {
+        submitPickerGoogleMap.panTo({ lat: Number(lat), lng: Number(lng) });
+        submitPickerGoogleMap.setZoom(16);
+        submitPickerGoogleMarker.setPosition({ lat: Number(lat), lng: Number(lng) });
+      }
+
+      if (submitPickerMap && submitPickerMarker) {
+        submitPickerMap.flyTo([lat, lng], 16, { duration: 1.0 });
+        submitPickerMarker.setLatLng([lat, lng]);
+      }
+
+      updatePinnedLocation(lat, lng);
+      const textEl = document.getElementById("selected-coords-text");
+      if (textEl) textEl.textContent = `${Number(lat).toFixed(4)}° N, ${Number(lng).toFixed(4)}° E (${name})`;
+    }
+
+    function handleManualCoordsInput() {
+      const latVal = parseFloat(document.getElementById("sub-lat")?.value);
+      const lngVal = parseFloat(document.getElementById("sub-lng")?.value);
+      if (!isNaN(latVal) && !isNaN(lngVal)) {
+        if (submitPickerGoogleMap && submitPickerGoogleMarker && window.google) {
+          submitPickerGoogleMarker.setPosition({ lat: latVal, lng: lngVal });
+          submitPickerGoogleMap.panTo({ lat: latVal, lng: lngVal });
+        }
+        if (submitPickerMap && submitPickerMarker) {
+          submitPickerMarker.setLatLng([latVal, lngVal]);
+          submitPickerMap.panTo([latVal, lngVal]);
+        }
+        updatePinnedLocation(latVal, lngVal);
+        const textEl = document.getElementById("selected-coords-text");
+        if (textEl) textEl.textContent = `${latVal.toFixed(4)}° N, ${lngVal.toFixed(4)}° E (Manual)`;
+      }
+    }
+
+    function handlePagePhotoBrowse(event, slot) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      processImageFile(file, (dataUrl) => {
+        const hiddenInp = document.getElementById(`page-photo-${slot}`);
+        const prev = document.getElementById(`page-photo-preview-${slot}`);
+        const hint = document.getElementById(`page-photo-hint-${slot}`);
+
+        if (hiddenInp) hiddenInp.value = dataUrl;
+        if (prev) {
+          prev.src = dataUrl;
+          prev.classList.remove("hidden");
+        }
+        if (hint) hint.textContent = file.name;
+      });
+    }
+
+    async function handleDedicatedSubmit(e) {
+      e.preventDefault();
+      const name = document.getElementById("sub-name").value.trim();
+      const teluguName = document.getElementById("sub-telugu").value.trim();
+      
+      const areaSelect = document.getElementById("sub-area-select").value.trim();
+      let area = areaSelect;
+      if (areaSelect === "__other__") {
+        const customArea = document.getElementById("sub-other-area-input").value.trim();
+        if (!customArea) {
+          alert("⚠️ Please enter your Area / Colony name.");
+          document.getElementById("sub-other-area-input").focus();
+          return;
+        }
+        area = customArea;
+      }
+      if (!area) {
+        alert("⚠️ Please select or specify an Area / Colony.");
+        document.getElementById("sub-area-select").focus();
+        return;
+      }
+
+      const category = document.getElementById("sub-category").value;
+      const address = document.getElementById("sub-address").value.trim();
+      const mapsUrl = document.getElementById("sub-maps-url") ? document.getElementById("sub-maps-url").value.trim() : "";
+      const lat = parseFloat(document.getElementById("sub-lat")?.value) || 18.4386;
+      const lng = parseFloat(document.getElementById("sub-lng")?.value) || 79.1288;
+      const instagram = document.getElementById("sub-instagram").value.trim();
+      const desc = document.getElementById("sub-desc").value.trim();
+
+      const p1 = document.getElementById("page-photo-1") ? document.getElementById("page-photo-1").value.trim() : "";
+      const p2 = document.getElementById("page-photo-2") ? document.getElementById("page-photo-2").value.trim() : "";
+      const p3 = document.getElementById("page-photo-3") ? document.getElementById("page-photo-3").value.trim() : "";
+
+      if (!p1 || !p2) {
+        alert("⚠️ Please upload at least 2 photos (Photo 1: Main Idol and Photo 2: Pandal View) to submit this Durga Idol for approval.");
+        return;
+      }
+
+      const photos = [];
+      photos.push({ url: p1, caption: `${name} Main Idol`, isPublished: true });
+      photos.push({ url: p2, caption: `${name} Pandal View`, isPublished: true });
+      if (p3) photos.push({ url: p3, caption: `${name} Aarti & Celebration`, isPublished: true });
+
+      const newPandal = {
+        id: "m-" + Date.now(),
+        slug: name.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+        name: name,
+        teluguName: teluguName,
+        area: area,
+        address: address,
+        mapsUrl: mapsUrl,
+        googleMapsUrl: mapsUrl,
+        latitude: lat,
+        longitude: lng,
+        description: desc,
+        priority: 5,
+        isVerified: false,
+        status: "pending",
+        isMustVisit: false,
+        categories: [category, "unique"],
+        category: category,
+        photos: photos,
+        videoUrl: "",
+        instagramUrl: instagram ? `https://instagram.com/${instagram.replace('@','')}` : "",
+        instagramHandle: instagram,
+        reelsCount: 0,
+        reels: [],
+        views: 1,
+        createdAt: new Date().toISOString()
+      };
+
+      try {
+        const res = await fetch("/api/mandapams", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(newPandal)
+        });
+        const data = await res.json();
+        if (data && data.success) {
+          alert("🔱 Thank you! Your Durga Mandapam has been submitted successfully.\n\nArea: " + area + "\nLocation pinned with Google Maps navigation!\n\nOnce reviewed and accepted by the admin, it will be published live!");
+          window.location.href = "index.html";
+          return;
+        }
+      } catch (err) {
+        console.warn("Backend submit fallback:", err);
+      }
+
+      // Offline / LocalStorage fallback
+      const mandapams = getMandapams();
+      mandapams.unshift(newPandal);
+      safeSaveMandapams(mandapams);
+      syncAllToServer();
+
+      alert("🔱 Thank you! Your Durga Mandapam with Google Maps location has been submitted successfully. Once accepted by the admin, it will appear on the live site!");
+      window.location.href = "index.html";
+    }
+
+    // Auto-init on page load
+    document.addEventListener("DOMContentLoaded", () => {
+      populateSubmitAreaOptions();
+      setTimeout(initSubmitMapPicker, 300);
+    });
+  </script>
+</body>
+</html>

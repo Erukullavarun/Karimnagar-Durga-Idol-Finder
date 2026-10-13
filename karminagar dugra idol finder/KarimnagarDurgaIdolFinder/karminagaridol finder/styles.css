@@ -1,0 +1,296 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+Telugu:wght@400;600;700&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Caveat:wght@600;700&display=swap');
+
+:root {
+  /* Royal Durga Sindoor Crimson & Temple Gold Palette */
+  --color-saffron-50: #fdf4f2;
+  --color-saffron-100: #fae5e0;
+  --color-saffron-200: #f4cdc4;
+  --color-saffron-300: #eaab9d;
+  --color-saffron-400: #d75d4f;
+  --color-saffron-500: #b8232e; /* Royal Durga Sindoor Crimson */
+  --color-saffron-600: #961621; /* Royal Ruby Maroon */
+  --color-saffron-700: #770e17; /* Deep Temple Maroon */
+  --color-saffron-800: #5a0a11;
+  --color-saffron-900: #3f060b;
+  
+  --color-gold-50: #fffef0;
+  --color-gold-100: #fefbd8;
+  --color-gold-200: #fef5b0;
+  --color-gold-300: #fdec7d;
+  --color-gold-400: #eac840;
+  --color-gold-500: #d4af37; /* Imperial Temple Gold */
+  --color-gold-600: #b38c22;
+  --color-gold-700: #8c6b16;
+  
+  --color-cream-50: #fcfaf7;
+  --color-cream-100: #f7f3ec;
+  --color-cream-200: #ede5d8;
+  --color-cream-300: #dfd2be;
+  --color-cream-400: #cbb89e;
+  
+  --color-ink-900: #140b0d; /* Royal Obsidian */
+  --color-ink-800: #281d20;
+  --color-ink-700: #443539;
+  --color-ink-600: #655257;
+  --color-ink-500: #8a787c;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--color-cream-50);
+  color: var(--color-ink-900);
+  overflow-x: hidden;
+}
+
+.font-display {
+  font-family: 'Playfair Display', Georgia, serif;
+}
+
+.font-telugu {
+  font-family: 'Noto Sans Telugu', sans-serif;
+}
+
+.font-script {
+  font-family: 'Caveat', cursive;
+}
+
+.font-cinzel {
+  font-family: 'Cinzel', serif;
+}
+
+/* Custom festive shadows and gradients */
+.bg-durga-gradient {
+  background: linear-gradient(135deg, #770e17 0%, #b8232e 45%, #d4af37 100%);
+}
+
+.bg-durga-sheen {
+  background: linear-gradient(135deg, #b8232e 0%, #5a0a11 100%);
+}
+
+.bg-gold-sheen {
+  background: linear-gradient(135deg, #fef5b0 0%, #d4af37 50%, #b38c22 100%);
+}
+
+/* Hide default browser password reveal eye icon (Edge / IE / Chrome) so only one custom eye appears */
+input::-ms-reveal,
+input::-ms-clear {
+  display: none !important;
+}
+
+.shadow-soft {
+  box-shadow: 0 4px 20px -2px rgba(126, 12, 28, 0.08), 0 2px 6px -1px rgba(0, 0, 0, 0.04);
+}
+
+.shadow-card {
+  box-shadow: 0 10px 30px -5px rgba(126, 12, 28, 0.12), 0 4px 10px -2px rgba(0, 0, 0, 0.05);
+}
+
+.shadow-lift {
+  box-shadow: 0 16px 36px -8px rgba(126, 12, 28, 0.28);
+}
+
+.shadow-glow {
+  box-shadow: 0 0 25px rgba(184, 35, 46, 0.45);
+}
+
+/* Glassmorphism */
+.glass-card {
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+}
+
+.glass-dark {
+  background: rgba(20, 11, 13, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(212, 175, 55, 0.25);
+}
+
+/* Floating animation */
+@keyframes floatSlow {
+  0%, 100% {
+    transform: translateY(0px) rotate(-3deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(-1deg);
+  }
+}
+
+.animate-float {
+  animation: floatSlow 4s ease-in-out infinite;
+}
+
+/* Buttons */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #b8232e 0%, #770e17 100%);
+  color: #ffffff;
+  font-weight: 700;
+  padding: 0.65rem 1.4rem;
+  border-radius: 9999px;
+  box-shadow: 0 4px 18px rgba(184, 35, 46, 0.4);
+  transition: all 0.25s ease;
+  cursor: pointer;
+  border: 1px solid rgba(212, 175, 55, 0.5);
+  text-decoration: none;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 26px rgba(184, 35, 46, 0.55);
+  background: linear-gradient(135deg, #d73a49 0%, #b8232e 100%);
+}
+
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: #ffffff;
+  color: var(--color-ink-800);
+  font-weight: 600;
+  padding: 0.55rem 1.25rem;
+  border-radius: 9999px;
+  border: 1px solid var(--color-cream-300);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+  transition: all 0.2s ease;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn-outline:hover {
+  background: var(--color-saffron-50);
+  border-color: var(--color-saffron-400);
+  color: var(--color-saffron-600);
+}
+
+.btn-soft {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: var(--color-saffron-50);
+  color: var(--color-saffron-700);
+  font-weight: 600;
+  padding: 0.65rem 1.25rem;
+  border-radius: 9999px;
+  border: 1px solid var(--color-saffron-200);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.btn-soft:hover {
+  background: var(--color-saffron-100);
+  border-color: var(--color-saffron-400);
+}
+
+/* Typography styles */
+.section-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.875rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--color-ink-900);
+}
+
+@media (min-width: 640px) {
+  .section-title {
+    font-size: 2.25rem;
+  }
+}
+
+.eyebrow {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-weight: 700;
+  color: #c51d24;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.65rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+/* Custom horizontal scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f7f1e6;
+  border-radius: 9999px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #b8232e;
+  border-radius: 9999px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #770e17;
+}
+
+/* Map marker popups */
+.leaflet-popup-content-wrapper {
+  border-radius: 18px !important;
+  box-shadow: 0 10px 25px -3px rgba(126, 12, 28, 0.22) !important;
+  border: 1px solid #ede5d8 !important;
+  padding: 4px !important;
+}
+
+.leaflet-popup-tip {
+  background: #ffffff !important;
+}
+
+/* Active Category button */
+.category-btn.active {
+  background: linear-gradient(135deg, #b8232e, #770e17) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(212, 175, 55, 0.5) !important;
+}
+
+/* Floating screen pop animation */
+@keyframes cardPop {
+  0% {
+    opacity: 0;
+    transform: scale(0.92) translateY(15px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.animate-card-pop {
+  animation: cardPop 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Hide Leaflet & Esri attribution text */
+.leaflet-control-attribution {
+  display: none !important;
+}
+
+/* Leaflet layer control styling */
+.leaflet-control-layers {
+  border-radius: 14px !important;
+  border: 1px solid #dfd2be !important;
+  box-shadow: 0 4px 16px rgba(40, 29, 32, 0.12) !important;
+  font-family: inherit !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(8px) !important;
+  padding: 6px 10px !important;
+}
+
