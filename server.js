@@ -315,9 +315,23 @@ app.get('/api/resolve-maps-url', async (req, res) => {
     return null;
   };
 
+  const extractPlaceName = (str) => {
+    if (!str) return null;
+    let m = str.match(/\/place\/([^/@?#]+)/);
+    if (m) {
+      try {
+        return decodeURIComponent(m[1]).replace(/\+/g, ' ').trim();
+      } catch (e) {
+        return m[1].replace(/\+/g, ' ').trim();
+      }
+    }
+    return null;
+  };
+
   const direct = extractCoords(cleanUrl);
   if (direct) {
-    return res.json({ success: true, lat: direct.lat, lng: direct.lng, resolvedUrl: cleanUrl });
+    const placeName = extractPlaceName(cleanUrl);
+    return res.json({ success: true, lat: direct.lat, lng: direct.lng, placeName, resolvedUrl: cleanUrl });
   }
 
   try {
@@ -343,7 +357,8 @@ app.get('/api/resolve-maps-url', async (req, res) => {
     }
 
     if (coords) {
-      return res.json({ success: true, lat: coords.lat, lng: coords.lng, resolvedUrl: finalUrl });
+      const placeName = extractPlaceName(finalUrl) || extractPlaceName(cleanUrl) || null;
+      return res.json({ success: true, lat: coords.lat, lng: coords.lng, placeName, resolvedUrl: finalUrl });
     }
 
     return res.json({ success: false, message: 'Could not extract coordinates from link', resolvedUrl: finalUrl });

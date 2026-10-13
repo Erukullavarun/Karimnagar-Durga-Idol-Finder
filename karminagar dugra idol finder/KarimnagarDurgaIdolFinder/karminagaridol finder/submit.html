@@ -709,6 +709,19 @@
       return null;
     }
 
+    function extractPlaceNameFromText(text) {
+      if (!text || typeof text !== "string") return null;
+      const m = text.match(/\/place\/([^/@?#]+)/);
+      if (m) {
+        try {
+          return decodeURIComponent(m[1]).replace(/\+/g, ' ').trim();
+        } catch (e) {
+          return m[1].replace(/\+/g, ' ').trim();
+        }
+      }
+      return null;
+    }
+
     let mapsUrlDebounceTimer = null;
 
     function handleMapsUrlInput(val) {
@@ -745,14 +758,15 @@
       // Show detecting indicator
       if (statusEl) {
         statusEl.className = "text-xs mt-2 p-2.5 rounded-xl border bg-amber-50 border-amber-300 text-amber-900 flex items-center gap-2";
-        statusEl.innerHTML = `<span>⏳</span> Detecting location from link...`;
+        statusEl.innerHTML = `<span>⏳</span> Detecting location and street from link...`;
         statusEl.classList.remove("hidden");
       }
 
       // Step 1: Client-side direct extraction
       const direct = extractCoordinatesFromText(rawUrl);
       if (direct) {
-        applyResolvedLocation(direct.lat, direct.lng, "Exact coordinates detected from link");
+        const placeName = extractPlaceNameFromText(rawUrl);
+        applyResolvedLocation(direct.lat, direct.lng, "Exact coordinates detected from link", placeName);
         return;
       }
 
@@ -761,7 +775,7 @@
         const res = await fetch(`/api/resolve-maps-url?url=${encodeURIComponent(rawUrl)}`);
         const data = await res.json();
         if (data && data.success && data.lat && data.lng) {
-          applyResolvedLocation(data.lat, data.lng, "Location extracted from Google Maps link");
+          applyResolvedLocation(data.lat, data.lng, "Location extracted from Google Maps link", data.placeName || extractPlaceNameFromText(rawUrl));
           return;
         }
       } catch (err) {
@@ -780,7 +794,7 @@
       }
     }
 
-    function applyResolvedLocation(lat, lng, reason) {
+    function applyResolvedLocation(lat, lng, reason, placeName = null) {
       const parsedLat = parseFloat(lat);
       const parsedLng = parseFloat(lng);
       if (isNaN(parsedLat) || isNaN(parsedLng)) return;
@@ -791,6 +805,28 @@
       }
       updatePinnedLocation(parsedLat, parsedLng, false);
       autoSelectNearestColony(parsedLat, parsedLng);
+
+      // Auto-populate street / address if user hasn't typed one
+      const addressInput = document.getElementById("sub-address");
+      if (addressInput && !addressInput.value.trim()) {
+        if (placeName && typeof placeName === "string" && placeName.length > 2) {
+          addressInput.value = placeName;
+        } else {
+          fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${parsedLat}&lon=${parsedLng}`, {
+            headers: { "Accept": "application/json" }
+          })
+            .then(r => r.json())
+            .then(data => {
+              if (data && data.address && !addressInput.value.trim()) {
+                const road = data.address.road || data.address.neighbourhood || data.address.suburb || data.address.residential || "";
+                const city = data.address.city || data.address.town || data.address.state_district || "Karimnagar";
+                const addr = [road, city].filter(Boolean).join(", ");
+                if (addr) addressInput.value = addr;
+              }
+            })
+            .catch(() => {});
+        }
+      }
 
       const statusEl = document.getElementById("sub-maps-url-status");
       if (statusEl) {
@@ -849,6 +885,24 @@
           }
           updatePinnedLocation(lat, lng, true);
           autoSelectNearestColony(lat, lng);
+
+          // If address input is empty, reverse geocode street for user
+          const addressInput = document.getElementById("sub-address");
+          if (addressInput && !addressInput.value.trim()) {
+            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`, {
+              headers: { "Accept": "application/json" }
+            })
+              .then(r => r.json())
+              .then(data => {
+                if (data && data.address && !addressInput.value.trim()) {
+                  const road = data.address.road || data.address.neighbourhood || data.address.suburb || data.address.residential || "";
+                  const city = data.address.city || data.address.town || "Karimnagar";
+                  const addr = [road, city].filter(Boolean).join(", ");
+                  if (addr) addressInput.value = addr;
+                }
+              })
+              .catch(() => {});
+          }
 
           const accLabel = Math.round(accuracy);
           const textEl = document.getElementById("selected-coords-text");
