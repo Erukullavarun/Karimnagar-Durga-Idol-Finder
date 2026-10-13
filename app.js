@@ -258,7 +258,7 @@ function renderAreaPills() {
   }).join("");
 }
 
-// 5. Render All Durga Pandals Directory (Rich Interactive Card with View Details & Direct Maps)
+// 5. Render All Durga Pandals Directory (Rich Interactive Card with Direct Maps)
 function renderMandapamsDirectory() {
   const container = document.getElementById("mandapams-grid");
   const countEl = document.getElementById("directory-count");
