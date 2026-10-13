@@ -435,7 +435,7 @@ app.post('/api/save-all', (req, res) => {
 app.get('/sitemap.xml', (req, res) => {
   const db = readDB();
   const approved = (db.mandapams || []).filter(m => m.isVerified === true || m.status === 'approved');
-  const baseUrl = 'https://karimnagardurga.in';
+  const baseUrl = `${req.protocol}://${req.get('host')}`;
   const lastmod = new Date().toISOString().split('T')[0];
 
   const staticUrls = [

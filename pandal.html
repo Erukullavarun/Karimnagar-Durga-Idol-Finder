@@ -577,10 +577,11 @@
       // Update Dynamic SEO & Meta Tags
       document.title = `${pTitle} (${pArea}) - Karimnagar Durga Idol Finder`;
       const seoDescEl = document.getElementById("seo-meta-desc");
+      const origin = window.location.origin;
       if (seoDescEl) seoDescEl.content = `Visit ${pTitle} in ${pArea}, Karimnagar. View Durga idol photos, address, timings and get Google Maps directions.`;
       
       const canonicalEl = document.getElementById("seo-canonical");
-      if (canonicalEl) canonicalEl.href = `https://karimnagardurga.in/pandal.html?id=${encodeURIComponent(item.id)}`;
+      if (canonicalEl) canonicalEl.href = `${origin}/pandal.html?id=${encodeURIComponent(item.id)}`;
 
       // Open Graph Tags
       const ogTitleEl = document.getElementById("og-title");
@@ -588,7 +589,7 @@
       const ogDescEl = document.getElementById("og-desc");
       if (ogDescEl) ogDescEl.content = pDesc;
       const ogImgEl = document.getElementById("og-image");
-      if (ogImgEl) ogImgEl.content = primaryPhoto.startsWith("http") ? primaryPhoto : `https://karimnagardurga.in/${primaryPhoto.replace(/^\//, '')}`;
+      if (ogImgEl) ogImgEl.content = primaryPhoto.startsWith("http") ? primaryPhoto : `${origin}/${primaryPhoto.replace(/^\//, '')}`;
 
       // Update JSON-LD Structured Data
       try {
@@ -596,9 +597,9 @@
           "@context": "https://schema.org",
           "@type": "BreadcrumbList",
           "itemListElement": [
-            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://karimnagardurga.in/" },
-            { "@type": "ListItem", "position": 2, "name": "Pandals", "item": "https://karimnagardurga.in/#directory-section" },
-            { "@type": "ListItem", "position": 3, "name": pTitle, "item": `https://karimnagardurga.in/pandal.html?id=${encodeURIComponent(item.id)}` }
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": `${origin}/` },
+            { "@type": "ListItem", "position": 2, "name": "Pandals", "item": `${origin}/#directory-section` },
+            { "@type": "ListItem", "position": 3, "name": pTitle, "item": `${origin}/pandal.html?id=${encodeURIComponent(item.id)}` }
           ]
         };
         const placeSchema = {
@@ -729,8 +730,17 @@
       const waBtn = document.getElementById("detail-whatsapp-btn");
       if (waBtn) {
         waBtn.onclick = () => {
-          const shareText = encodeURIComponent(`🕉️ *${pTitle}* (${pArea}, Karimnagar)\n\n📍 Open in Google Maps for Navigation:\n👉 ${mapUrl}\n\n👁️ View 360° Google Street View:\n👉 ${svUrl}\n\n🔱 View full idol details on Karimnagar Durga Idol Finder:\n👉 https://karimnagardurga.in/pandal.html?id=${encodeURIComponent(item.id)}`);
-          window.open(`https://api.whatsapp.com/send?text=${shareText}`, "_blank");
+          const origin = window.location.origin;
+          const pandalPageUrl = `${origin}/pandal.html?id=${encodeURIComponent(item.id)}`;
+          const shareText = encodeURIComponent(`🕉️ *${pTitle}* (${pArea}, Karimnagar)\n\n📍 Open in Google Maps for Navigation:\n👉 ${mapUrl}\n\n👁️ View 360° Google Street View:\n👉 ${svUrl}\n\n🔱 View full idol details on Karimnagar Durga Idol Finder:\n👉 ${pandalPageUrl}`);
+          const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent || navigator.vendor || window.opera);
+          const waUrl = isMobile ? `whatsapp://send?text=${shareText}` : `https://api.whatsapp.com/send?text=${shareText}`;
+          if (isMobile) {
+            window.location.href = waUrl;
+            setTimeout(() => { window.open(`https://api.whatsapp.com/send?text=${shareText}`, "_blank"); }, 600);
+          } else {
+            window.open(`https://api.whatsapp.com/send?text=${shareText}`, "_blank");
+          }
         };
       }
 
@@ -1082,8 +1092,17 @@
         const mapUrl = getGoogleMapsUrl(currentPandal);
         const pTitle = currentPandal.name || "Durga Mata Idol";
         const pArea = currentPandal.area || "Karimnagar";
-        const shareText = encodeURIComponent(`🕉️ *${pTitle}* (${pArea}, Karimnagar)\n\n📍 Open in Google Maps for Navigation:\n👉 ${mapUrl}\n\n🔱 View full idol details on Karimnagar Durga Idol Finder:\n👉 https://karimnagardurga.in/pandal.html?id=${encodeURIComponent(currentPandal.id)}`);
-        window.open(`https://api.whatsapp.com/send?text=${shareText}`, "_blank");
+        const origin = window.location.origin;
+        const pandalPageUrl = `${origin}/pandal.html?id=${encodeURIComponent(currentPandal.id)}`;
+        const shareText = encodeURIComponent(`🕉️ *${pTitle}* (${pArea}, Karimnagar)\n\n📍 Open in Google Maps for Navigation:\n👉 ${mapUrl}\n\n🔱 View full idol details on Karimnagar Durga Idol Finder:\n👉 ${pandalPageUrl}`);
+        const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent || navigator.vendor || window.opera);
+        const waUrl = isMobile ? `whatsapp://send?text=${shareText}` : `https://api.whatsapp.com/send?text=${shareText}`;
+        if (isMobile) {
+          window.location.href = waUrl;
+          setTimeout(() => { window.open(`https://api.whatsapp.com/send?text=${shareText}`, "_blank"); }, 600);
+        } else {
+          window.open(`https://api.whatsapp.com/send?text=${shareText}`, "_blank");
+        }
       }
     }
 

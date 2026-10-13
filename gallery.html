@@ -383,7 +383,9 @@
     function handleLightboxShare() {
       const photo = currentGalleryPhotosList[currentLightboxIndex];
       if (!photo) return;
-      const text = `🔱 Sri Durga Mata Darshan from ${photo.mandapamName}, ${photo.area}, Karimnagar! View and locate pandals here: https://karimnagardurga.in/`;
+      const origin = window.location.origin;
+      const targetUrl = photo.mandapamId ? `${origin}/pandal.html?id=${encodeURIComponent(photo.mandapamId)}` : origin;
+      const text = `🔱 Sri Durga Mata Darshan from ${photo.mandapamName}, ${photo.area}, Karimnagar!\n\nView idol details here: ${targetUrl}`;
       window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
     }
 
