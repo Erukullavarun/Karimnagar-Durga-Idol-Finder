@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Portal - Karimnagar Durga Idol Finder</title>
+  <link rel="icon" type="image/jpeg" href="assets/images/logo.jpg" />
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            saffron: {
+              50: '#fff5f2',
+              100: '#ffe8e1',
+              200: '#ffd4c7',
+              300: '#ffb5a0',
+              400: '#fd7250',
+              500: '#c51d24',
+              600: '#9b111e',
+              700: '#800a0e',
+              800: '#67070b',
+              900: '#4a0306',
+            },
+            cream: {
+              50: '#fdfaf6',
+              100: '#f7f1e6',
+              200: '#efe4d3',
+              300: '#e2d1ba',
+            },
+            ink: {
+              700: '#483538',
+              800: '#2c1f21',
+              900: '#1a1415',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="bg-cream-100 min-h-screen text-ink-900 flex flex-col">
+
+  <!-- Header -->
+  <header class="bg-ink-900 text-white px-6 sm:px-10 py-5 flex items-center justify-between border-b border-ink-800 shadow-md">
+    <div class="flex items-center gap-3.5">
+      <img src="assets/images/logo.jpg" alt="Logo" class="h-12 w-12 rounded-full object-cover ring-2 ring-amber-400 shadow-soft" />
+      <div>
+        <h1 class="font-display font-bold text-lg sm:text-xl leading-tight">Karimnagar Durga Idol Finder - Admin Control</h1>
+        <p class="text-xs text-amber-200">Live Navratri Pandals & Content Portal Manager</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-3">
+      <a href="index.html" class="px-5 py-2.5 rounded-full bg-saffron-500 hover:bg-saffron-600 text-white text-xs font-bold shadow-soft transition flex items-center gap-1.5 border border-amber-300/40">
+        ← View Live Website
+      </a>
+      <button onclick="handleAdminLogout()" class="px-4 py-2.5 rounded-full bg-ink-800 hover:bg-rose-900 text-rose-300 text-xs font-semibold transition">
+        Log Out
+      </button>
+    </div>
+  </header>
+
+  <!-- Login Modal -->
+  <div id="admin-login-modal" class="flex-1 flex items-center justify-center p-6 sm:p-10">
+    <div class="bg-white rounded-3xl p-8 sm:p-12 max-w-md w-full shadow-card border border-cream-300">
+      <div class="text-center mb-6">
+        <img src="assets/images/logo.jpg" alt="Logo" class="w-16 h-16 rounded-full object-cover ring-2 ring-saffron-500 mx-auto mb-3 shadow-soft" />
+        <h2 class="font-display text-2xl sm:text-3xl font-bold text-ink-900">Admin Authentication</h2>
+        <p class="text-xs text-ink-600 mt-1">Enter your credentials to access the Durga Pandals management portal.</p>
+      </div>
+
+      <form onsubmit="handleAdminLogin(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-ink-700 mb-1.5">Username</label>
+          <div class="relative flex items-center">
+            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm text-ink-500 pointer-events-none select-none">👤</span>
+            <input id="admin-user-input" type="text" placeholder="Enter username" class="w-full rounded-2xl border border-cream-300 py-3 pl-11 pr-4 text-sm outline-none focus:border-saffron-500 font-medium bg-white" style="padding-left: 2.85rem;" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-ink-700 mb-1.5">Password</label>
+          <div class="relative flex items-center">
+            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm text-ink-500 pointer-events-none select-none">🔑</span>
+            <input id="admin-pass-input" type="password" placeholder="Enter password" class="w-full rounded-2xl border border-cream-300 py-3 pl-11 pr-11 text-sm outline-none focus:border-saffron-500 font-medium bg-white" style="padding-left: 2.85rem; padding-right: 2.85rem;" />
+            <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-base text-ink-500 hover:text-ink-900 cursor-pointer p-1 transition" title="Show/Hide Password">
+              <span id="eye-icon">👁️</span>
+            </button>
+          </div>
+        </div>
+
+        <p id="admin-login-error" class="hidden text-xs text-rose-600 font-semibold text-center"></p>
+
+        <button type="submit" class="btn-primary w-full !py-3.5 text-sm font-bold shadow-lift mt-2">
+          Unlock Admin Control Panel
+        </button>
+      </form>
+
+      <div class="text-center mt-6">
+        <a href="index.html" class="text-xs text-ink-500 hover:text-ink-900 underline">
+          ← Return to Main Website
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Dashboard Container -->
+  <div id="admin-dashboard-container" class="hidden max-w-7xl mx-auto w-full px-6 sm:px-10 py-10 flex-1">
+    
+    <!-- Quick Stats -->
+    <div class="grid grid-cols-2 sm:grid-cols-5 gap-4 mb-8">
+      <div class="bg-white p-5 rounded-3xl border border-cream-300 shadow-soft">
+        <span class="text-xs font-bold text-ink-500 block mb-1">Total Durga Pandals</span>
+        <span id="adm-stat-total" class="text-2xl sm:text-3xl font-black text-ink-900 font-display">0</span>
+      </div>
+      <div class="bg-white p-5 rounded-3xl border border-amber-300 bg-amber-50/50 shadow-soft cursor-pointer hover:bg-amber-100 transition" onclick="filterAdminTable('pending')">
+        <span class="text-xs font-bold text-amber-700 block mb-1">⏳ Pending Approval</span>
+        <span id="adm-stat-pending" class="text-2xl sm:text-3xl font-black text-amber-700 font-display">0</span>
+      </div>
+      <div class="bg-white p-5 rounded-3xl border border-cream-300 shadow-soft">
+        <span class="text-xs font-bold text-saffron-600 block mb-1">Must Visit Priority</span>
+        <span id="adm-stat-mustvisit" class="text-2xl sm:text-3xl font-black text-saffron-600 font-display">0</span>
+      </div>
+      <div class="bg-white p-5 rounded-3xl border border-cream-300 shadow-soft">
+        <span class="text-xs font-bold text-ink-800 block mb-1">Unique Alankarams</span>
+        <span id="adm-stat-unique" class="text-2xl sm:text-3xl font-black text-ink-800 font-display">0</span>
+      </div>
+      <div class="bg-white p-5 rounded-3xl border border-cream-300 shadow-soft">
+        <span class="text-xs font-bold text-emerald-600 block mb-1">Karimnagar Areas</span>
+        <span id="adm-stat-areas" class="text-2xl sm:text-3xl font-black text-emerald-600 font-display">0</span>
+      </div>
+    </div>
+
+    <!-- Admin Tab Switcher -->
+    <div class="flex items-center gap-2.5 border-b border-cream-300 pb-5 mb-8 overflow-x-auto">
+      <button id="adm-btn-mandapams" onclick="switchAdminTab('mandapams')" class="admin-tab-btn px-5 py-2.5 rounded-2xl text-xs font-bold bg-saffron-500 text-white shadow-soft transition">
+        🔱 Durga Pandals Directory
+      </button>
+      <button id="adm-btn-siteinfo" onclick="switchAdminTab('siteinfo')" class="admin-tab-btn px-5 py-2.5 rounded-2xl text-xs font-bold bg-white text-ink-700 shadow-soft transition">
+        📝 Hero & Landing Page Editor
+      </button>
+      <button id="adm-btn-areas" onclick="switchAdminTab('areas')" class="admin-tab-btn px-5 py-2.5 rounded-2xl text-xs font-bold bg-white text-ink-700 shadow-soft transition">
+        📍 Karimnagar Areas
+      </button>
+      <button id="adm-btn-backup" onclick="switchAdminTab('backup')" class="admin-tab-btn px-5 py-2.5 rounded-2xl text-xs font-bold bg-white text-ink-700 shadow-soft transition">
+        💾 Backup & Reset
+      </button>
+    </div>
+
+    <!-- TAB 1: MANDAPAMS DIRECTORY -->
+    <div id="adm-tab-mandapams" class="admin-tab-content space-y-5">
+      <div class="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 bg-white p-5 rounded-3xl border border-cream-300 shadow-soft">
+        <div class="flex flex-wrap items-center gap-2 flex-1">
+          <input id="admin-search-mandapams" oninput="renderAdminMandapamsTable()" type="search" placeholder="Search Durga pandal by name or colony..." class="rounded-2xl border border-cream-300 px-4 py-2.5 text-xs w-full sm:w-72 outline-none focus:border-saffron-500 font-medium" />
+          
+          <div class="flex items-center gap-1.5 bg-cream-100 p-1 rounded-2xl border border-cream-300 text-xs font-semibold">
+            <button id="adm-filter-all" onclick="filterAdminTable('all')" class="px-3 py-1.5 rounded-xl bg-white shadow-soft text-ink-900 font-bold">All</button>
+            <button id="adm-filter-pending" onclick="filterAdminTable('pending')" class="px-3 py-1.5 rounded-xl text-amber-800 font-bold hover:bg-amber-100">⏳ Pending</button>
+            <button id="adm-filter-verified" onclick="filterAdminTable('verified')" class="px-3 py-1.5 rounded-xl text-emerald-700 font-bold hover:bg-emerald-100">✓ Approved</button>
+          </div>
+        </div>
+
+        <button onclick="openAddMandapamModal()" class="btn-primary text-xs !py-3 !px-6 shrink-0 font-bold shadow-soft">
+          + Add New Durga Pandal
+        </button>
+      </div>
+
+      <div class="bg-white rounded-3xl border border-cream-300 shadow-soft overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-cream-100 border-b border-cream-300 text-ink-700 font-bold uppercase tracking-wider">
+              <tr>
+                <th class="p-4 text-center">Rank</th>
+                <th class="p-4">Durga Pandal / Idol Details</th>
+                <th class="p-4">Karimnagar Area</th>
+                <th class="p-4 text-center">Must Visit</th>
+                <th class="p-4 text-center">Verification</th>
+                <th class="p-4 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="admin-mandapams-tbody" class="divide-y divide-cream-200">
+              <!-- Populated by JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: HERO & SITE SETTINGS -->
+    <div id="adm-tab-siteinfo" class="admin-tab-content hidden bg-white rounded-3xl p-6 sm:p-10 border border-cream-300 shadow-soft">
+      <h3 class="font-display text-xl font-bold text-ink-900 mb-6 pb-3 border-b border-cream-200">Live Website Text & Landing Page Settings</h3>
+      
+      <form onsubmit="handleSaveSiteSettings(event)" class="space-y-6">
+        
+        <!-- Hero Section -->
+        <div class="bg-cream-50 p-6 rounded-3xl border border-cream-200">
+          <h4 class="text-xs font-bold uppercase tracking-wider text-saffron-700 mb-4">1. Hero Section & Main Banner</h4>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-ink-700 mb-1.5">Sacred Telugu Chant</label>
+              <input id="set-chant" type="text" class="w-full rounded-2xl border border-cream-300 p-3 text-xs text-ink-900 outline-none font-telugu" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-ink-700 mb-1.5">Banner Badge Text</label>
+              <input id="set-banner-badge" type="text" class="w-full rounded-2xl border border-cream-300 p-3 text-xs text-ink-900 outline-none" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-ink-700 mb-1.5">Main Title</label>
+              <input id="set-title" type="text" class="w-full rounded-2xl border border-cream-300 p-3 text-xs text-ink-900 outline-none font-bold" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-ink-700 mb-1.5">Title Highlight (Red Accent)</label>
+              <input id="set-highlight" type="text" class="w-full rounded-2xl border border-cream-300 p-3 text-xs text-ink-900 outline-none font-bold" />
+            </div>
+            <div class="sm:col-span-2">
+              <label class="block text-xs font-bold text-ink-700 mb-1.5">Subtitle</label>
+              <input id="set-subtitle" type="text" class="w-full rounded-2xl border border-cream-300 p-3 text-xs text-ink-900 outline-none" />
+            </div>
+            <div class="sm:col-span-2">
+              <label class="block text-xs font-bold text-ink-700 mb-1.5">Hero Description</label>
+              <textarea id="set-desc" rows="3" class="w-full rounded-2xl border border-cream-300 p-3 text-xs text-ink-900 outline-none"></textarea>
+            </div>
+            
+            <!-- Hero Image Upload (Browse from Device) -->
+            <div class="sm:col-span-2 p-4 rounded-2xl bg-white border border-cream-300">
+              <label class="block text-xs font-bold text-ink-700 mb-1.5">Landing Hero Image (Browse from Phone / PC)</label>
+              <div class="flex items-center gap-4">
+                <label class="flex items-center gap-2 px-4 py-2.5 rounded-2xl border border-dashed border-saffron-400 bg-cream-50 text-saffron-800 text-xs font-bold cursor-pointer hover:bg-saffron-100 transition shadow-soft">
+                  <span>📷</span> Browse Hero Image...
+                  <input id="set-hero-img-file" type="file" accept="image/*" onchange="handleHeroImageBrowse(event)" class="hidden" />
+                </label>
+                <img id="set-hero-img-preview" src="assets/images/hero-durga.jpg" alt="Hero Preview" class="h-16 w-16 rounded-xl object-cover border border-cream-300 shadow-soft" />
+                <input id="set-hero-img" type="hidden" value="assets/images/hero-durga.jpg" />
+                <span class="text-[11px] text-ink-500">Perfect fit portrait Goddess Durga image</span>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-ink-700 mb-1.5">Floating Badge Title</label>
+              <input id="set-float-title" type="text" class="w-full rounded-2xl border border-cream-300 p-3 text-xs text-ink-900 outline-none" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-ink-700 mb-1.5">Floating Badge Subtitle</label>
+              <input id="set-float-sub" type="text" class="w-full rounded-2xl border border-cream-300 p-3 text-xs text-ink-900 outline-none" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Stats Counters -->
+        <div class="bg-cream-50 p-6 rounded-3xl border border-cream-200">
+          <h4 class="text-xs font-bold uppercase tracking-wider text-saffron-700 mb-4">2. Stats Counters</h4>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-ink-700 mb-1.5">Total Pandals Count</label>
+              <input id="set-stat-loc" type="number" class="w-full rounded-2xl border border-cream-300 p-3 text-xs text-ink-900 outline-none font-bold" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-ink-700 mb-1.5">Nava Alankarams Count</label>
+              <input id="set-stat-themes" type="number" class="w-full rounded-2xl border border-cream-300 p-3 text-xs text-ink-900 outline-none font-bold" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-ink-700 mb-1.5">Photos & Media Count</label>
+              <input id="set-stat-photos" type="number" class="w-full rounded-2xl border border-cream-300 p-3 text-xs text-ink-900 outline-none font-bold" />
+            </div>
+            <div class="col-span-1 sm:col-span-3">
+              <label class="block text-xs font-bold text-ink-700 mb-1.5">Stats Quote / Sacred Message</label>
+              <input id="set-stat-quote" type="text" class="w-full rounded-2xl border border-cream-300 p-3 text-xs text-ink-900 outline-none font-medium" />
+            </div>
+          </div>
+        </div>
+
+        <!-- CTA & Footer -->
+        <div class="bg-cream-50 p-6 rounded-3xl border border-cream-200">
+          <h4 class="text-xs font-bold uppercase tracking-wider text-saffron-700 mb-4">3. Community CTA & Footer</h4>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-ink-700 mb-1.5">CTA Banner Title</label>
+              <input id="set-cta-title" type="text" class="w-full rounded-2xl border border-cream-300 p-3 text-xs text-ink-900 outline-none" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-ink-700 mb-1.5">CTA Quote Text</label>
+              <input id="set-cta-quote" type="text" class="w-full rounded-2xl border border-cream-300 p-3 text-xs text-ink-900 outline-none" />
+            </div>
+            <div class="sm:col-span-2">
+              <label class="block text-xs font-bold text-ink-700 mb-1.5">CTA Description</label>
+              <textarea id="set-cta-desc" rows="2" class="w-full rounded-2xl border border-cream-300 p-3 text-xs text-ink-900 outline-none"></textarea>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-ink-700 mb-1.5">Developer Instagram ID</label>
+              <input id="set-dev-names" type="text" value="@chintuvarun_3008" class="w-full rounded-2xl border border-cream-300 p-3 text-xs text-ink-900 outline-none font-bold text-saffron-700" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-ink-700 mb-1.5">Copyright Notice</label>
+              <input id="set-copyright" type="text" value="Karimnagar Durga Idol Finder © 2026 | Celebrate Culture | Support Local | Keep Karimnagar Beautiful" class="w-full rounded-2xl border border-cream-300 p-3 text-xs text-ink-900 outline-none" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Google Search Console & Per-Page Visibility Analytics -->
+        <div class="bg-cream-50 p-6 rounded-3xl border border-cream-200">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h4 class="text-xs font-bold uppercase tracking-wider text-saffron-700">4. Google Search Console & Page Visibility</h4>
+              <p class="text-[11px] text-ink-500">Track how many people are using each page and verify your site with Google Search Console.</p>
+            </div>
+            <span class="chip bg-saffron-100 text-saffron-800 text-[10px] font-bold">SEO & Traffic</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-ink-700 mb-1.5">Google Search Console Verification Token</label>
+              <input id="set-gsc-token" type="text" placeholder="Paste verification string (e.g. google-site-verification content)" class="w-full rounded-2xl border border-cream-300 p-3 text-xs text-ink-900 outline-none font-mono" />
+              <p class="text-[10px] text-ink-500 mt-1">Get this in Google Search Console ➔ Settings ➔ Ownership Verification ➔ HTML tag.</p>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-ink-700 mb-1.5">Google Analytics 4 (GA4) Measurement ID</label>
+              <input id="set-ga-id" type="text" placeholder="e.g. G-XXXXXXXXXX" class="w-full rounded-2xl border border-cream-300 p-3 text-xs text-ink-900 outline-none font-mono" />
+              <p class="text-[10px] text-ink-500 mt-1">Real-time visitor counts, devices, and traffic sources in Google Analytics.</p>
+            </div>
+          </div>
+
+          <!-- Per-Page Visibility Live Counters -->
+          <div class="mt-4 pt-4 border-t border-cream-200">
+            <h5 class="text-xs font-bold text-ink-800 mb-2">📊 Live Per-Page Visitor Visibility</h5>
+            <div id="admin-page-views-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-xs">
+              <div class="p-3 bg-white rounded-2xl border border-cream-200">
+                <span class="block text-[10px] text-ink-500 font-bold">Home Page (/)</span>
+                <span id="pv-home" class="font-display font-black text-sm text-saffron-700 mt-0.5 block">0</span>
+              </div>
+              <div class="p-3 bg-white rounded-2xl border border-cream-200">
+                <span class="block text-[10px] text-ink-500 font-bold">Live Map (/map.html)</span>
+                <span id="pv-map" class="font-display font-black text-sm text-saffron-700 mt-0.5 block">0</span>
+              </div>
+              <div class="p-3 bg-white rounded-2xl border border-cream-200">
+                <span class="block text-[10px] text-ink-500 font-bold">Pandal View (/pandal.html)</span>
+                <span id="pv-pandal" class="font-display font-black text-sm text-saffron-700 mt-0.5 block">0</span>
+              </div>
+              <div class="p-3 bg-white rounded-2xl border border-cream-200">
+                <span class="block text-[10px] text-ink-500 font-bold">Add Idol (/submit.html)</span>
+                <span id="pv-submit" class="font-display font-black text-sm text-saffron-700 mt-0.5 block">0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-primary !py-3 !px-8 text-sm">
+          💾 Save & Apply All Site Changes
+        </button>
+      </form>
+    </div>
+
+    <!-- TAB 3: AREAS MANAGER -->
+    <div id="adm-tab-areas" class="admin-tab-content hidden bg-white rounded-3xl p-6 sm:p-8 border border-cream-300 shadow-soft">
+      <h3 class="font-display text-xl font-bold text-ink-900 mb-4">Manage Karimnagar Areas & Neighbourhoods</h3>
+      
+      <form onsubmit="handleAddArea(event)" class="flex gap-3 mb-6">
+        <input id="new-area-input" type="text" placeholder="Add new area name (e.g. Subhashnagar, Alugunoor)" class="flex-1 rounded-xl border border-cream-300 px-4 py-2.5 text-xs outline-none focus:border-saffron-500" />
+        <button type="submit" class="btn-primary text-xs !py-2.5 !px-5">+ Add Area</button>
+      </form>
+
+      <div id="admin-areas-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+        <!-- Populated by JavaScript -->
+      </div>
+    </div>
+
+    <!-- TAB 4: BACKUP & RESTORE -->
+    <div id="adm-tab-backup" class="admin-tab-content hidden bg-white rounded-3xl p-6 sm:p-10 border border-cream-300 shadow-soft space-y-6">
+      <h3 class="font-display text-xl font-bold text-ink-900 mb-2">Backup & Data Recovery</h3>
+      
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div class="p-6 rounded-3xl bg-cream-50 border border-cream-200 flex flex-col justify-between">
+          <div>
+            <h4 class="font-bold text-ink-900 text-sm mb-1">Export Full Website JSON</h4>
+            <p class="text-xs text-ink-600 mb-4">Download a full offline backup of all Karimnagar Durga pandals, photos, and site configuration.</p>
+          </div>
+          <button onclick="handleExportData()" class="btn-primary !py-2.5 text-xs">
+            ⬇️ Download Backup JSON
+          </button>
+        </div>
+
+        <div class="p-6 rounded-3xl bg-cream-50 border border-cream-200 flex flex-col justify-between">
+          <div>
+            <h4 class="font-bold text-ink-900 text-sm mb-1">Restore from Backup File</h4>
+            <p class="text-xs text-ink-600 mb-4">Import a previously exported JSON backup to overwrite current content.</p>
+          </div>
+          <label class="btn-outline !py-2.5 text-xs cursor-pointer block text-center">
+            <span>📂 Choose JSON Backup...</span>
+            <input type="file" accept=".json" onchange="handleImportData(event)" class="hidden" />
+          </label>
+        </div>
+      </div>
+
+      <div class="pt-4 border-t border-cream-200">
+        <button onclick="handleResetDefaults()" class="px-5 py-2.5 rounded-2xl bg-rose-50 text-rose-700 border border-rose-200 text-xs font-bold hover:bg-rose-100 transition">
+          ⚠️ Reset Entire Website to Karimnagar Durga Defaults
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ADD / EDIT MANDAPAM MODAL -->
+  <div id="edit-mandapam-modal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4 bg-ink-900/60 backdrop-blur-sm overflow-y-auto">
+    <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-xl w-full shadow-card border border-cream-300 relative my-8">
+      <button onclick="closeEditMandapamModal()" class="absolute right-4 top-4 text-ink-500 hover:text-ink-900 text-xl font-bold">✕</button>
+      
+      <h3 id="modal-mandapam-title" class="font-display text-xl font-bold text-ink-900 mb-4">Edit Durga Pandal</h3>
+
+      <form id="edit-mandapam-form" onsubmit="handleSaveMandapam(event)" class="space-y-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-ink-700 mb-1">Pandal Name *</label>
+            <input id="edit-m-name" required type="text" class="w-full rounded-xl border border-cream-300 p-2 text-xs text-ink-900 outline-none" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-ink-700 mb-1">Telugu Name</label>
+            <input id="edit-m-telugu" type="text" class="w-full rounded-xl border border-cream-300 p-2 text-xs text-ink-900 outline-none font-telugu" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-ink-700 mb-1">Karimnagar Area *</label>
+            <select id="edit-m-area" required class="w-full rounded-xl border border-cream-300 p-2 text-xs text-ink-900 outline-none"></select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-ink-700 mb-1">Priority Rank (1 = Top)</label>
+            <input id="edit-m-priority" type="number" min="1" max="99" value="1" class="w-full rounded-xl border border-cream-300 p-2 text-xs text-ink-900 outline-none font-bold" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-ink-700 mb-1">Full Address & Landmarks</label>
+          <input id="edit-m-address" type="text" class="w-full rounded-xl border border-cream-300 p-2 text-xs text-ink-900 outline-none" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-ink-700 mb-1">📍 Google Maps Link (for easy GPS navigation)</label>
+          <input id="edit-m-maps-url" type="url" placeholder="https://maps.app.goo.gl/... or https://www.google.com/maps?q=..." class="w-full rounded-xl border border-cream-300 p-2 text-xs text-ink-900 outline-none focus:border-saffron-500" />
+        </div>
+
+        <!-- Lat & Long -->
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-ink-700 mb-1">Latitude</label>
+            <input id="edit-m-lat" type="number" step="0.0001" value="18.4386" class="w-full rounded-xl border border-cream-300 p-2 text-xs text-ink-900 outline-none" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-ink-700 mb-1">Longitude</label>
+            <input id="edit-m-lng" type="number" step="0.0001" value="79.1288" class="w-full rounded-xl border border-cream-300 p-2 text-xs text-ink-900 outline-none" />
+          </div>
+        </div>
+
+        <!-- Photos Upload by Browse (Up to 3 Photos) -->
+        <div class="p-3.5 rounded-2xl bg-cream-50 border border-cream-200 space-y-3">
+          <div class="flex items-center justify-between">
+            <label class="block text-xs font-bold text-ink-700">Durga Photos (Upload 2 to 3 Photos from Device)</label>
+            <span class="text-[10px] font-bold text-saffron-700 bg-saffron-100 px-2 py-0.5 rounded">Mobile / PC File Browse</span>
+          </div>
+          
+          <!-- Photo 1 -->
+          <div class="flex items-center gap-3 p-2 bg-white rounded-xl border border-cream-300">
+            <label class="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-dashed border-saffron-400 bg-saffron-50 text-saffron-800 text-xs font-bold cursor-pointer hover:bg-saffron-100 transition shadow-soft shrink-0">
+              <span>📷</span> Photo 1 (Main Idol) *
+              <input type="file" accept="image/*" onchange="handleMandapamPhotoBrowse(event, 1)" class="hidden" />
+            </label>
+            <img id="edit-m-photo-preview" src="" class="h-10 w-12 rounded-lg object-cover border border-cream-300 hidden" />
+            <input id="edit-m-photo" type="hidden" />
+            <span class="text-[11px] text-ink-500 truncate">Main idol front photo</span>
+          </div>
+
+          <!-- Photo 2 -->
+          <div class="flex items-center gap-3 p-2 bg-white rounded-xl border border-cream-300">
+            <label class="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-dashed border-saffron-400 bg-saffron-50 text-saffron-800 text-xs font-bold cursor-pointer hover:bg-saffron-100 transition shadow-soft shrink-0">
+              <span>📷</span> Photo 2 (Pandal View)
+              <input type="file" accept="image/*" onchange="handleMandapamPhotoBrowse(event, 2)" class="hidden" />
+            </label>
+            <img id="edit-m-photo2-preview" src="" class="h-10 w-12 rounded-lg object-cover border border-cream-300 hidden" />
+            <input id="edit-m-photo2" type="hidden" />
+            <span class="text-[11px] text-ink-500 truncate">Pandal stage or night lighting</span>
+          </div>
+
+          <!-- Photo 3 -->
+          <div class="flex items-center gap-3 p-2 bg-white rounded-xl border border-cream-300">
+            <label class="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-dashed border-saffron-400 bg-saffron-50 text-saffron-800 text-xs font-bold cursor-pointer hover:bg-saffron-100 transition shadow-soft shrink-0">
+              <span>📷</span> Photo 3 (Aarti / Alankaram)
+              <input type="file" accept="image/*" onchange="handleMandapamPhotoBrowse(event, 3)" class="hidden" />
+            </label>
+            <img id="edit-m-photo3-preview" src="" class="h-10 w-12 rounded-lg object-cover border border-cream-300 hidden" />
+            <input id="edit-m-photo3" type="hidden" />
+            <span class="text-[11px] text-ink-500 truncate">Special puja, aarti or close-up</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-ink-700 mb-1">Instagram Handle</label>
+            <input id="edit-m-ig-handle" type="text" placeholder="@durga_youth" class="w-full rounded-xl border border-cream-300 p-2 text-xs text-ink-900 outline-none" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-ink-700 mb-1">Instagram Link</label>
+            <input id="edit-m-ig-url" type="url" placeholder="https://instagram.com/..." class="w-full rounded-xl border border-cream-300 p-2 text-xs text-ink-900 outline-none" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-ink-700 mb-1">Reels Count</label>
+            <input id="edit-m-reels" type="number" min="0" value="0" class="w-full rounded-xl border border-cream-300 p-2 text-xs text-ink-900 outline-none" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-ink-700 mb-1">Description / Alankaram Details</label>
+          <textarea id="edit-m-desc" rows="2" class="w-full rounded-xl border border-cream-300 p-2 text-xs text-ink-900 outline-none"></textarea>
+        </div>
+
+        <div class="flex items-center gap-6 pt-2">
+          <label class="flex items-center gap-2 text-xs font-bold text-ink-800 cursor-pointer">
+            <input id="edit-m-mustvisit" type="checkbox" class="h-4 w-4 text-saffron-600 rounded" />
+            ★ Mark as Must Visit (Top Priority Rail)
+          </label>
+          <label class="flex items-center gap-2 text-xs font-bold text-ink-800 cursor-pointer">
+            <input id="edit-m-verified" type="checkbox" checked class="h-4 w-4 text-emerald-600 rounded" />
+            ✓ Verified Listing
+          </label>
+        </div>
+
+        <button type="submit" class="btn-primary w-full !py-3 text-xs sm:text-sm">
+          Save Durga Pandal
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="admin.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      checkAdminAuth();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Karimnagar Durga Pandal Live GPS Map | Directions & Pandals</title>
+  <meta name="description" content="Interactive live GPS map of Durga Mata pandals and Navratri mandapams across Karimnagar. Get 1-tap driving directions, photos, and darshan details." />
+  <meta name="keywords" content="Durga Mata pandal map Karimnagar, live GPS pandal directions, Karimnagar Durga locations, Navratri mandapam route" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://karimnagardurga.in/map.html" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Karimnagar Durga Pandal Live GPS Map | Directions & Pandals" />
+  <meta property="og:description" content="Find Durga Devi mandapams across Karimnagar on interactive live map. Get turn-by-turn driving directions." />
+  <meta property="og:url" content="https://karimnagardurga.in/map.html" />
+  <meta property="og:image" content="https://karimnagardurga.in/assets/images/hero-durga.jpg" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Karimnagar Durga Pandal Live GPS Map | Directions & Pandals" />
+  <meta name="twitter:description" content="Interactive GPS map of Durga Mata pandals across Karimnagar, Telangana." />
+  <meta name="twitter:image" content="https://karimnagardurga.in/assets/images/hero-durga.jpg" />
+
+  <!-- Preconnects -->
+  <link rel="preconnect" href="https://cdn.tailwindcss.com" />
+  <link rel="preconnect" href="https://unpkg.com" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/jpeg" href="assets/images/logo.jpg" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            saffron: {
+              50: '#fdf4f2',
+              100: '#fae5e0',
+              200: '#f4cdc4',
+              300: '#eaab9d',
+              400: '#d75d4f',
+              500: '#b8232e',
+              600: '#961621',
+              700: '#770e17',
+              800: '#5a0a11',
+              900: '#3f060b',
+            },
+            crimson: {
+              50: '#fdf2f4',
+              100: '#fbe4e8',
+              200: '#f7cbd2',
+              300: '#f0a3af',
+              400: '#e46b7f',
+              500: '#c51d34',
+              600: '#9e1025',
+              700: '#7e0c1c',
+              800: '#620a16',
+              900: '#46060f',
+            },
+            gold: {
+              50: '#fffef0',
+              100: '#fefbd8',
+              200: '#fef5b0',
+              300: '#fdec7d',
+              400: '#eac840',
+              500: '#d4af37',
+              600: '#b38c22',
+              700: '#8c6b16',
+              800: '#664c0f',
+              900: '#433107',
+            },
+            cream: {
+              50: '#fcfaf7',
+              100: '#f7f3ec',
+              200: '#ede5d8',
+              300: '#dfd2be',
+              400: '#cbb89e',
+            },
+            ink: {
+              500: '#8a787c',
+              600: '#655257',
+              700: '#443539',
+              800: '#281d20',
+              900: '#140b0d',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Maps Embed Preconnect -->
+  <link rel="preconnect" href="https://maps.google.com" />
+  <link rel="stylesheet" href="styles.css" />
+
+  <!-- BreadcrumbList JSON-LD Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://karimnagardurga.in/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Explore Map",
+        "item": "https://karimnagardurga.in/map.html"
+      }
+    ]
+  }
+  </script>
+</head>
+<body class="bg-cream-50 text-ink-900 flex flex-col min-h-screen">
+
+  <!-- Top Sacred Bar -->
+  <div class="bg-gradient-to-r from-crimson-700 via-saffron-600 to-amber-600 py-1.5 px-4 text-center text-xs font-semibold text-white tracking-wider flex items-center justify-between">
+    <span class="hidden sm:inline-block">🔱 ॥ ఓం శ్రీ దుర్గాయై నమః ॥</span>
+    <span class="mx-auto font-medium">శ్రీ కరీంనగర్ దుర్గా నవరాత్రి ఉత్సవాలు • Interactive GPS Map</span>
+    <span class="hidden sm:inline-block">॥ జై దుర్గా భవానీ ॥ 🔱</span>
+  </div>
+
+  <!-- Header / Navbar -->
+  <header class="sticky top-0 z-[1000] bg-white/95 backdrop-blur-md border-b border-cream-300 shadow-soft">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+      
+      <!-- Logo -->
+      <a href="index.html" class="flex items-center gap-3 group">
+        <img src="assets/images/logo.jpg" alt="Karimnagar Durga Idol Finder Logo" class="w-12 h-12 rounded-full object-cover shadow-soft ring-2 ring-saffron-500/40 group-hover:scale-105 transition-transform" />
+        <div>
+          <span class="font-display font-black text-lg sm:text-xl text-ink-900 tracking-tight block leading-none site-logo-text">Karimnagar Durga</span>
+          <span class="text-[10px] uppercase font-bold tracking-widest text-saffron-600 block mt-0.5">Idol Finder • Navratri</span>
+        </div>
+      </a>
+
+      <!-- Desktop Navigation -->
+      <nav class="hidden md:flex items-center gap-7 text-sm font-medium">
+        <a href="index.html" class="text-ink-700 hover:text-saffron-600 transition-colors">Home</a>
+        <a href="map.html" class="text-saffron-600 font-bold border-b-2 border-saffron-500 pb-1">Explore Map</a>
+        <a href="unique.html" class="text-ink-700 hover:text-saffron-600 transition-colors">Unique Durga</a>
+        <a href="gallery.html" class="text-ink-700 hover:text-saffron-600 transition-colors">Gallery</a>
+        <a href="about.html" class="text-ink-700 hover:text-saffron-600 transition-colors">About</a>
+      </nav>
+
+    </div>
+  </header>
+
+  <!-- MAP MAIN CONTENT -->
+  <main class="flex-1 flex flex-col">
+    
+    <!-- Top Filter & Search Bar -->
+    <div class="bg-white border-b border-cream-300 py-2.5 px-4 sm:px-6 lg:px-8 shadow-xs">
+      <div class="max-w-7xl mx-auto flex items-center justify-between gap-3">
+        <h1 class="sr-only">Karimnagar Durga Pandal Live GPS Map & Directions</h1>
+        
+        <!-- Area Pills Row directly under header (as in screenshot) -->
+        <div id="map-area-pills" class="flex items-center gap-2 overflow-x-auto pb-1 custom-scrollbar text-xs flex-1">
+          <!-- Injected by JavaScript -->
+        </div>
+
+        <!-- Location & Status Controls -->
+        <div class="hidden sm:flex items-center gap-2 shrink-0">
+          <button id="map-btn-location" onclick="handleMapUseLocation()" class="btn-soft text-xs !py-1.5 !px-3 flex items-center gap-1.5">
+            <span>📍</span> <span>My Location</span>
+          </button>
+          <span id="map-counter-badge" class="chip bg-saffron-50 text-saffron-800 font-bold text-xs border border-saffron-200">
+            0 Pandals
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Map & Sidebar Split Layout -->
+    <div class="flex-1 flex flex-col lg:flex-row relative min-h-[550px] lg:min-h-[calc(100vh-170px)]">
+      
+      <!-- Mobile View Mode Switcher -->
+      <div class="lg:hidden flex items-center justify-between border-b border-cream-200 bg-cream-50 px-3 py-1.5 text-xs font-semibold">
+        <span class="text-ink-600">Explore View:</span>
+        <div class="flex gap-1.5">
+          <button id="mob-toggle-map" type="button" onclick="toggleMobileView('map')" class="px-3 py-1 rounded-full bg-saffron-500 text-white font-bold cursor-pointer">🗺️ Map View</button>
+          <button id="mob-toggle-list" type="button" onclick="toggleMobileView('list')" class="px-3 py-1 rounded-full bg-white text-ink-700 border border-cream-300 cursor-pointer">📋 List View</button>
+        </div>
+      </div>
+
+      <!-- Left: Pandals Sidebar List -->
+      <div id="map-sidebar-container" class="w-full lg:w-[420px] shrink-0 bg-white border-r border-cream-300 flex flex-col h-[350px] lg:h-auto overflow-y-auto custom-scrollbar shadow-sm">
+        <div class="p-3.5 bg-cream-100/60 border-b border-cream-200 flex items-center justify-between text-xs font-bold text-ink-700">
+          <span>Approved Karimnagar Pandals</span>
+          <span id="map-list-count" class="text-saffron-700">0 Available</span>
+        </div>
+        
+        <div id="map-pandals-list" class="divide-y divide-cream-200 flex-1">
+          <!-- Injected by JS -->
+        </div>
+      </div>
+
+      <!-- Right: Interactive Google Map -->
+      <div id="map-main-box" class="flex-1 relative w-full h-[600px] lg:h-full min-h-[550px]" style="min-height: 550px;">
+        <!-- Floating Google Maps Search Bar -->
+        <div class="absolute top-3 left-14 z-[400] max-w-sm w-[calc(100%-70px)] sm:w-80">
+          <div class="flex items-center gap-2 rounded-xl border border-cream-300 bg-white/95 backdrop-blur px-3 py-2 text-xs shadow-card">
+            <svg class="h-4 w-4 text-saffron-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            <input id="map-search-input" type="search" placeholder="Search place (e.g. Dr. BR Ambedkar Stadium, Vidyanagar)..." class="w-full bg-transparent text-xs text-ink-900 outline-none placeholder:text-ink-500 font-medium" oninput="handleMapSearch(this.value)" />
+          </div>
+        </div>
+
+        <!-- Floating Map View Mode Switcher (Google Map View / Satellite View) -->
+        <div class="absolute top-3 right-3 z-[400] flex flex-wrap items-center gap-1.5 bg-white/95 backdrop-blur p-1 rounded-xl border border-cream-300 shadow-card text-[11px]">
+          <button id="btn-view-roads" type="button" onclick="switchDedicatedMapView('roads')" class="px-2.5 py-1 rounded-lg font-bold transition bg-saffron-500 text-white shadow-xs cursor-pointer">
+            🗺️ Map View
+          </button>
+          <button id="btn-view-satellite" type="button" onclick="switchDedicatedMapView('satellite')" class="px-2.5 py-1 rounded-lg font-medium text-ink-700 hover:bg-cream-100 transition cursor-pointer">
+            🛰️ Satellite View
+          </button>
+          <a id="btn-open-google-maps" href="https://www.google.com/maps/@18.4386,79.1288,14z" target="_blank" rel="noopener noreferrer" class="hidden sm:inline-flex items-center gap-1 px-2.5 py-1 rounded-lg font-bold text-saffron-700 hover:bg-saffron-50 transition border border-saffron-200" title="Open directly in Google Maps App">
+            🌐 Google Maps ↗
+          </a>
+        </div>
+
+        <!-- Official Free Google Maps Interactive Embed -->
+        <iframe
+          id="google-maps-embed-frame"
+          title="Google Maps Karimnagar Durga Pandals"
+          class="w-full h-full min-h-[550px] border-0"
+          style="min-height: 550px; width: 100%; height: 100%; border: 0;"
+          src="https://maps.google.com/maps?q=18.4386,79.1288&t=m&z=14&ie=UTF8&iwloc=&output=embed"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          allowfullscreen>
+        </iframe>
+
+        <!-- Active Selected Pandal Floating Card Overlay -->
+        <div id="active-map-target-card" class="absolute bottom-4 left-4 right-4 sm:left-6 sm:right-6 z-[400] hidden bg-white/95 backdrop-blur-md p-3.5 rounded-2xl border border-cream-300 shadow-xl transition-all">
+          <div class="flex items-start justify-between gap-3">
+            <div class="flex items-center gap-3 min-w-0">
+              <img id="active-target-photo" src="assets/images/hero-durga.jpg" alt="" class="w-14 h-14 rounded-xl object-cover border border-cream-300 shrink-0" onerror="this.src='assets/images/hero-durga.jpg'" />
+              <div class="min-w-0">
+                <h4 id="active-target-title" class="font-display font-bold text-xs sm:text-sm text-ink-900 truncate">Pandal Name</h4>
+                <p id="active-target-area" class="text-[11px] text-saffron-700 font-semibold mt-0.5">📍 Area</p>
+                <p id="active-target-address" class="text-[10px] text-ink-500 truncate mt-0.5">Address</p>
+              </div>
+            </div>
+            <button type="button" onclick="closeActiveMapTargetCard()" class="h-7 w-7 rounded-full bg-cream-100 hover:bg-cream-200 text-ink-600 grid place-items-center text-xs shrink-0 cursor-pointer" title="Close">✕</button>
+          </div>
+          <div class="mt-2.5 pt-2 border-t border-cream-200 flex flex-wrap items-center gap-2">
+            <a id="active-target-dir-link" href="#" target="_blank" rel="noopener noreferrer" class="btn-primary text-[11px] !py-1.5 !px-3 font-bold inline-flex items-center gap-1.5">
+              🚗 Google Maps Directions ➔
+            </a>
+            <a id="active-target-detail-link" href="#" class="btn-outline text-[11px] !py-1.5 !px-3 font-bold inline-flex items-center gap-1.5">
+              View Details
+            </a>
+            <button id="active-target-share-btn" type="button" class="btn-soft text-[11px] !py-1.5 !px-3 font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 inline-flex items-center gap-1.5 cursor-pointer">
+              WhatsApp
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="mt-auto">
+    <div class="border-t border-cream-300 bg-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col items-center text-center gap-6 lg:flex-row lg:justify-between lg:text-left">
+        
+        <!-- Footer Logo -->
+        <a class="shrink-0 flex items-center gap-3" href="index.html">
+          <img src="assets/images/logo.jpg" alt="Karimnagar Durga" class="h-12 w-12 rounded-full object-cover shadow-soft ring-2 ring-saffron-400" />
+          <div class="text-left">
+            <span class="font-display font-black text-lg text-ink-900 block leading-tight site-logo-text">Karimnagar Durga</span>
+            <span class="text-[10px] text-saffron-600 font-bold uppercase tracking-wider block">Idol Finder • Navratri</span>
+          </div>
+        </a>
+
+        <!-- Footer Nav Links -->
+        <nav class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-ink-600">
+          <a class="hover:text-saffron-600 transition-colors" href="index.html">Home</a>
+          <a class="hover:text-saffron-600 transition-colors font-bold text-saffron-600" href="map.html">Explore Map</a>
+          <a class="hover:text-saffron-600 transition-colors" href="unique.html">Unique Durga</a>
+          <a class="hover:text-saffron-600 transition-colors" href="gallery.html">Gallery</a>
+          <a class="hover:text-saffron-600 transition-colors" href="about.html">About</a>
+          <a class="hover:text-saffron-600 transition-colors font-medium text-saffron-700" href="submit.html">Add Durga</a>
+        </nav>
+
+        <!-- Developer & Instagram ID -->
+        <div class="flex items-center gap-2">
+          <span class="text-xs text-ink-600">Developer:</span>
+          <a href="https://instagram.com/chintuvarun_3008" target="_blank" rel="noopener noreferrer" onclick="event.preventDefault(); openInstagramApp('chintuvarun_3008');" class="group inline-flex items-center gap-1.5 rounded-full border border-saffron-200 bg-saffron-50 px-3.5 py-1 text-xs font-semibold text-saffron-700 shadow-xs hover:border-saffron-400 hover:bg-saffron-100 transition-all cursor-pointer">
+            <span id="footer-developers" class="font-bold">chintuvarun_3008</span>
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Bottom Copyright Bar -->
+    <div class="border-t border-cream-300 bg-cream-200">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center gap-3 py-4 pb-24 sm:pb-4 text-center text-[11px] text-ink-600 sm:flex-row sm:justify-between sm:text-left">
+        <p>Karimnagar Durga Idol Finder © 2026 &nbsp;|&nbsp; Celebrate Culture &nbsp;|&nbsp; Support Local &nbsp;|&nbsp; Keep Karimnagar Beautiful</p>
+        <div class="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
+          <span class="font-medium text-saffron-800">🔱 శ్రీ కరీంనగర్ దుర్గా నవరాత్రోత్సవాలు</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- MOBILE BOTTOM NAVIGATION -->
+  <nav class="fixed inset-x-0 bottom-0 z-[1200] border-t border-cream-300 bg-white/95 backdrop-blur sm:hidden">
+    <div class="grid grid-cols-5 items-center px-2 py-1 text-[10px] font-medium text-center">
+      <a href="index.html" class="py-1 text-ink-600 flex flex-col items-center justify-center">
+        <span class="text-base">🏠</span>
+        <span>Home</span>
+      </a>
+      <a href="map.html" class="py-1 text-saffron-600 font-bold flex flex-col items-center justify-center">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none">
+          <path d="M12 2C8.134 2 5 5.134 5 9C5 13.9 10.4 19.8 11.45 20.89C11.75 21.2 12.25 21.2 12.55 20.89C13.6 19.8 19 13.9 19 9C19 5.134 15.866 2 12 2Z" fill="#EA4335"/>
+          <circle cx="12" cy="8.8" r="2.7" fill="#FFFFFF"/>
+        </svg>
+        <span>Map</span>
+      </a>
+      <div class="flex justify-center -mt-5">
+        <a href="submit.html" class="h-12 w-12 rounded-full bg-saffron-500 text-white shadow-lift flex items-center justify-center text-xl font-bold ring-4 ring-white">
+          +
+        </a>
+      </div>
+      <a href="gallery.html" class="py-1 text-ink-600 flex flex-col items-center justify-center">
+        <span class="text-base">📸</span>
+        <span>Gallery</span>
+      </a>
+      <a href="about.html" class="py-1 text-ink-600 flex flex-col items-center justify-center">
+        <span class="text-base">ℹ️</span>
+        <span>About</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Map Provider Config & Live Data with Cache Busting -->
+  <script src="map-config.js?v=16"></script>
+  <script src="data.js?v=16"></script>
+  <script>
+    let currentMapType = 'm'; // 'm' for Roadmap, 'k' for Satellite Hybrid
+    let currentEmbedLocation = '18.4386,79.1288';
+    let currentEmbedZoom = 14;
+    let activeMapArea = 'all';
+    let mapSearchQuery = '';
+    let activeSelectedPandal = null;
+
+    document.addEventListener("DOMContentLoaded", () => {
+      pullServerData(() => {
+        renderMapAreaPills();
+        renderMapMarkersAndList();
+        handleUrlParameters();
+      });
+
+      if (typeof listenDataChange === "function") {
+        listenDataChange(() => {
+          pullServerData(() => {
+            renderMapAreaPills();
+            renderMapMarkersAndList();
+          });
+        });
+      }
+
+      // Live sync
+      setInterval(() => {
+        pullServerData(() => {
+          renderMapAreaPills();
+          renderMapMarkersAndList();
+        });
+      }, 5000);
+
+      window.addEventListener("focus", () => {
+        pullServerData(() => {
+          renderMapAreaPills();
+          renderMapMarkersAndList();
+        });
+      });
+    });
+
+    function updateGoogleMapEmbed(locationQuery, zoom) {
+      currentEmbedLocation = locationQuery || '18.4386,79.1288';
+      currentEmbedZoom = zoom || 15;
+      const iframe = document.getElementById("google-maps-embed-frame");
+      if (iframe) {
+        iframe.src = `https://maps.google.com/maps?q=${currentEmbedLocation}&t=${currentMapType}&z=${currentEmbedZoom}&ie=UTF8&iwloc=&output=embed`;
+      }
+      const directLink = document.getElementById("btn-open-google-maps");
+      if (directLink) {
+        directLink.href = `https://www.google.com/maps/search/?api=1&query=${currentEmbedLocation}`;
+      }
+    }
+
+    function switchDedicatedMapView(type) {
+      if (type === 'satellite') {
+        currentMapType = 'k';
+      } else {
+        currentMapType = 'm';
+      }
+
+      const btnRoads = document.getElementById('btn-view-roads');
+      const btnSat = document.getElementById('btn-view-satellite');
+
+      if (btnRoads && btnSat) {
+        if (currentMapType === 'm') {
+          btnRoads.className = "px-2.5 py-1 rounded-lg font-bold transition bg-saffron-500 text-white shadow-xs cursor-pointer";
+          btnSat.className = "px-2.5 py-1 rounded-lg font-medium text-ink-700 hover:bg-cream-100 transition cursor-pointer";
+        } else {
+          btnSat.className = "px-2.5 py-1 rounded-lg font-bold transition bg-saffron-500 text-white shadow-xs cursor-pointer";
+          btnRoads.className = "px-2.5 py-1 rounded-lg font-medium text-ink-700 hover:bg-cream-100 transition cursor-pointer";
+        }
+      }
+
+      updateGoogleMapEmbed(currentEmbedLocation, currentEmbedZoom);
+    }
+
+    function toggleMobileView(mode) {
+      const sidebar = document.getElementById("map-sidebar-container");
+      const mapBox = document.getElementById("map-main-box");
+      const btnMap = document.getElementById("mob-toggle-map");
+      const btnList = document.getElementById("mob-toggle-list");
+
+      if (mode === 'map') {
+        if (sidebar) sidebar.classList.add("hidden");
+        if (mapBox) mapBox.classList.remove("hidden");
+        if (btnMap) btnMap.className = "px-3 py-1 rounded-full bg-saffron-500 text-white font-bold cursor-pointer";
+        if (btnList) btnList.className = "px-3 py-1 rounded-full bg-white text-ink-700 border border-cream-300 cursor-pointer";
+      } else {
+        if (sidebar) sidebar.classList.remove("hidden");
+        if (mapBox) mapBox.classList.add("hidden");
+        if (btnList) btnList.className = "px-3 py-1 rounded-full bg-saffron-500 text-white font-bold cursor-pointer";
+        if (btnMap) btnMap.className = "px-3 py-1 rounded-full bg-white text-ink-700 border border-cream-300 cursor-pointer";
+      }
+    }
+
+    function renderMapAreaPills() {
+      const container = document.getElementById("map-area-pills");
+      if (!container) return;
+      const areas = getAreasList();
+      container.innerHTML = `
+        <button onclick="filterDedicatedMapArea('all')" class="px-3 py-1 rounded-full whitespace-nowrap font-bold transition ${activeMapArea === 'all' ? 'bg-saffron-500 text-white' : 'bg-cream-100 text-ink-700 hover:bg-cream-200'}">All Areas</button>
+      ` + areas.map(a => `
+        <button onclick="filterDedicatedMapArea('${a}')" class="px-3 py-1 rounded-full whitespace-nowrap font-medium transition ${activeMapArea === a ? 'bg-saffron-500 text-white font-bold' : 'bg-cream-100 text-ink-700 hover:bg-cream-200'}">${a}</button>
+      `).join('');
+    }
+
+    function filterDedicatedMapArea(area) {
+      activeMapArea = area;
+      renderMapAreaPills();
+      renderMapMarkersAndList();
+
+      if (area === 'all') {
+        updateGoogleMapEmbed('18.4386,79.1288', 14);
+        closeActiveMapTargetCard();
+      } else {
+        // 1. Check if an approved pandal exists in this area
+        const mandapams = getMandapams();
+        const inArea = mandapams.filter(m => (m.isVerified === true || m.status !== 'pending') && m.area === area && m.latitude && m.longitude);
+        if (inArea.length > 0) {
+          const first = inArea[0];
+          panToMandapam(first.latitude, first.longitude, first.id);
+          return;
+        }
+
+        // 2. Check verified landmarks/colony coordinates
+        const landmarks = window.KARIMNAGAR_LANDMARKS || {};
+        const coords = landmarks[area] || (typeof KARIMNAGAR_COLONY_COORDS !== "undefined" && KARIMNAGAR_COLONY_COORDS[area]);
+        if (coords) {
+          updateGoogleMapEmbed(`${coords[0]},${coords[1]}`, 16);
+        } else {
+          updateGoogleMapEmbed(encodeURIComponent(area + ', Karimnagar'), 16);
+        }
+        closeActiveMapTargetCard();
+      }
+    }
+
+    let mapSearchDebounce = null;
+    function handleMapSearch(val) {
+      const q = (val || '').trim();
+      mapSearchQuery = q.toLowerCase();
+      renderMapMarkersAndList();
+
+      if (mapSearchDebounce) clearTimeout(mapSearchDebounce);
+      if (q.length >= 2) {
+        mapSearchDebounce = setTimeout(async () => {
+          // 1. Check if an approved pandal matches
+          const mandapams = getMandapams();
+          const pMatch = mandapams.find(m =>
+            m.latitude && m.longitude &&
+            ((m.name && m.name.toLowerCase().includes(mapSearchQuery)) ||
+             (m.area && m.area.toLowerCase().includes(mapSearchQuery)) ||
+             (m.address && m.address.toLowerCase().includes(mapSearchQuery)))
+          );
+          if (pMatch) {
+            panToMandapam(pMatch.latitude, pMatch.longitude, pMatch.id);
+            return;
+          }
+
+          // 2. Check landmark coordinates
+          const landmarks = window.KARIMNAGAR_LANDMARKS || {};
+          let foundCoords = null;
+          for (const [name, coords] of Object.entries(landmarks)) {
+            if (name.toLowerCase().includes(mapSearchQuery)) {
+              foundCoords = coords;
+              break;
+            }
+          }
+          if (foundCoords) {
+            updateGoogleMapEmbed(`${foundCoords[0]},${foundCoords[1]}`, 16);
+            closeActiveMapTargetCard();
+            return;
+          }
+
+          // 3. Fallback to Google Maps query
+          updateGoogleMapEmbed(encodeURIComponent(q + ', Karimnagar'), 16);
+          closeActiveMapTargetCard();
+        }, 250);
+      }
+    }
+
+    function renderMapMarkersAndList() {
+      const mandapams = getMandapams().filter(m => m.isVerified === true || (m.isVerified !== false && m.status !== 'pending'));
+      const listEl = document.getElementById("map-pandals-list");
+      const countBadge = document.getElementById("map-counter-badge");
+      const listCount = document.getElementById("map-list-count");
+
+      let filtered = mandapams.filter(item => {
+        if (activeMapArea !== 'all' && item.area !== activeMapArea) return false;
+        if (mapSearchQuery) {
+          const mName = (item.name || '').toLowerCase();
+          const mArea = (item.area || '').toLowerCase();
+          const mAddr = (item.address || '').toLowerCase();
+          if (!mName.includes(mapSearchQuery) && !mArea.includes(mapSearchQuery) && !mAddr.includes(mapSearchQuery)) return false;
+        }
+        return true;
+      });
+
+      if (countBadge) countBadge.textContent = `${filtered.length} Pandals on Map`;
+      if (listCount) listCount.textContent = `${filtered.length} Available`;
+
+      if (listEl) {
+        if (filtered.length === 0) {
+          listEl.innerHTML = `<div class="p-8 text-center text-xs text-ink-500">No approved Durga pandals listed yet. Submit yours to get listed!</div>`;
+          return;
+        }
+
+        listEl.innerHTML = filtered.map(item => {
+          const rawPhoto = (item.photos && item.photos.length > 0) ? (typeof item.photos[0] === 'string' ? item.photos[0] : (item.photos[0].url || item.photos[0].image_url)) : "assets/images/hero-durga.jpg";
+          const photo = typeof resolveMediaUrl === 'function' ? resolveMediaUrl(rawPhoto) : rawPhoto;
+          const mapUrl = getGoogleMapsUrl(item);
+
+          return `
+            <div class="p-3.5 hover:bg-cream-50 transition cursor-pointer flex gap-3 items-center group" onclick="panToMandapam(${item.latitude || 'null'}, ${item.longitude || 'null'}, '${item.id}')">
+              <img src="${photo}" alt="${item.name}" class="w-16 h-16 rounded-xl object-cover border border-cream-300 shrink-0 group-hover:scale-105 transition" onerror="this.src='assets/images/hero-durga.jpg'" />
+              <div class="flex-1 min-w-0">
+                <a href="pandal.html?id=${encodeURIComponent(item.id)}" onclick="event.stopPropagation();" class="font-display text-xs font-bold text-ink-900 truncate group-hover:text-saffron-700 block">${item.name}</a>
+                <p class="text-[11px] text-saffron-700 font-semibold mt-0.5">📍 ${item.area}</p>
+                <p class="text-[10px] text-ink-500 truncate mt-0.5">${item.address || ''}</p>
+                <div class="mt-2 flex items-center gap-1.5" onclick="event.stopPropagation();">
+                  <a href="pandal.html?id=${encodeURIComponent(item.id)}" class="text-[10px] font-bold text-saffron-700 bg-saffron-50 hover:bg-saffron-100 border border-saffron-200 px-2 py-1 rounded-md">Details</a>
+                  <button type="button" onclick="panToMandapam(${item.latitude || 'null'}, ${item.longitude || 'null'}, '${item.id}')" class="text-[10px] font-bold text-white bg-saffron-600 hover:bg-saffron-700 px-2.5 py-1 rounded-md inline-flex items-center gap-1 cursor-pointer">🗺️ Map View</button>
+                  <a href="${mapUrl}" target="_blank" rel="noopener noreferrer" class="text-[10px] font-bold text-white bg-ink-800 hover:bg-black px-2 py-1 rounded-md inline-flex items-center gap-1">🚗 Directions</a>
+                  <button type="button" onclick="handleWhatsAppShareItem('${item.name}', '${item.area}', '${mapUrl}')" class="text-[10px] font-bold text-white bg-[#25D366] hover:bg-[#1EBE5D] px-2 py-1 rounded-md inline-flex items-center gap-1 cursor-pointer" title="Share on WhatsApp">
+                    <svg class="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+                    <span>WhatsApp</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+    }
+
+    function panToMandapam(lat, lng, id) {
+      const mandapams = getMandapams();
+      const target = mandapams.find(m => String(m.id) === String(id));
+      if (!target) return;
+
+      activeSelectedPandal = target;
+
+      // Update Floating Target Card Overlay
+      const card = document.getElementById("active-map-target-card");
+      const titleEl = document.getElementById("active-target-title");
+      const areaEl = document.getElementById("active-target-area");
+      const addrEl = document.getElementById("active-target-address");
+      const photoEl = document.getElementById("active-target-photo");
+      const dirLink = document.getElementById("active-target-dir-link");
+      const detailLink = document.getElementById("active-target-detail-link");
+      const shareBtn = document.getElementById("active-target-share-btn");
+
+      const rawPhoto = (target.photos && target.photos.length > 0) ? (typeof target.photos[0] === 'string' ? target.photos[0] : (target.photos[0].url || target.photos[0].image_url)) : "assets/images/hero-durga.jpg";
+      const photo = typeof resolveMediaUrl === 'function' ? resolveMediaUrl(rawPhoto) : rawPhoto;
+      const mapUrl = getGoogleMapsUrl(target);
+
+      if (titleEl) titleEl.textContent = target.name;
+      if (areaEl) areaEl.textContent = `📍 ${target.area}`;
+      if (addrEl) addrEl.textContent = target.address || 'Karimnagar';
+      if (photoEl) photoEl.src = photo;
+      if (dirLink) dirLink.href = mapUrl;
+      if (detailLink) detailLink.href = `pandal.html?id=${encodeURIComponent(target.id)}`;
+      if (shareBtn) shareBtn.onclick = () => handleWhatsAppShareItem(target.name, target.area, mapUrl);
+
+      if (card) card.classList.remove("hidden");
+
+      // Update official Google Map Embed to exact location
+      if (lat && lng && !isNaN(parseFloat(lat)) && !isNaN(parseFloat(lng))) {
+        updateGoogleMapEmbed(`${parseFloat(lat)},${parseFloat(lng)}`, 17);
+      } else {
+        const destQuery = encodeURIComponent([target.name, target.address, target.area, "Karimnagar"].filter(Boolean).join(", "));
+        updateGoogleMapEmbed(destQuery, 17);
+      }
+
+      // Switch to map on mobile so devotee sees it immediately
+      if (window.innerWidth < 1024) {
+        toggleMobileView('map');
+      }
+    }
+
+    function closeActiveMapTargetCard() {
+      const card = document.getElementById("active-map-target-card");
+      if (card) card.classList.add("hidden");
+    }
+
+    function handleMapUseLocation() {
+      const btn = document.getElementById("map-btn-location");
+      if (!navigator.geolocation) return alert("Geolocation not supported.");
+      btn.innerHTML = `<span>⏳</span> Locating...`;
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          btn.innerHTML = `<span>✓</span> Location Active`;
+          updateGoogleMapEmbed(`${pos.coords.latitude},${pos.coords.longitude}`, 16);
+        },
+        () => {
+          btn.innerHTML = `<span>📍</span> Use My Location`;
+          alert("Could not fetch location.");
+        }
+      );
+    }
+
+    function handleUrlParameters() {
+      const params = new URLSearchParams(window.location.search);
+      const q = params.get("q") || params.get("search");
+      const area = params.get("area");
+      const id = params.get("id");
+      if (q) {
+        const inp = document.getElementById("map-search-input");
+        if (inp) inp.value = q;
+        handleMapSearch(q);
+      } else if (area) {
+        filterDedicatedMapArea(area);
+      } else if (id) {
+        setTimeout(() => {
+          const mandapams = getMandapams();
+          const target = mandapams.find(m => String(m.id) === String(id));
+          if (target) {
+            panToMandapam(target.latitude, target.longitude, target.id);
+          }
+        }, 500);
+      }
+    }
+
+    function handleWhatsAppShareItem(name, area, mapUrl) {
+      const text = encodeURIComponent(`🕉️ *${name}* (${area}, Karimnagar)\n\n📍 Open in Google Maps for Navigation:\n${mapUrl}\n\nExplore all Durga pandals in Karimnagar:\nhttps://karimnagardurga.in/map.html`);
+      window.open(`https://api.whatsapp.com/send?text=${text}`, "_blank");
+    }
+
+    function openInstagramApp(handle) {
+      window.open(`https://instagram.com/${handle}`, '_blank');
+    }
+  </script>
+</body>
+</html>

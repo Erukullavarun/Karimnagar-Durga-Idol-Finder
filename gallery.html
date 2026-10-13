@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Navratri Photo Gallery & Downloads - Karimnagar Durga Idol Finder</title>
+  <meta name="description" content="Browse high-resolution photos of Durga idols, aartis, and celebrations across Karimnagar. Like your favorite pandals and download HD photos directly." />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/jpeg" href="assets/images/logo.jpg" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            saffron: {
+              50: '#fdf4f2',
+              100: '#fae5e0',
+              200: '#f4cdc4',
+              300: '#eaab9d',
+              400: '#d75d4f',
+              500: '#b8232e',
+              600: '#961621',
+              700: '#770e17',
+              800: '#5a0a11',
+              900: '#3f060b',
+            },
+            crimson: {
+              50: '#fdf2f4',
+              100: '#fbe4e8',
+              200: '#f7cbd2',
+              300: '#f0a3af',
+              400: '#e46b7f',
+              500: '#c51d34',
+              600: '#9e1025',
+              700: '#7e0c1c',
+              800: '#620a16',
+              900: '#46060f',
+            },
+            gold: {
+              50: '#fffef0',
+              100: '#fefbd8',
+              200: '#fef5b0',
+              300: '#fdec7d',
+              400: '#eac840',
+              500: '#d4af37',
+              600: '#b38c22',
+              700: '#8c6b16',
+              800: '#664c0f',
+              900: '#433107',
+            },
+            cream: {
+              50: '#fcfaf7',
+              100: '#f7f3ec',
+              200: '#ede5d8',
+              300: '#dfd2be',
+              400: '#cbb89e',
+            },
+            ink: {
+              50: '#fbf9f9',
+              500: '#8a787c',
+              600: '#655257',
+              700: '#443539',
+              800: '#281d20',
+              900: '#140b0d',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="bg-cream-50 text-ink-900 flex flex-col min-h-screen">
+
+  <!-- Top Sacred Bar -->
+  <div class="bg-gradient-to-r from-crimson-700 via-saffron-600 to-amber-600 py-1.5 px-4 text-center text-xs font-semibold text-white tracking-wider flex items-center justify-between">
+    <span class="hidden sm:inline-block">🔱 ॥ ఓం శ్రీ దుర్గాయై నమః ॥</span>
+    <span class="mx-auto font-medium">శ్రీ కరీంనగర్ దుర్గా నవరాత్రి ఉత్సవాలు • Navratri Photo Gallery</span>
+    <span class="hidden sm:inline-block">॥ జై దుర్గా భవానీ ॥ 🔱</span>
+  </div>
+
+  <!-- Header / Navbar -->
+  <header class="sticky top-0 z-[1000] bg-white/95 backdrop-blur-md border-b border-cream-300 shadow-soft">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+      
+      <!-- Logo -->
+      <a href="index.html" class="flex items-center gap-3 group">
+        <img src="assets/images/logo.jpg" alt="Karimnagar Durga Idol Finder Logo" class="w-12 h-12 rounded-full object-cover shadow-soft ring-2 ring-saffron-500/40 group-hover:scale-105 transition-transform" />
+        <div>
+          <span class="font-display font-black text-lg sm:text-xl text-ink-900 tracking-tight block leading-none site-logo-text">Karimnagar Durga</span>
+          <span class="text-[10px] uppercase font-bold tracking-widest text-saffron-600 block mt-0.5">Idol Finder • Navratri</span>
+        </div>
+      </a>
+
+      <!-- Desktop Navigation -->
+      <nav class="hidden md:flex items-center gap-7 text-sm font-medium">
+        <a href="index.html" class="text-ink-700 hover:text-saffron-600 transition-colors">Home</a>
+        <a href="map.html" class="text-ink-700 hover:text-saffron-600 transition-colors">Explore Map</a>
+        <a href="unique.html" class="text-ink-700 hover:text-saffron-600 transition-colors">Unique Durga</a>
+        <a href="gallery.html" class="text-saffron-600 font-bold border-b-2 border-saffron-500 pb-1">Gallery</a>
+        <a href="about.html" class="text-ink-700 hover:text-saffron-600 transition-colors">About</a>
+      </nav>
+
+      <!-- Right Action Button -->
+      <div class="flex items-center gap-3">
+        <a href="submit.html" class="btn-primary text-xs sm:text-sm !py-2.5 !px-5 flex items-center gap-1.5 shadow-md">
+          <span>🔱</span>
+          <span>+ Add Durga</span>
+        </a>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- MAIN GALLERY CONTENT -->
+  <main class="flex-1 py-10 sm:py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- Page Header -->
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+        <div>
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-saffron-50 text-saffron-700 text-xs font-bold border border-saffron-200 mb-2.5">
+            <span>📸</span> Navratri Moments & Downloads
+          </span>
+          <h1 class="font-display text-3xl sm:text-5xl font-extrabold text-ink-900 leading-tight">
+            Karimnagar Durga <span class="text-saffron-600">Photo Gallery</span>
+          </h1>
+          <p class="text-xs sm:text-sm text-ink-600 mt-2 max-w-xl leading-relaxed">
+            High-definition photos from pandals across Karimnagar. Devotees can like their favorite idols and download HD images directly to their device.
+          </p>
+        </div>
+
+        <!-- Filter Buttons & Actions -->
+        <div class="flex flex-wrap items-center gap-2.5">
+          <button onclick="filterDedicatedGallery('all')" id="g-tab-all" class="g-tab-btn px-4 py-2 rounded-full text-xs font-bold bg-saffron-500 text-white shadow-soft transition">
+            All Photos
+          </button>
+          <button onclick="filterDedicatedGallery('liked')" id="g-tab-liked" class="g-tab-btn px-4 py-2 rounded-full text-xs font-bold bg-white border border-cream-300 text-ink-700 hover:bg-cream-100 transition flex items-center gap-1.5">
+            <span>❤️</span> Most Liked
+          </button>
+          <a href="submit.html" class="btn-outline text-xs !py-2 !px-4">
+            <span>📤</span> Upload Photos
+          </a>
+        </div>
+      </div>
+
+      <!-- Gallery Grid -->
+      <div id="dedicated-gallery-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-5">
+        <!-- Injected by JavaScript -->
+      </div>
+
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="mt-auto">
+    <div class="border-t border-cream-300 bg-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col items-center text-center gap-6 lg:flex-row lg:justify-between lg:text-left">
+        
+        <a class="shrink-0 flex items-center gap-3" href="index.html">
+          <img src="assets/images/logo.jpg" alt="Karimnagar Durga" class="h-12 w-12 rounded-full object-cover shadow-soft ring-2 ring-saffron-400" />
+          <div class="text-left">
+            <span class="font-display font-black text-lg text-ink-900 block leading-tight site-logo-text">Karimnagar Durga</span>
+            <span class="text-[10px] text-saffron-600 font-bold uppercase tracking-wider block">Idol Finder • Navratri</span>
+          </div>
+        </a>
+
+        <nav class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-ink-600">
+          <a class="hover:text-saffron-600 transition-colors" href="index.html">Home</a>
+          <a class="hover:text-saffron-600 transition-colors" href="map.html">Explore Map</a>
+          <a class="hover:text-saffron-600 transition-colors" href="unique.html">Unique Durga</a>
+          <a class="hover:text-saffron-600 transition-colors font-bold text-saffron-600" href="gallery.html">Gallery</a>
+          <a class="hover:text-saffron-600 transition-colors" href="about.html">About</a>
+          <a class="hover:text-saffron-600 transition-colors font-medium text-saffron-700" href="submit.html">Add Durga</a>
+        </nav>
+
+        <div class="flex items-center gap-2">
+          <span class="text-xs text-ink-600">Developer:</span>
+          <a href="https://instagram.com/chintuvarun_3008" target="_blank" rel="noopener noreferrer" class="group inline-flex items-center gap-1.5 rounded-full border border-saffron-200 bg-saffron-50 px-3.5 py-1 text-xs font-semibold text-saffron-700 shadow-xs hover:border-saffron-400 hover:bg-saffron-100 transition-all">
+            <span>📸</span>
+            <span id="footer-developers" class="font-bold">@chintuvarun_3008</span>
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="border-t border-cream-300 bg-cream-200">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center gap-3 py-4 pb-24 sm:pb-4 text-center text-[11px] text-ink-600 sm:flex-row sm:justify-between sm:text-left">
+        <p>Karimnagar Durga Idol Finder © 2026 &nbsp;|&nbsp; Celebrate Culture &nbsp;|&nbsp; Support Local &nbsp;|&nbsp; Keep Karimnagar Beautiful</p>
+        <div class="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
+          <span class="font-medium text-saffron-800">🔱 శ్రీ కరీంనగర్ దుర్గా నవరాత్రోత్సవాలు</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- MOBILE BOTTOM NAVIGATION -->
+  <nav class="fixed inset-x-0 bottom-0 z-[1200] border-t border-cream-300 bg-white/95 backdrop-blur sm:hidden">
+    <div class="grid grid-cols-5 items-center px-2 py-1 text-[10px] font-medium text-center">
+      <a href="index.html" class="py-1 text-ink-600 flex flex-col items-center">
+        <span class="text-base">🏠</span>
+        <span>Home</span>
+      </a>
+      <a href="map.html" class="py-1 text-ink-600 flex flex-col items-center">
+        <span class="text-base">🗺️</span>
+        <span>Map</span>
+      </a>
+      <div class="flex justify-center -mt-5">
+        <a href="submit.html" class="h-12 w-12 rounded-full bg-saffron-500 text-white shadow-lift flex items-center justify-center text-xl font-bold ring-4 ring-white">
+          +
+        </a>
+      </div>
+      <a href="gallery.html" class="py-1 text-saffron-600 font-bold flex flex-col items-center">
+        <span class="text-base">📸</span>
+        <span>Gallery</span>
+      </a>
+      <a href="about.html" class="py-1 text-ink-600 flex flex-col items-center">
+        <span class="text-base">ℹ️</span>
+        <span>About</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- FULL PHOTO LIGHTBOX WITH LIKE & DOWNLOAD -->
+  <div id="photo-lightbox-modal" class="fixed inset-0 z-[2500] hidden items-center justify-center p-4 bg-black/90 backdrop-blur-md">
+    <div class="relative max-w-4xl w-full bg-ink-900 rounded-3xl overflow-hidden border border-amber-500/30 shadow-2xl flex flex-col my-auto">
+      
+      <!-- Top Bar -->
+      <div class="flex items-center justify-between p-4 bg-black/50 border-b border-white/10 text-white">
+        <div class="flex items-center gap-3">
+          <img src="assets/images/logo.jpg" alt="Logo" class="h-8 w-8 rounded-full object-cover ring-1 ring-amber-400" />
+          <div>
+            <h4 id="lightbox-title" class="font-display font-bold text-sm sm:text-base text-amber-200">Durga Pandal Photo</h4>
+            <p id="lightbox-area" class="text-[11px] text-cream-300">Karimnagar</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button id="lightbox-download-btn" onclick="handleLightboxDownload()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-saffron-500 hover:bg-saffron-600 text-white text-xs font-bold shadow-soft transition">
+            <span>⬇️</span> <span>Download HD</span>
+          </button>
+          <button onclick="closePhotoLightbox()" class="h-8 w-8 rounded-full bg-white/10 hover:bg-white/25 text-white grid place-items-center text-sm font-bold transition">
+            ✕
+          </button>
+        </div>
+      </div>
+
+      <!-- Photo -->
+      <div class="relative flex items-center justify-center bg-black/80 p-2 sm:p-4 min-h-[300px] max-h-[70vh] overflow-hidden">
+        <img id="lightbox-img" src="" alt="Durga Full View" class="max-h-[65vh] max-w-full object-contain rounded-xl shadow-2xl transition-transform duration-300" />
+        <button onclick="navigateLightbox(-1)" class="absolute left-3 top-1/2 -translate-y-1/2 h-11 w-11 rounded-full bg-black/60 hover:bg-saffron-600 text-white grid place-items-center text-xl transition shadow-lg border border-white/20">
+          ‹
+        </button>
+        <button onclick="navigateLightbox(1)" class="absolute right-3 top-1/2 -translate-y-1/2 h-11 w-11 rounded-full bg-black/60 hover:bg-saffron-600 text-white grid place-items-center text-xl transition shadow-lg border border-white/20">
+          ›
+        </button>
+      </div>
+
+      <!-- Bottom Bar -->
+      <div class="p-4 bg-black/60 border-t border-white/10 text-white flex flex-wrap items-center justify-between gap-3 text-xs">
+        <p id="lightbox-caption" class="text-cream-200 italic max-w-md"></p>
+        <div class="flex items-center gap-3">
+          <button id="lightbox-like-btn" onclick="handleLightboxLike()" class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/10 hover:bg-rose-600/30 border border-white/20 text-white font-bold transition">
+            <span id="lightbox-like-icon">🤍</span>
+            <span id="lightbox-like-count">0</span>
+          </button>
+          <button id="lightbox-share-btn" onclick="handleLightboxShare()" class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold transition">
+            <span>📲</span> Share WhatsApp
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+  <script>
+    let activeGalleryTab = 'all';
+
+    document.addEventListener("DOMContentLoaded", () => {
+      renderDedicatedGallery();
+    });
+
+    function filterDedicatedGallery(tab) {
+      activeGalleryTab = tab;
+      document.querySelectorAll('.g-tab-btn').forEach(btn => {
+        btn.className = 'g-tab-btn px-4 py-2 rounded-full text-xs font-bold bg-white border border-cream-300 text-ink-700 hover:bg-cream-100 transition flex items-center gap-1.5';
+      });
+      const activeBtn = document.getElementById(`g-tab-${tab}`);
+      if (activeBtn) {
+        activeBtn.className = 'g-tab-btn px-4 py-2 rounded-full text-xs font-bold bg-saffron-500 text-white shadow-soft transition flex items-center gap-1.5';
+      }
+      renderDedicatedGallery();
+    }
+
+    let currentLightboxIndex = 0;
+    let currentGalleryPhotosList = [];
+
+    function handleCardLike(key, defaultLikes, ev) {
+      if (ev) ev.stopPropagation();
+      const res = togglePhotoLike(key, defaultLikes);
+      const iconEl = document.getElementById(`grid-like-icon-${key}`);
+      const countEl = document.getElementById(`grid-like-count-${key}`);
+      if (iconEl) iconEl.textContent = res.liked ? '❤️' : '🤍';
+      if (countEl) countEl.textContent = res.count;
+    }
+
+    function openPhotoLightboxByIndex(idx) {
+      if (!currentGalleryPhotosList || !currentGalleryPhotosList[idx]) return;
+      currentLightboxIndex = idx;
+      updateLightboxContent();
+      const modal = document.getElementById("photo-lightbox-modal");
+      if (modal) {
+        modal.classList.remove("hidden");
+        modal.classList.add("flex");
+      }
+    }
+
+    function closePhotoLightbox() {
+      const modal = document.getElementById("photo-lightbox-modal");
+      if (modal) {
+        modal.classList.add("hidden");
+        modal.classList.remove("flex");
+      }
+    }
+
+    function navigateLightbox(dir) {
+      if (!currentGalleryPhotosList.length) return;
+      currentLightboxIndex = (currentLightboxIndex + dir + currentGalleryPhotosList.length) % currentGalleryPhotosList.length;
+      updateLightboxContent();
+    }
+
+    function updateLightboxContent() {
+      const photo = currentGalleryPhotosList[currentLightboxIndex];
+      if (!photo) return;
+
+      const img = document.getElementById("lightbox-img");
+      const title = document.getElementById("lightbox-title");
+      const area = document.getElementById("lightbox-area");
+      const caption = document.getElementById("lightbox-caption");
+      const likeCount = document.getElementById("lightbox-like-count");
+      const likeIcon = document.getElementById("lightbox-like-icon");
+
+      if (img) img.src = photo.url;
+      if (title) title.textContent = photo.mandapamName;
+      if (area) area.textContent = `📍 ${photo.area}`;
+      if (caption) caption.textContent = photo.caption || `${photo.mandapamName} Darshan`;
+
+      const liked = isPhotoLiked(photo.key);
+      const count = getPhotoLikeCount(photo.key, photo.defaultLikes);
+      if (likeCount) likeCount.textContent = count;
+      if (likeIcon) likeIcon.textContent = liked ? '❤️' : '🤍';
+    }
+
+    function handleLightboxLike() {
+      const photo = currentGalleryPhotosList[currentLightboxIndex];
+      if (!photo) return;
+      const res = togglePhotoLike(photo.key, photo.defaultLikes);
+      const likeCount = document.getElementById("lightbox-like-count");
+      const likeIcon = document.getElementById("lightbox-like-icon");
+      if (likeCount) likeCount.textContent = res.count;
+      if (likeIcon) likeIcon.textContent = res.liked ? '❤️' : '🤍';
+
+      // Update grid item as well
+      const gridIcon = document.getElementById(`grid-like-icon-${photo.key}`);
+      const gridCount = document.getElementById(`grid-like-count-${photo.key}`);
+      if (gridIcon) gridIcon.textContent = res.liked ? '❤️' : '🤍';
+      if (gridCount) gridCount.textContent = res.count;
+    }
+
+    function handleLightboxDownload() {
+      const photo = currentGalleryPhotosList[currentLightboxIndex];
+      if (!photo) return;
+      triggerPhotoDownload(photo.url, sanitizeFileName(photo.mandapamName + '_' + photo.area));
+    }
+
+    function handleLightboxShare() {
+      const photo = currentGalleryPhotosList[currentLightboxIndex];
+      if (!photo) return;
+      const text = `🔱 Sri Durga Mata Darshan from ${photo.mandapamName}, ${photo.area}, Karimnagar! View and locate pandals here: https://karimnagardurga.in/`;
+      window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
+    }
+
+    // Keyboard support for Lightbox
+    document.addEventListener("keydown", (e) => {
+      const modal = document.getElementById("photo-lightbox-modal");
+      if (!modal || modal.classList.contains("hidden")) return;
+      if (e.key === "Escape") closePhotoLightbox();
+      if (e.key === "ArrowLeft") navigateLightbox(-1);
+      if (e.key === "ArrowRight") navigateLightbox(1);
+    });
+
+    function renderDedicatedGallery() {
+      buildGalleryPhotosArray();
+      const container = document.getElementById("dedicated-gallery-grid");
+      if (!container) return;
+
+      let photos = [...allGalleryPhotos];
+      if (activeGalleryTab === 'liked') {
+        photos.sort((a, b) => {
+          const aLikes = getPhotoLikeCount(a.key, a.defaultLikes);
+          const bLikes = getPhotoLikeCount(b.key, b.defaultLikes);
+          return bLikes - aLikes;
+        });
+      }
+      currentGalleryPhotosList = photos;
+
+      if (photos.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-full py-16 text-center">
+            <span class="text-4xl block mb-2">📸</span>
+            <h3 class="font-display font-bold text-lg text-ink-900">No Approved Durga Photos Yet</h3>
+            <p class="text-xs text-ink-500 mt-1">Photos submitted through "Add Durga" will appear here once approved by admin.</p>
+            <a href="submit.html" class="inline-block mt-4 btn-primary text-xs !py-2.5 !px-5">
+              <span>🔱</span> + Add Durga & Photos
+            </a>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = photos.map((photo, idx) => {
+        const isLiked = isPhotoLiked(photo.key);
+        const likesCount = getPhotoLikeCount(photo.key, photo.defaultLikes);
+        return `
+          <div class="group flex flex-col overflow-hidden rounded-2xl border border-cream-300 bg-white shadow-soft hover:-translate-y-1 hover:shadow-lift transition-all duration-300">
+            <div class="relative aspect-[4/3] overflow-hidden bg-cream-100 cursor-pointer" onclick="openPhotoLightboxByIndex(${idx})">
+              <img src="${photo.url}" alt="${photo.caption}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+              <div class="absolute top-2 left-2">
+                <span class="px-2 py-0.5 rounded-md bg-black/60 text-white font-bold text-[10px] backdrop-blur-sm">📍 ${photo.area}</span>
+              </div>
+            </div>
+            <div class="p-3 flex flex-col justify-between flex-1">
+              <h4 class="font-display text-xs font-bold text-ink-900 truncate">${photo.mandapamName}</h4>
+              <div class="mt-2.5 pt-2 border-t border-cream-200 flex items-center justify-between text-xs">
+                <button onclick="handleCardLike('${photo.key}', ${photo.defaultLikes}, event)" class="flex items-center gap-1 text-ink-700 hover:text-rose-600 font-semibold transition cursor-pointer" title="Like photo">
+                  <span id="grid-like-icon-${photo.key}">${isLiked ? '❤️' : '🤍'}</span>
+                  <span id="grid-like-count-${photo.key}" class="text-[11px]">${likesCount}</span>
+                </button>
+                <button onclick="triggerPhotoDownload('${photo.url}', '${sanitizeFileName(photo.mandapamName + '_' + photo.area)}'); event.stopPropagation();" class="flex items-center gap-1 text-[10px] font-bold text-saffron-700 bg-saffron-50 hover:bg-saffron-100 px-2.5 py-1 rounded-full border border-saffron-200 transition cursor-pointer" title="Download HD image">
+                  <span>⬇️</span> Download
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+  </script>
+</body>
+</html>
