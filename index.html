@@ -901,17 +901,10 @@
             attributionControl: true
           });
 
-          const streetLayer = L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
-            subdomains: "abcd",
-            maxZoom: 20,
-            maxNativeZoom: 19,
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>'
-          }).addTo(homeLeafletMap);
-
           const osmLayer = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
             maxZoom: 19,
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors'
-          });
+          }).addTo(homeLeafletMap);
 
           const satelliteLayer = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
             maxZoom: 19,
@@ -919,7 +912,7 @@
           });
 
           L.control.layers(
-            { "🗺️ Street Map": streetLayer, "📍 OpenStreetMap": osmLayer, "🛰️ Satellite": satelliteLayer },
+            { "📍 OpenStreetMap": osmLayer, "🛰️ Satellite": satelliteLayer },
             null,
             { position: "topright" }
           ).addTo(homeLeafletMap);
