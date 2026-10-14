@@ -926,8 +926,6 @@
             currentPandal.handlerDp = data.handlerDp;
             const igAvatar = document.getElementById("detail-instagram-avatar");
             if (igAvatar) igAvatar.src = data.handlerDp;
-            const dpUploadBox = document.getElementById("detail-upload-dp-container");
-            if (dpUploadBox) dpUploadBox.classList.add("hidden");
             // Also update in localStorage cache
             const mandapams = getMandapams();
             const idx = mandapams.findIndex(m => String(m.id) === String(currentPandal.id));
