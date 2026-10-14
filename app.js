@@ -131,25 +131,10 @@ function initApp() {
   renderAllViews();
 }
 
-const DEVELOPER_DPS = [
-  "assets/images/developer-varun.jpg"
-];
-
 function updateDeveloperDp() {
-  const dpUrl = "assets/images/developer-varun.jpg";
+  const dpUrl = (typeof window.DEVELOPER_DP !== "undefined") ? window.DEVELOPER_DP : "assets/images/developer-varun.jpg";
   const popupImg = document.getElementById("developer-popup-dp");
   if (popupImg) popupImg.src = dpUrl;
-  const cardImg = document.getElementById("developer-card-dp");
-  if (cardImg) cardImg.src = dpUrl;
-}
-
-function cycleDeveloperPopupDp() {
-  openInstagramApp('chintuvarun_3008');
-}
-
-function renderDeveloperDpDots() {
-  const container = document.getElementById("developer-dp-dots");
-  if (container) container.innerHTML = '';
 }
 
 // Developer modal controllers

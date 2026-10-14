@@ -250,9 +250,6 @@ window.DEVELOPER_INSTAGRAM = {
   dp: "assets/images/developer-varun.jpg"
 };
 window.DEVELOPER_DP = "assets/images/developer-varun.jpg";
-window.DEVELOPER_PROFILE_PICS = [
-  "assets/images/developer-varun.jpg"
-];
 
 // Helper to get exact Handler DP for a pandal (Strictly no website logos, Durga photos, or developer DP)
 function getHandlerProfileDp(mandapam) {
