@@ -43,8 +43,8 @@ app.use((req, res, next) => {
   }
   next();
 });
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+app.use(express.json({ limit: '200mb' }));
+app.use(express.urlencoded({ extended: true, limit: '200mb' }));
 
 // Serve uploaded idol photos
 app.use('/uploads', express.static(UPLOADS_DIR, { maxAge: '7d' }));

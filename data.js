@@ -146,24 +146,19 @@ window.KARIMNAGAR_COLONY_COORDS = window.KARIMNAGAR_COLONY_COORDS || {
 };
 var KARIMNAGAR_COLONY_COORDS = window.KARIMNAGAR_COLONY_COORDS;
 
-// 100% Free Authentic Google Maps Tile Layers Factory
+// 100% Free Authentic Google Maps Tile Layers Factory (Roadmap & Terrain only, satellite removed)
 function createGoogleTileLayers() {
   const roadmap = L.tileLayer('https://mt{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
     subdomains: ['0', '1', '2', '3'],
     maxZoom: 20,
     attribution: '&copy; Google Maps'
   });
-  const hybrid = L.tileLayer('https://mt{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
-    subdomains: ['0', '1', '2', '3'],
-    maxZoom: 20,
-    attribution: '&copy; Google Maps Satellite'
-  });
   const terrain = L.tileLayer('https://mt{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}', {
     subdomains: ['0', '1', '2', '3'],
     maxZoom: 20,
     attribution: '&copy; Google Maps Terrain'
   });
-  return { roadmap, hybrid, terrain };
+  return { roadmap, terrain };
 }
 
 // LocalStorage Keys
@@ -253,11 +248,22 @@ function getMandapams() {
   return DEFAULT_MANDAPAMS;
 }
 
-// Safe storage with error safety
+// Safe storage with error safety and high-capacity quota protection
 function safeSaveMandapams(mandapams) {
   if (!Array.isArray(mandapams)) return;
   try {
-    localStorage.setItem(STORAGE_KEYS.MANDAPAMS, JSON.stringify(mandapams));
+    const sanitized = mandapams.map(m => {
+      if (!m || !Array.isArray(m.photos)) return m;
+      const cleanPhotos = m.photos.map(p => {
+        const url = (typeof p === 'string') ? p : (p.url || '');
+        if (url && typeof url === 'string' && url.startsWith('data:image/') && url.length > 5000) {
+          return typeof p === 'string' ? 'assets/images/hero-durga.jpg' : { ...p, url: 'assets/images/hero-durga.jpg' };
+        }
+        return p;
+      });
+      return { ...m, photos: cleanPhotos };
+    });
+    localStorage.setItem(STORAGE_KEYS.MANDAPAMS, JSON.stringify(sanitized));
   } catch (quotaErr) {
     console.warn("LocalStorage storage notice:", quotaErr);
   }

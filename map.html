@@ -237,8 +237,9 @@
         <!-- Developer & Instagram ID -->
         <div class="flex items-center gap-2">
           <span class="text-xs text-ink-600">Developer:</span>
-          <a href="https://instagram.com/chintuvarun_3008" target="_blank" rel="noopener noreferrer" onclick="event.preventDefault(); openInstagramApp('chintuvarun_3008');" class="group inline-flex items-center gap-1.5 rounded-full border border-saffron-200 bg-saffron-50 px-3.5 py-1 text-xs font-semibold text-saffron-700 shadow-xs hover:border-saffron-400 hover:bg-saffron-100 transition-all cursor-pointer">
-            <span id="footer-developers" class="font-bold">chintuvarun_3008</span>
+          <a href="https://instagram.com/chintuvarun_3008" target="_blank" rel="noopener noreferrer" onclick="event.preventDefault(); openInstagramApp('chintuvarun_3008');" class="group inline-flex items-center gap-2 rounded-full border border-saffron-200 bg-saffron-50 py-1 pl-1 pr-3 text-xs font-semibold text-saffron-700 shadow-xs hover:border-saffron-400 hover:bg-saffron-100 transition-all cursor-pointer">
+            <img src="assets/images/logo.jpg" alt="Developer @chintuvarun_3008" class="w-5 h-5 rounded-full object-cover border border-saffron-300" />
+            <span id="footer-developers" class="font-bold">@chintuvarun_3008</span>
           </a>
         </div>
 
@@ -288,7 +289,7 @@
 
   <!-- Leaflet Script -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-  <script src="data.js"></script>
+  <script src="data.js?v=20261014_v1"></script>
   <script>
     // Karimnagar Colony & Landmark Coordinates
     window.KARIMNAGAR_COLONY_COORDS = window.KARIMNAGAR_COLONY_COORDS || {
@@ -545,7 +546,7 @@
             mapTypeId: "roadmap",
             fullscreenControl: true,
             streetViewControl: false,
-            mapTypeControl: true,
+            mapTypeControl: false,
             zoomControl: true
           });
           dedicatedGoogleInfoWindow = new google.maps.InfoWindow();
@@ -586,17 +587,6 @@
           maxZoom: 19,
           attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors'
         }).addTo(dedicatedMap);
-
-        const satelliteLayer = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
-          maxZoom: 19,
-          attribution: "Tiles &copy; Esri"
-        });
-
-        L.control.layers(
-          { "📍 OpenStreetMap": osmLayer, "🛰️ Satellite": satelliteLayer },
-          null,
-          { position: 'topright' }
-        ).addTo(dedicatedMap);
 
         setTimeout(() => {
           if (dedicatedMap) dedicatedMap.invalidateSize();
@@ -735,8 +725,8 @@
     }
 
     function renderMapMarkersAndList() {
-      // Filter for approved pandals only
-      const mandapams = getMandapams().filter(m => m.isVerified === true || (m.isVerified !== false && m.status !== 'pending'));
+      // Filter strictly for admin-approved pandals only
+      const mandapams = getMandapams().filter(m => (m.isVerified === true || m.status === 'approved') && m.status !== 'pending');
       const listEl = document.getElementById("map-pandals-list");
       const countBadge = document.getElementById("map-counter-badge");
       const listCount = document.getElementById("map-list-count");
@@ -764,8 +754,8 @@
 
         groupedPandals.forEach(group => {
           const count = group.items.length;
-          const badgeSvg = count > 1
-            ? `<circle cx="28" cy="10" r="9" fill="#d4af37" stroke="#ffffff" stroke-width="2"/><text x="28" y="13" font-size="10" font-weight="bold" fill="#770e17" text-anchor="middle">${count}</text>`
+          const badgeSvg = (count >= 1)
+            ? `<circle cx="28" cy="9" r="8" fill="#fef08a" stroke="#b91c1c" stroke-width="1.8"/><text x="28" y="12" font-size="9" font-weight="900" fill="#7f1d1d" text-anchor="middle" font-family="system-ui, sans-serif">${count}</text>`
             : '';
           const svgIcon = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
             <svg xmlns="http://www.w3.org/2000/svg" width="38" height="38" viewBox="0 0 38 38">
@@ -805,8 +795,8 @@
 
         groupedPandals.forEach((group, idx) => {
           const count = group.items.length;
-          const badgeHtml = count > 1
-            ? `<span style="position:absolute; top:-4px; right:-6px; background:#d4af37; color:#770e17; font-weight:800; font-size:10px; width:18px; height:18px; border-radius:50%; display:grid; place-items:center; border:2px solid #fff; box-shadow:0 2px 5px rgba(0,0,0,0.3); z-index:10;">${count}</span>`
+          const badgeHtml = (count >= 1)
+            ? `<span style="position:absolute; top:-4px; right:-6px; background:#fef08a; color:#7f1d1d; font-weight:900; font-size:10px; width:18px; height:18px; border-radius:50%; display:grid; place-items:center; border:2px solid #b91c1c; box-shadow:0 2px 6px rgba(0,0,0,0.35); z-index:10;">${count}</span>`
             : '';
 
           const trishulIcon = L.divIcon({

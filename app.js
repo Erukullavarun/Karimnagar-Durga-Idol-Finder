@@ -1,7 +1,7 @@
 // Main Frontend Application Logic for Karimnagar Durga Idol Finder
 
 let currentSiteConfig = getSiteConfig();
-let currentMandapams = getMandapams().filter(m => m.isVerified === true || m.status === 'approved');
+let currentMandapams = getMandapams().filter(m => (m.isVerified === true || m.status === 'approved') && m.status !== 'pending');
 let currentAreas = getAreasList();
 
 let activeCategoryFilter = "all";
@@ -10,6 +10,13 @@ let searchQuery = "";
 let userLocation = null;
 let leafletMap = null;
 let mapMarkers = [];
+let lastRenderedSignature = "";
+
+function computeDataSignature(mandapams, config) {
+  const pList = (mandapams || []).map(m => `${m.id}_${m.status}_${m.isVerified}_${m.updatedAt || ''}_${m.name || ''}_${m.latitude}_${m.longitude}`).join(';');
+  const cInfo = config ? `${config.stats?.locationsCount || 0}_${config.hero?.mainTitle || ''}` : '';
+  return `${pList}##${cInfo}`;
+}
 
 // Initialize on DOM load
 document.addEventListener("DOMContentLoaded", () => {
@@ -32,10 +39,10 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Multi-browser live polling: updates immediately when admin approves in another browser (Edge/Chrome/Mobile)
+  // Smooth background live polling (10s): only re-renders when admin approves/updates data, eliminating all page glitching
   setInterval(() => {
     syncIndexData();
-  }, 4000);
+  }, 10000);
 
   window.addEventListener("focus", () => {
     syncIndexData();
@@ -51,13 +58,24 @@ function syncIndexData() {
   fetch(getApiUrl("/api/mandapams?_t=" + Date.now()))
     .then(r => r.json())
     .then(res => {
+      let freshMandapams = [];
       if (res && res.success && Array.isArray(res.mandapams)) {
-        // Authoritative list of approved pandals directly from server
-        currentMandapams = res.mandapams;
-        safeSaveMandapams(res.mandapams);
+        // Authoritative list of strictly approved pandals directly from server
+        freshMandapams = res.mandapams.filter(m => (m.isVerified === true || m.status === 'approved') && m.status !== 'pending');
+        safeSaveMandapams(freshMandapams);
       } else {
-        currentMandapams = getMandapams().filter(m => m.isVerified === true || m.status === 'approved');
+        freshMandapams = getMandapams().filter(m => (m.isVerified === true || m.status === 'approved') && m.status !== 'pending');
       }
+
+      const newSignature = computeDataSignature(freshMandapams, getSiteConfig());
+      // If data has NOT changed, do not re-render DOM/Map (zero glitch, zero flickering!)
+      if (lastRenderedSignature && newSignature === lastRenderedSignature) {
+        return;
+      }
+
+      lastRenderedSignature = newSignature;
+      currentMandapams = freshMandapams;
+
       if (window._userActiveMapSearch) {
         return;
       }
@@ -65,9 +83,14 @@ function syncIndexData() {
     })
     .catch(() => {
       pullServerData(() => {
-        currentMandapams = getMandapams().filter(m => m.isVerified === true || m.status === 'approved');
-        if (window._userActiveMapSearch) return;
-        renderAllViews();
+        const localApproved = getMandapams().filter(m => (m.isVerified === true || m.status === 'approved') && m.status !== 'pending');
+        const newSignature = computeDataSignature(localApproved, getSiteConfig());
+        if (!lastRenderedSignature || newSignature !== lastRenderedSignature) {
+          lastRenderedSignature = newSignature;
+          currentMandapams = localApproved;
+          if (window._userActiveMapSearch) return;
+          renderAllViews();
+        }
       });
     });
 }
@@ -81,13 +104,18 @@ function renderAllViews() {
   renderAreaPills();
   renderMandapamsDirectory();
   renderCtaAndFooter();
-  initLeafletMap();
+  if (typeof window.initLeafletMap === "function") {
+    try { window.initLeafletMap(); } catch (e) { console.warn("Map init error:", e); }
+  } else {
+    initLeafletMap();
+  }
 }
 
 function initApp() {
   currentSiteConfig = getSiteConfig();
-  currentMandapams = getMandapams().filter(m => m.isVerified === true || m.status === 'approved');
+  currentMandapams = getMandapams().filter(m => (m.isVerified === true || m.status === 'approved') && m.status !== 'pending');
   currentAreas = getAreasList();
+  lastRenderedSignature = computeDataSignature(currentMandapams, currentSiteConfig);
   renderAllViews();
 }
 
@@ -443,141 +471,142 @@ function initLeafletMap() {
       return;
     }
 
-    if (leafletMap) {
-      try { leafletMap.remove(); } catch (e) {}
-      leafletMap = null;
-    }
-
-    if (mapContainer._leaflet_id) {
-      mapContainer._leaflet_id = null;
-    }
-
     const centerLat = 18.4386;
     const centerLng = 79.1288;
 
-    leafletMap = L.map("leaflet-map-container", {
-      center: [centerLat, centerLng],
-      zoom: 14,
-      maxZoom: 20,
-      zoomControl: true,
-      scrollWheelZoom: true,
-      attributionControl: false
-    });
+    if (!leafletMap) {
+      if (mapContainer._leaflet_id) {
+        delete mapContainer._leaflet_id;
+      }
 
-    // 100% Free Authentic Google Maps Tiles & Layer Switcher
-    const googleTiles = typeof createGoogleTileLayers === "function" ? createGoogleTileLayers() : {
-      roadmap: L.tileLayer('https://mt{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+      leafletMap = L.map("leaflet-map-container", {
+        center: [centerLat, centerLng],
+        zoom: 14,
+        maxZoom: 20,
+        zoomControl: true,
+        scrollWheelZoom: true,
+        attributionControl: false
+      });
+
+      // 100% Free Authentic Google Maps Tiles (Roadmap only, satellite removed per request)
+      const googleRoadmapTile = L.tileLayer('https://mt{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
         subdomains: ['0', '1', '2', '3'],
         maxZoom: 20,
         attribution: '&copy; Google Maps'
-      }),
-      hybrid: L.tileLayer('https://mt{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
-        subdomains: ['0', '1', '2', '3'],
-        maxZoom: 20,
-        attribution: '&copy; Google Maps Satellite'
-      }),
-      terrain: L.tileLayer('https://mt{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}', {
-        subdomains: ['0', '1', '2', '3'],
-        maxZoom: 20,
-        attribution: '&copy; Google Maps Terrain'
-      })
-    };
+      });
+      googleRoadmapTile.addTo(leafletMap);
 
-    googleTiles.roadmap.addTo(leafletMap);
-    try {
-      L.control.layers({
-        "🗺️ Google Roadmap": googleTiles.roadmap,
-        "🛰️ Google Satellite": googleTiles.hybrid,
-        "⛰️ Google Terrain": googleTiles.terrain
-      }, null, { position: 'topright' }).addTo(leafletMap);
-    } catch (e) {}
+      setTimeout(() => {
+        if (leafletMap) leafletMap.invalidateSize();
+      }, 250);
+    }
 
-    setTimeout(() => {
-      if (leafletMap) leafletMap.invalidateSize();
-    }, 250);
+    // Clear existing markers safely without recreating map canvas
+    mapMarkers.forEach(m => {
+      try { leafletMap.removeLayer(m); } catch (e) {}
+    });
+    mapMarkers = [];
 
-  mapMarkers = [];
-
-  currentMandapams.forEach(item => {
-    if (!item.latitude || !item.longitude) return;
-
-    const mapUrl = getGoogleMapsUrl(item);
-    const photo = (item.photos && item.photos.length > 0) ? (typeof item.photos[0] === 'string' ? item.photos[0] : item.photos[0].url) : "assets/images/hero-durga.jpg";
-
-    // Sacred Trishul Map Pin Marker
-    const safeId = String(item.id || Math.random()).replace(/[^a-zA-Z0-9_-]/g, '_');
-    const trishulPinHtml = `
-      <div class="trishul-pin-marker" style="position:relative; width:40px; height:52px; cursor:pointer; filter:drop-shadow(0 4px 10px rgba(126,12,28,0.55));">
-        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="52" viewBox="0 0 40 52">
-          <defs>
-            <linearGradient id="pinGradApp_${safeId}" x1="0" y1="0" x2="40" y2="52" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stop-color="#dc2626"/>
-              <stop offset="45%" stop-color="#b91c1c"/>
-              <stop offset="100%" stop-color="#7f1d1d"/>
-            </linearGradient>
-            <linearGradient id="goldTrishApp_${safeId}" x1="0" y1="0" x2="0" y2="24" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stop-color="#fef08a"/>
-              <stop offset="50%" stop-color="#eab308"/>
-              <stop offset="100%" stop-color="#ca8a04"/>
-            </linearGradient>
-          </defs>
-          <path d="M20 1C9.5 1 1 9.5 1 20C1 33.5 18 50 19.2 51.1C19.6 51.5 20.4 51.5 20.8 51.1C22 50 39 33.5 39 20C39 9.5 30.5 1 20 1Z" 
-                fill="url(#pinGradApp_${safeId})" stroke="#ffd700" stroke-width="2"/>
-          <circle cx="20" cy="20" r="13.5" fill="#ffffff" stroke="#f59e0b" stroke-width="1.8"/>
-          <g transform="translate(8, 8)">
-            <path d="M12 1.5 L14.2 6.5 L12.9 6.5 L12.9 15 L11.1 15 L11.1 6.5 L9.8 6.5 Z" fill="url(#goldTrishApp_${safeId})"/>
-            <path d="M4.5 4 C4.2 8.5 7.8 12.8 11.1 13.5 L11.1 11.5 C8.5 11 6.5 8 6.8 5 C7.8 6.8 9.3 7.8 11.1 8.2 L11.1 6.8 C9 6.3 7.2 5 6.5 4 Z" fill="url(#goldTrishApp_${safeId})"/>
-            <path d="M19.5 4 C19.8 8.5 16.2 12.8 12.9 13.5 L12.9 11.5 C15.5 11 17.5 8 17.2 5 C16.2 6.8 14.7 7.8 12.9 8.2 L12.9 6.8 C15 6.3 16.8 5 17.5 4 Z" fill="url(#goldTrishApp_${safeId})"/>
-            <ellipse cx="12" cy="14.5" rx="3.8" ry="1.2" fill="#d97706"/>
-            <rect x="11.1" y="14.5" width="1.8" height="7.5" fill="url(#goldTrishApp_${safeId})"/>
-            <circle cx="12" cy="22.5" r="1.3" fill="#d97706"/>
-          </g>
-        </svg>
-      </div>
-    `;
-
-    const customIcon = L.divIcon({
-      className: "trishul-pin-marker",
-      html: trishulPinHtml,
-      iconSize: [40, 52],
-      iconAnchor: [20, 51],
-      popupAnchor: [0, -48]
+    // Group pandals by coordinates (~10m)
+    const groups = new Map();
+    currentMandapams.forEach(item => {
+      const lat = parseFloat(item.latitude);
+      const lng = parseFloat(item.longitude);
+      if (isNaN(lat) || isNaN(lng)) return;
+      const key = `${lat.toFixed(4)},${lng.toFixed(4)}`;
+      if (!groups.has(key)) {
+        groups.set(key, { lat, lng, items: [] });
+      }
+      groups.get(key).items.push(item);
     });
 
-    const marker = L.marker([item.latitude, item.longitude], { icon: customIcon }).addTo(leafletMap);
+    groups.forEach((group, gKey) => {
+      const count = group.items.length;
+      const safeId = String(gKey).replace(/[^a-zA-Z0-9_-]/g, '_');
+      const badgeSvg = (count >= 1)
+        ? `<circle cx="33" cy="9" r="8" fill="#fef08a" stroke="#b91c1c" stroke-width="1.8"/><text x="33" y="12" font-size="9" font-weight="900" fill="#7f1d1d" text-anchor="middle" font-family="system-ui, sans-serif">${count}</text>`
+        : '';
 
-    const streetViewUrl = (item.latitude && item.longitude)
-      ? `https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${item.latitude},${item.longitude}`
-      : mapUrl;
-
-    const popupHtml = `
-      <div style="font-family:system-ui, sans-serif; width:230px; padding:2px;">
-        <a href="pandal.html?id=${encodeURIComponent(item.id)}" style="display:block; text-decoration:none;">
-          <img src="${photo}" alt="${item.name}" style="width:100%; height:110px; object-fit:cover; border-radius:10px; margin-bottom:8px; cursor:pointer;" onerror="this.src='assets/images/hero-durga.jpg'" />
-          <h4 style="font-weight:bold; font-size:13px; color:#140b0d; margin:0 0 4px 0;">🔱 ${item.name}</h4>
-        </a>
-        <p style="font-size:11px; color:#770e17; font-weight:600; margin:0 0 6px 0;">📍 ${item.area}</p>
-        <div style="display:flex; flex-direction:column; gap:5px;">
-          <a href="${mapUrl}" target="_blank" rel="noopener noreferrer" style="display:flex; align-items:center; justify-content:center; gap:6px; background:#b8232e; color:white; text-align:center; padding:7px 10px; border-radius:8px; font-size:11px; font-weight:bold; text-decoration:none; box-shadow:0 2px 6px rgba(184,35,46,0.35);">
-            <span>📍 Open Pin in Google Maps ➔</span>
-          </a>
-          <a href="pandal.html?id=${encodeURIComponent(item.id)}" style="display:block; background:#fdf4f2; border:1px solid #eaab9d; color:#770e17; text-align:center; padding:6px; border-radius:8px; font-size:11px; font-weight:bold; text-decoration:none;">
-            🔱 Explore Idol Details
-          </a>
-          <a href="${streetViewUrl}" target="_blank" rel="noopener noreferrer" style="display:block; background:#1e293b; color:white; text-align:center; padding:6px; border-radius:8px; font-size:11px; font-weight:bold; text-decoration:none;">
-            👁️ Open Free Street View ➔
-          </a>
+      const trishulPinHtml = `
+        <div class="trishul-pin-marker" style="position:relative; width:44px; height:52px; cursor:pointer; filter:drop-shadow(0 4px 10px rgba(126,12,28,0.55));">
+          <svg xmlns="http://www.w3.org/2000/svg" width="44" height="52" viewBox="0 0 44 52">
+            <defs>
+              <linearGradient id="pinGradApp_${safeId}" x1="0" y1="0" x2="40" y2="52" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#dc2626"/>
+                <stop offset="45%" stop-color="#b91c1c"/>
+                <stop offset="100%" stop-color="#7f1d1d"/>
+              </linearGradient>
+              <linearGradient id="goldTrishApp_${safeId}" x1="0" y1="0" x2="0" y2="24" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#fef08a"/>
+                <stop offset="50%" stop-color="#eab308"/>
+                <stop offset="100%" stop-color="#ca8a04"/>
+              </linearGradient>
+            </defs>
+            <path d="M20 1C9.5 1 1 9.5 1 20C1 33.5 18 50 19.2 51.1C19.6 51.5 20.4 51.5 20.8 51.1C22 50 39 33.5 39 20C39 9.5 30.5 1 20 1Z" 
+                  fill="url(#pinGradApp_${safeId})" stroke="#ffd700" stroke-width="2"/>
+            <circle cx="20" cy="20" r="13.5" fill="#ffffff" stroke="#f59e0b" stroke-width="1.8"/>
+            <g transform="translate(8, 8)">
+              <path d="M12 1.5 L14.2 6.5 L12.9 6.5 L12.9 15 L11.1 15 L11.1 6.5 L9.8 6.5 Z" fill="url(#goldTrishApp_${safeId})"/>
+              <path d="M4.5 4 C4.2 8.5 7.8 12.8 11.1 13.5 L11.1 11.5 C8.5 11 6.5 8 6.8 5 C7.8 6.8 9.3 7.8 11.1 8.2 L11.1 6.8 C9 6.3 7.2 5 6.5 4 Z" fill="url(#goldTrishApp_${safeId})"/>
+              <path d="M19.5 4 C19.8 8.5 16.2 12.8 12.9 13.5 L12.9 11.5 C15.5 11 17.5 8 17.2 5 C16.2 6.8 14.7 7.8 12.9 8.2 L12.9 6.8 C15 6.3 16.8 5 17.5 4 Z" fill="url(#goldTrishApp_${safeId})"/>
+              <ellipse cx="12" cy="14.5" rx="3.8" ry="1.2" fill="#d97706"/>
+              <rect x="11.1" y="14.5" width="1.8" height="7.5" fill="url(#goldTrishApp_${safeId})"/>
+              <circle cx="12" cy="22.5" r="1.3" fill="#d97706"/>
+            </g>
+            ${badgeSvg}
+          </svg>
         </div>
-      </div>
-    `;
+      `;
 
-    marker.bindPopup(popupHtml);
-    marker._pandalData = item;
-    mapMarkers.push(marker);
-  });
+      const customIcon = L.divIcon({
+        className: "trishul-pin-marker",
+        html: trishulPinHtml,
+        iconSize: [44, 52],
+        iconAnchor: [20, 51],
+        popupAnchor: [0, -48]
+      });
 
-  // Populate map colony dropdown
-  populateMapColonySelect();
+      const firstItem = group.items[0];
+      const marker = L.marker([group.lat, group.lng], { icon: customIcon }).addTo(leafletMap);
+
+      const isMulti = group.items.length > 1;
+      const popupHeader = isMulti
+        ? `<div style="background:#770e17; color:#fff; padding:6px 10px; border-radius:8px 8px 0 0; margin:-2px -2px 8px -2px; font-size:12px; font-weight:bold; display:flex; justify-content:space-between; align-items:center;">
+             <span>🔱 ${group.items.length} Durga Pandals Here</span>
+             <span style="background:#d4af37; color:#770e17; padding:1px 6px; border-radius:999px; font-size:11px;">Same Spot</span>
+           </div>`
+        : '';
+
+      const popupBody = group.items.map(item => {
+        const mapUrl = getGoogleMapsUrl(item);
+        const photo = (item.photos && item.photos.length > 0) ? (typeof item.photos[0] === 'string' ? item.photos[0] : (item.photos[0].url || item.photos[0].image_url)) : "assets/images/hero-durga.jpg";
+        return `
+          <div style="margin-bottom:8px; border-bottom:1px solid #fae5e0; padding-bottom:8px;">
+            <a href="pandal.html?id=${encodeURIComponent(item.id)}" style="display:block; text-decoration:none;">
+              <img src="${photo}" alt="${item.name}" style="width:100%; height:100px; object-fit:cover; border-radius:8px; margin-bottom:6px; cursor:pointer;" onerror="this.src='assets/images/hero-durga.jpg'" />
+              <h4 style="font-weight:bold; font-size:12px; color:#140b0d; margin:0 0 3px 0;">🔱 ${item.name}</h4>
+            </a>
+            <p style="font-size:11px; color:#770e17; font-weight:600; margin:0 0 5px 0;">📍 ${item.area}</p>
+            <div style="display:flex; flex-direction:column; gap:4px;">
+              <a href="${mapUrl}" target="_blank" rel="noopener noreferrer" style="background:#b8232e; color:white; text-align:center; padding:6px; border-radius:6px; font-size:11px; font-weight:bold; text-decoration:none;">
+                📍 Open in Google Maps ➔
+              </a>
+              <a href="pandal.html?id=${encodeURIComponent(item.id)}" style="background:#fdf4f2; border:1px solid #eaab9d; color:#770e17; text-align:center; padding:5px; border-radius:6px; font-size:10px; font-weight:bold; text-decoration:none;">
+                🔱 View Idol Details
+              </a>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      marker.bindPopup(`<div style="font-family:system-ui, sans-serif; width:230px; max-height:340px; overflow-y:auto; padding:2px;">${popupHeader}${popupBody}</div>`);
+      marker._pandalData = firstItem;
+      marker._pandalItems = group.items;
+      mapMarkers.push(marker);
+    });
+
+    // Populate map colony dropdown
+    populateMapColonySelect();
   } catch (mapErr) {
     console.warn("Map init notice:", mapErr);
   }
