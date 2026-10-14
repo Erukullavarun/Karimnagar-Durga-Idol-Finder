@@ -564,9 +564,6 @@ function initLeafletMap() {
     groups.forEach((group, gKey) => {
       const count = group.items.length;
       const safeId = String(gKey).replace(/[^a-zA-Z0-9_-]/g, '_');
-      const badgeSvg = (count >= 1)
-        ? `<circle cx="33" cy="9" r="8" fill="#fef08a" stroke="#b91c1c" stroke-width="1.8"/><text x="33" y="12" font-size="9" font-weight="900" fill="#7f1d1d" text-anchor="middle" font-family="system-ui, sans-serif">${count}</text>`
-        : '';
 
       const trishulPinHtml = `
         <div class="trishul-pin-marker" style="position:relative; width:44px; height:52px; cursor:pointer; filter:drop-shadow(0 4px 10px rgba(126,12,28,0.55));">
@@ -594,7 +591,6 @@ function initLeafletMap() {
               <rect x="11.1" y="14.5" width="1.8" height="7.5" fill="url(#goldTrishApp_${safeId})"/>
               <circle cx="12" cy="22.5" r="1.3" fill="#d97706"/>
             </g>
-            ${badgeSvg}
           </svg>
         </div>
       `;
@@ -609,38 +605,6 @@ function initLeafletMap() {
 
       const firstItem = group.items[0];
       const marker = L.marker([group.lat, group.lng], { icon: customIcon }).addTo(leafletMap);
-
-      const isMulti = group.items.length > 1;
-      const popupHeader = isMulti
-        ? `<div style="background:#770e17; color:#fff; padding:6px 10px; border-radius:8px 8px 0 0; margin:-2px -2px 8px -2px; font-size:12px; font-weight:bold; display:flex; justify-content:space-between; align-items:center;">
-             <span>🔱 ${group.items.length} Durga Pandals Here</span>
-             <span style="background:#d4af37; color:#770e17; padding:1px 6px; border-radius:999px; font-size:11px;">Same Spot</span>
-           </div>`
-        : '';
-
-      const popupBody = group.items.map(item => {
-        const mapUrl = getGoogleMapsUrl(item);
-        const photo = (item.photos && item.photos.length > 0) ? (typeof item.photos[0] === 'string' ? item.photos[0] : (item.photos[0].url || item.photos[0].image_url)) : "assets/images/hero-durga.jpg";
-        return `
-          <div style="margin-bottom:8px; border-bottom:1px solid #fae5e0; padding-bottom:8px;">
-            <a href="pandal.html?id=${encodeURIComponent(item.id)}" style="display:block; text-decoration:none;">
-              <img src="${photo}" alt="${item.name}" style="width:100%; height:100px; object-fit:cover; border-radius:8px; margin-bottom:6px; cursor:pointer;" onerror="this.src='assets/images/hero-durga.jpg'" />
-              <h4 style="font-weight:bold; font-size:12px; color:#140b0d; margin:0 0 3px 0;">🔱 ${item.name}</h4>
-            </a>
-            <p style="font-size:11px; color:#770e17; font-weight:600; margin:0 0 5px 0;">📍 ${item.area}</p>
-            <div style="display:flex; flex-direction:column; gap:4px;">
-              <a href="${mapUrl}" target="_blank" rel="noopener noreferrer" style="background:#b8232e; color:white; text-align:center; padding:6px; border-radius:6px; font-size:11px; font-weight:bold; text-decoration:none;">
-                📍 Open in Google Maps ➔
-              </a>
-              <a href="pandal.html?id=${encodeURIComponent(item.id)}" style="background:#fdf4f2; border:1px solid #eaab9d; color:#770e17; text-align:center; padding:5px; border-radius:6px; font-size:10px; font-weight:bold; text-decoration:none;">
-                🔱 View Idol Details
-              </a>
-            </div>
-          </div>
-        `;
-      }).join('');
-
-      marker.bindPopup(`<div style="font-family:system-ui, sans-serif; width:230px; max-height:340px; overflow-y:auto; padding:2px;">${popupHeader}${popupBody}</div>`);
       marker._pandalData = firstItem;
       marker._pandalItems = group.items;
       mapMarkers.push(marker);
@@ -877,7 +841,7 @@ function handleUseMyLocation() {
             iconSize: [22, 22],
             iconAnchor: [11, 11]
           })
-        }).addTo(homeLeafletMap).bindPopup("<b>📍 Your Current Location</b>");
+        }).addTo(homeLeafletMap);
       } else if (typeof leafletMap !== "undefined" && leafletMap) {
         leafletMap.flyTo([lat, lng], 15, { duration: 1.2 });
       }

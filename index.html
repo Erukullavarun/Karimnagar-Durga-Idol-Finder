@@ -776,13 +776,8 @@
       if (bannerEl) bannerEl.remove();
     }
 
-    // Sacred Trishul Map Pin SVG Generator with Vector Trident, Drop-Pin Shape and Pandal Count Badge
+    // Sacred Trishul Map Pin SVG Generator with Vector Trident and Drop-Pin Shape (No info / badges)
     function generateTrishulPinSvg(badgeCount, uniqueId) {
-      const countNum = parseInt(badgeCount, 10) || 1;
-      const badgeSvg = (countNum >= 1)
-        ? `<circle cx="33" cy="9" r="8" fill="#fef08a" stroke="#b91c1c" stroke-width="1.8"/><text x="33" y="12" font-size="9" font-weight="900" fill="#7f1d1d" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif">${countNum}</text>`
-        : '';
-
       const uId = String(uniqueId || 'pin').replace(/[^a-zA-Z0-9_-]/g, '_');
       return `<svg xmlns="http://www.w3.org/2000/svg" width="44" height="52" viewBox="0 0 44 52">
         <defs>
@@ -815,7 +810,6 @@
           <rect x="11.1" y="14.5" width="1.8" height="7.5" fill="url(#goldTrish_${uId})"/>
           <circle cx="12" cy="22.5" r="1.3" fill="#d97706"/>
         </g>
-        ${badgeSvg}
       </svg>`;
     }
 
@@ -845,7 +839,6 @@
               mapTypeControl: false,
               zoomControl: true
             });
-            homeGoogleInfoWindow = new google.maps.InfoWindow();
             window.homeGoogleMap = homeGoogleMap;
           }
 
@@ -861,17 +854,11 @@
             const marker = new google.maps.Marker({
               position: { lat: group.lat, lng: group.lng },
               map: homeGoogleMap,
-              title: group.items.map(i => i.name).join(", "),
               icon: {
                 url: svgIcon,
                 scaledSize: new google.maps.Size(44, 52),
                 anchor: new google.maps.Point(20, 51)
               }
-            });
-
-            marker.addListener("click", () => {
-              homeGoogleInfoWindow.setContent(buildPandalPopupHtml(group.items));
-              homeGoogleInfoWindow.open(homeGoogleMap, marker);
             });
 
             marker._pandalItems = group.items;
@@ -942,7 +929,6 @@
           });
 
           const marker = L.marker([group.lat, group.lng], { icon: trishulIcon }).addTo(homeLeafletMap);
-          marker.bindPopup(buildPandalPopupHtml(group.items));
           marker._pandalItems = group.items;
           homeMapMarkers.push(marker);
         });
@@ -983,21 +969,12 @@
         if (area === "Vijayanagar" || area === "Vidyanagar") {
           homeGoogleMap.panTo({ lat: 18.4280, lng: 79.1290 });
           homeGoogleMap.setZoom(16);
-          const targetMarker = homeGoogleMarkers.find(m => m._pandalItems && m._pandalItems.some(i => i.area === "Vijayanagar" || i.area === "Vidyanagar"));
-          if (targetMarker && homeGoogleInfoWindow) {
-            homeGoogleInfoWindow.setContent(buildPandalPopupHtml(targetMarker._pandalItems));
-            homeGoogleInfoWindow.open(homeGoogleMap, targetMarker);
-          }
           return;
         }
         const marker = homeGoogleMarkers.find(m => m._pandalItems && m._pandalItems.some(i => i.area === area));
         if (marker) {
           homeGoogleMap.panTo(marker.getPosition());
           homeGoogleMap.setZoom(16);
-          if (homeGoogleInfoWindow) {
-            homeGoogleInfoWindow.setContent(buildPandalPopupHtml(marker._pandalItems));
-            homeGoogleInfoWindow.open(homeGoogleMap, marker);
-          }
           return;
         }
         if (KARIMNAGAR_COLONY_COORDS && KARIMNAGAR_COLONY_COORDS[area]) {
@@ -1016,15 +993,12 @@
       }
       if (area === "Vijayanagar" || area === "Vidyanagar") {
         homeLeafletMap.flyTo([18.4280, 79.1290], 16, { duration: 1.5 });
-        const marker = homeMapMarkers.find(m => m._pandalItems && m._pandalItems.some(i => i.area === "Vijayanagar" || i.area === "Vidyanagar"));
-        if (marker) marker.openPopup();
         return;
       }
       const marker = homeMapMarkers.find(m => m._pandalItems && m._pandalItems.some(i => i.area === area));
       if (marker) {
         const pos = marker.getLatLng();
         homeLeafletMap.flyTo([pos.lat, pos.lng], 16, { duration: 1.2 });
-        marker.openPopup();
         return;
       }
       if (KARIMNAGAR_COLONY_COORDS && KARIMNAGAR_COLONY_COORDS[area]) {
@@ -1064,10 +1038,6 @@
         if (matched) {
           homeGoogleMap.panTo(matched.getPosition());
           homeGoogleMap.setZoom(16);
-          if (homeGoogleInfoWindow) {
-            homeGoogleInfoWindow.setContent(buildPandalPopupHtml(matched._pandalItems));
-            homeGoogleInfoWindow.open(homeGoogleMap, matched);
-          }
           return;
         }
       }
@@ -1079,7 +1049,6 @@
         if (matchedMarker) {
           const pos = matchedMarker.getLatLng();
           homeLeafletMap.flyTo([pos.lat, pos.lng], 16, { duration: 1.2 });
-          matchedMarker.openPopup();
           return;
         }
       }

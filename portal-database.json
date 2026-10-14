@@ -16,7 +16,7 @@
       "bannerBadgeText": "॥ జై దుర్గా భవానీ • Jai Mata Di ॥",
       "floatingCardTitle": "Karimnagar Navratri Utsav",
       "floatingCardSubtitle": "One Divine City, Infinite Blessings",
-      "heroImage": "uploads/hero_durga_custom.jpg"
+      "heroImage": "assets/images/hero-durga.jpg"
     },
     "stats": {
       "locationsCount": 0,
@@ -74,16 +74,87 @@
   },
   "mandapams": [
     {
+      "id": "m-1792000400579",
+      "name": "(Edited)",
+      "teluguName": "",
+      "area": "",
+      "address": "",
+      "category": "unique",
+      "categories": [
+        "unique",
+        "famous"
+      ],
+      "mapsUrl": "",
+      "googleMapsUrl": "",
+      "latitude": null,
+      "longitude": null,
+      "description": "",
+      "instagramHandle": "",
+      "instagramUrl": "",
+      "handlerDp": "",
+      "photos": [
+        {
+          "url": "assets/images/hero-durga.jpg",
+          "caption": "(Edited)",
+          "isPublished": true
+        }
+      ],
+      "priority": 1,
+      "isMustVisit": false,
+      "isVerified": true,
+      "status": "approved",
+      "createdAt": "2026-10-14T17:53:20.581Z",
+      "slug": "-edited-",
+      "reelsCount": 0,
+      "reels": [],
+      "views": 1
+    },
+    {
+      "id": "m-1792000167507",
+      "name": "(Edited)",
+      "teluguName": "",
+      "area": "",
+      "address": "",
+      "category": "unique",
+      "categories": [
+        "unique",
+        "famous"
+      ],
+      "mapsUrl": "",
+      "googleMapsUrl": "",
+      "latitude": null,
+      "longitude": null,
+      "description": "",
+      "instagramHandle": "",
+      "instagramUrl": "",
+      "handlerDp": "",
+      "photos": [
+        {
+          "url": "assets/images/hero-durga.jpg",
+          "caption": "(Edited)",
+          "isPublished": true
+        }
+      ],
+      "priority": 1,
+      "isMustVisit": false,
+      "isVerified": true,
+      "status": "approved",
+      "createdAt": "2026-10-14T17:49:27.510Z",
+      "slug": "-edited-",
+      "reelsCount": 0,
+      "reels": [],
+      "views": 1
+    },
+    {
       "id": "m-1791882042794",
       "name": "Lakhimpur ka Rani",
       "teluguName": "లక్ష్మీపూర్ కా రాణి",
       "area": "Laxmipur shivalayam",
       "address": "F37J 79J Shivalayam, Lakshmipur, Telangana 505451",
-      "category": "famous",
+      "category": "unique",
       "categories": [
-        "famous",
         "unique",
-        "must-visit"
+        "famous"
       ],
       "mapsUrl": "https://maps.app.goo.gl/Z6fxE2jdKMusmeWa8?g_st=ac",
       "googleMapsUrl": "https://maps.app.goo.gl/Z6fxE2jdKMusmeWa8?g_st=ac",
@@ -108,7 +179,9 @@
       "imageUrl": "assets/images/hero-durga.jpg",
       "photoUrl": "assets/images/hero-durga.jpg",
       "createdAt": "2026-10-13T09:00:42.794Z",
-      "approvedAt": "2026-10-13T09:01:22.920Z"
+      "approvedAt": "2026-10-13T09:01:22.920Z",
+      "handlerDp": "",
+      "updatedAt": "2026-10-14T17:55:39.653Z"
     },
     {
       "id": "collectorate-road-chandi-mata",
@@ -429,6 +502,7 @@
     "Kaman Chowrasta",
     "Housing Board Colony",
     "Bhagyanagar",
+    "Rekurthi",
     "Padmanagar",
     "Chinthakunta",
     "Ganeshnagar",
@@ -441,10 +515,10 @@
     "Bhagathnagar",
     "Sawaran Street",
     "Sitarampur",
-    "Laxmipur shivalayam",
-    "Civil Hospital Road",
-    "Kothirampur",
-    "Collectorate Road"
+    "Kothapalli",
+    "Lower Manair Dam (LMD)",
+    "Thimmapur",
+    "Laxmipur shivalayam"
   ],
-  "updatedAt": "2026-10-14T17:14:20.491Z"
+  "updatedAt": "2026-10-14T17:55:39.689Z"
 }

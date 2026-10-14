@@ -648,20 +648,11 @@
         } else if (area === 'Vijayanagar' || area === 'Vidyanagar') {
           dedicatedGoogleMap.panTo({ lat: 18.4280, lng: 79.1290 });
           dedicatedGoogleMap.setZoom(16);
-          const target = mapGoogleMarkerList.find(m => m._pandalItems && m._pandalItems.some(i => i.area === 'Vijayanagar' || i.area === 'Vidyanagar'));
-          if (target && dedicatedGoogleInfoWindow) {
-            dedicatedGoogleInfoWindow.setContent(buildPandalPopupHtml(target._pandalItems));
-            dedicatedGoogleInfoWindow.open(dedicatedGoogleMap, target);
-          }
         } else {
           const areaMarker = mapGoogleMarkerList.find(m => m._pandalItems && m._pandalItems.some(i => i.area === area));
           if (areaMarker) {
             dedicatedGoogleMap.panTo(areaMarker.getPosition());
             dedicatedGoogleMap.setZoom(16);
-            if (dedicatedGoogleInfoWindow) {
-              dedicatedGoogleInfoWindow.setContent(buildPandalPopupHtml(areaMarker._pandalItems));
-              dedicatedGoogleInfoWindow.open(dedicatedGoogleMap, areaMarker);
-            }
           } else if (KARIMNAGAR_COLONY_COORDS && KARIMNAGAR_COLONY_COORDS[area]) {
             const [cLat, cLng] = KARIMNAGAR_COLONY_COORDS[area];
             dedicatedGoogleMap.panTo({ lat: cLat, lng: cLng });
@@ -677,14 +668,11 @@
         dedicatedMap.flyTo([18.4386, 79.1288], 14, { duration: 1.2 });
       } else if (area === 'Vijayanagar' || area === 'Vidyanagar') {
         dedicatedMap.flyTo([18.4280, 79.1290], 16, { duration: 1.5 });
-        const targetMarker = mapMarkerList.find(m => m._pandalItems && m._pandalItems.some(i => i.area === 'Vijayanagar' || i.area === 'Vidyanagar'));
-        if (targetMarker) targetMarker.openPopup();
       } else {
         const areaMarkers = mapMarkerList.filter(m => m._pandalItems && m._pandalItems.some(i => i.area === area));
         if (areaMarkers.length > 0) {
           const pos = areaMarkers[0].getLatLng();
           dedicatedMap.flyTo([pos.lat, pos.lng], 16, { duration: 1.2 });
-          areaMarkers[0].openPopup();
         } else if (KARIMNAGAR_COLONY_COORDS && KARIMNAGAR_COLONY_COORDS[area]) {
           const [cLat, cLng] = KARIMNAGAR_COLONY_COORDS[area];
           dedicatedMap.flyTo([cLat, cLng], 15, { duration: 1.2 });
@@ -711,10 +699,6 @@
         if (matched) {
           dedicatedGoogleMap.panTo(matched.getPosition());
           dedicatedGoogleMap.setZoom(16);
-          if (dedicatedGoogleInfoWindow) {
-            dedicatedGoogleInfoWindow.setContent(buildPandalPopupHtml(matched._pandalItems));
-            dedicatedGoogleInfoWindow.open(dedicatedGoogleMap, matched);
-          }
           return;
         }
       }
@@ -734,7 +718,6 @@
         if (matchingMarkers.length >= 1) {
           const pos = matchingMarkers[0].getLatLng();
           dedicatedMap.flyTo([pos.lat, pos.lng], 16, { duration: 1.0 });
-          matchingMarkers[0].openPopup();
           return;
         }
       }
@@ -775,32 +758,21 @@
         mapGoogleMarkerList = [];
 
         groupedPandals.forEach(group => {
-          const count = group.items.length;
-          const badgeSvg = (count >= 1)
-            ? `<circle cx="28" cy="9" r="8" fill="#fef08a" stroke="#b91c1c" stroke-width="1.8"/><text x="28" y="12" font-size="9" font-weight="900" fill="#7f1d1d" text-anchor="middle" font-family="system-ui, sans-serif">${count}</text>`
-            : '';
           const svgIcon = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
             <svg xmlns="http://www.w3.org/2000/svg" width="38" height="38" viewBox="0 0 38 38">
               <circle cx="19" cy="19" r="16" fill="#b8232e" stroke="#d4af37" stroke-width="2.5"/>
               <text x="19" y="24" font-size="17" text-anchor="middle" fill="#ffffff">🔱</text>
-              ${badgeSvg}
             </svg>
           `)}`;
 
           const marker = new google.maps.Marker({
             position: { lat: group.lat, lng: group.lng },
             map: dedicatedGoogleMap,
-            title: group.items.map(i => i.name).join(", "),
             icon: {
               url: svgIcon,
               scaledSize: new google.maps.Size(38, 38),
               anchor: new google.maps.Point(19, 19)
             }
-          });
-
-          marker.addListener("click", () => {
-            dedicatedGoogleInfoWindow.setContent(buildPandalPopupHtml(group.items));
-            dedicatedGoogleInfoWindow.open(dedicatedGoogleMap, marker);
           });
 
           marker._pandalItems = group.items;
@@ -816,11 +788,6 @@
         mapMarkerList = [];
 
         groupedPandals.forEach((group, idx) => {
-          const count = group.items.length;
-          const badgeHtml = (count >= 1)
-            ? `<span style="position:absolute; top:-4px; right:-6px; background:#fef08a; color:#7f1d1d; font-weight:900; font-size:10px; width:18px; height:18px; border-radius:50%; display:grid; place-items:center; border:2px solid #b91c1c; box-shadow:0 2px 6px rgba(0,0,0,0.35); z-index:10;">${count}</span>`
-            : '';
-
           const trishulIcon = L.divIcon({
             className: 'custom-map-pin',
             html: `<div style="position:relative; width:38px; height:50px; cursor:pointer; filter:drop-shadow(0 4px 10px rgba(126,12,28,0.55));">
@@ -837,7 +804,6 @@
                 </defs>
               </svg>
               <div style="position:absolute; top:7px; left:0; width:38px; text-align:center; font-size:17px; line-height:24px; user-select:none; pointer-events:none;">🔱</div>
-              ${badgeHtml}
             </div>`,
             iconSize: [38, 50],
             iconAnchor: [19, 49],
@@ -845,8 +811,7 @@
           });
 
           const marker = L.marker([group.lat, group.lng], { icon: trishulIcon })
-            .addTo(dedicatedMap)
-            .bindPopup(buildPandalPopupHtml(group.items));
+            .addTo(dedicatedMap);
           marker._pandalItems = group.items;
           mapMarkerList.push(marker);
         });
@@ -895,22 +860,11 @@
       if (dedicatedGoogleMap && window.google) {
         dedicatedGoogleMap.panTo({ lat: parseFloat(lat), lng: parseFloat(lng) });
         dedicatedGoogleMap.setZoom(16);
-        const targetMarker = mapGoogleMarkerList.find(m => {
-          return m._pandalItems && m._pandalItems.some(item => item.id == id);
-        });
-        if (targetMarker && dedicatedGoogleInfoWindow) {
-          dedicatedGoogleInfoWindow.setContent(buildPandalPopupHtml(targetMarker._pandalItems));
-          dedicatedGoogleInfoWindow.open(dedicatedGoogleMap, targetMarker);
-        }
         return;
       }
 
       if (dedicatedMap) {
         dedicatedMap.setView([lat, lng], 16, { animate: true });
-        const targetMarker = mapMarkerList.find(m => {
-          return m._pandalItems && m._pandalItems.some(item => item.id == id);
-        });
-        if (targetMarker) targetMarker.openPopup();
       }
     }
 
@@ -961,7 +915,7 @@
                 iconSize: [22, 22],
                 iconAnchor: [11, 11]
               })
-            }).addTo(dedicatedMap).bindPopup("<b>📍 Your Current Location</b>").openPopup();
+            }).addTo(dedicatedMap);
           }
         },
         onError: (errInfo) => {

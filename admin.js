@@ -117,6 +117,10 @@ function loadAdminDashboard() {
 // Live auto-refresh for admin dashboard so newly submitted idols from community show up automatically
 setInterval(() => {
   if (typeof sessionStorage !== "undefined" && sessionStorage.getItem(STORAGE_KEYS.AUTH) === "true") {
+    const editModal = document.getElementById("edit-mandapam-modal");
+    const isModalOpen = editModal && !editModal.classList.contains("hidden") && editModal.style.display !== "none";
+    if (isModalOpen) return;
+
     fetch(getApiUrl("/api/admin/mandapams?_t=" + Date.now()))
       .then(r => r.json())
       .then(res => {
@@ -397,7 +401,7 @@ function renderAdminMandapamsTable() {
         </td>
         <td class="p-3 text-right">
           <div class="flex items-center justify-end gap-2">
-            <button onclick="openEditMandapamModal('${item.id}')" class="px-2.5 py-1.5 rounded-xl bg-cream-200 text-ink-800 text-xs font-bold hover:bg-saffron-100 hover:text-saffron-800 transition">
+            <button type="button" onclick="window.openEditMandapamModal('${item.id}')" class="px-2.5 py-1.5 rounded-xl bg-cream-200 text-ink-800 text-xs font-bold hover:bg-saffron-100 hover:text-saffron-800 transition cursor-pointer">
               ✏️ Edit
             </button>
             <button onclick="deleteMandapamItem('${item.id}')" class="px-2.5 py-1.5 rounded-xl bg-rose-50 text-rose-700 border border-rose-200 text-xs font-bold hover:bg-rose-100 transition">
@@ -545,83 +549,127 @@ function openAddMandapamModal() {
   const catEl = document.getElementById("edit-m-category");
   if (catEl) catEl.value = "unique";
 
-  document.getElementById("edit-m-verified").checked = true; // Admin added pandals default to approved
+  const verEl = document.getElementById("edit-m-verified");
+  if (verEl) verEl.checked = true; // Admin added pandals default to approved
 
-  document.getElementById("edit-mandapam-modal").classList.remove("hidden");
+  const modal = document.getElementById("edit-mandapam-modal");
+  if (modal) {
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+    modal.style.display = "flex";
+  }
 }
 
 function openEditMandapamModal(id) {
-  selectedMandapamId = id;
-  const m = adminMandapams.find(item => item.id === id);
-  if (!m) return;
+  try {
+    if (!id) return;
+    selectedMandapamId = String(id);
+    let m = adminMandapams.find(item => String(item.id) === String(id));
+    if (!m) {
+      const all = typeof getAllMandapamsForAdmin === 'function' ? getAllMandapamsForAdmin() : (typeof getMandapams === 'function' ? getMandapams() : []);
+      m = all.find(item => String(item.id) === String(id));
+      if (m) {
+        adminMandapams.push(m);
+      }
+    }
+    if (!m) {
+      console.error("Mandapam not found for edit id:", id);
+      alert("⚠️ Could not load details for this pandal. Please refresh.");
+      return;
+    }
 
-  document.getElementById("modal-mandapam-title").textContent = "Edit Durga Pandal";
-  populateAreaSelectOptions(m.area);
+    const titleEl = document.getElementById("modal-mandapam-title");
+    if (titleEl) titleEl.textContent = "Edit Durga Pandal";
 
-  const otherCont = document.getElementById("edit-m-other-area-container");
-  if (otherCont) otherCont.classList.add("hidden");
-  const otherInp = document.getElementById("edit-m-other-area-input");
-  if (otherInp) otherInp.value = "";
+    if (typeof populateAreaSelectOptions === "function") {
+      populateAreaSelectOptions(m.area || "");
+    }
 
-  document.getElementById("edit-m-name").value = m.name || "";
-  document.getElementById("edit-m-telugu").value = m.teluguName || "";
-  document.getElementById("edit-m-area").value = m.area || "";
+    const otherCont = document.getElementById("edit-m-other-area-container");
+    if (otherCont) otherCont.classList.add("hidden");
+    const otherInp = document.getElementById("edit-m-other-area-input");
+    if (otherInp) otherInp.value = "";
 
-  const catEl = document.getElementById("edit-m-category");
-  if (catEl) {
-    catEl.value = (m.categories && m.categories[0]) || m.category || "unique";
+    const setVal = (elId, val) => {
+      const el = document.getElementById(elId);
+      if (el) el.value = val !== undefined && val !== null ? val : "";
+    };
+
+    setVal("edit-m-name", m.name);
+    setVal("edit-m-telugu", m.teluguName);
+    setVal("edit-m-area", m.area);
+    setVal("edit-m-maps-url", m.mapsUrl || m.googleMapsUrl);
+    setVal("edit-m-address", m.address);
+    setVal("edit-m-lat", (m.latitude !== null && m.latitude !== undefined) ? m.latitude : "");
+    setVal("edit-m-lng", (m.longitude !== null && m.longitude !== undefined) ? m.longitude : "");
+    setVal("edit-m-priority", m.priority || 1);
+    setVal("edit-m-desc", m.description);
+    setVal("edit-m-ig-handle", m.instagramHandle);
+    setVal("edit-m-ig-url", m.instagramUrl);
+    setVal("edit-m-reels", m.reelsCount || 0);
+
+    const catEl = document.getElementById("edit-m-category");
+    if (catEl) {
+      catEl.value = (m.categories && m.categories[0]) || m.category || "unique";
+    }
+
+    const photo1 = (m.photos && m.photos.length > 0) ? (typeof m.photos[0] === 'string' ? m.photos[0] : (m.photos[0].url || m.photos[0].image_url)) : (m.imageUrl || m.photoUrl || "");
+    const photo2 = (m.photos && m.photos.length > 1) ? (typeof m.photos[1] === 'string' ? m.photos[1] : (m.photos[1].url || m.photos[1].image_url)) : "";
+    const photo3 = (m.photos && m.photos.length > 2) ? (typeof m.photos[2] === 'string' ? m.photos[2] : (m.photos[2].url || m.photos[2].image_url)) : "";
+
+    setVal("edit-m-photo", photo1);
+    setVal("edit-m-photo2", photo2);
+    setVal("edit-m-photo3", photo3);
+
+    const p1 = document.getElementById("edit-m-photo-preview");
+    const p2 = document.getElementById("edit-m-photo2-preview");
+    const p3 = document.getElementById("edit-m-photo3-preview");
+
+    if (p1) {
+      if (photo1) { p1.src = photo1; p1.classList.remove("hidden"); } else { p1.classList.add("hidden"); }
+    }
+    if (p2) {
+      if (photo2) { p2.src = photo2; p2.classList.remove("hidden"); } else { p2.classList.add("hidden"); }
+    }
+    if (p3) {
+      if (photo3) { p3.src = photo3; p3.classList.remove("hidden"); } else { p3.classList.add("hidden"); }
+    }
+
+    const ph1 = document.getElementById("edit-m-photo-placeholder-1");
+    const ph2 = document.getElementById("edit-m-photo-placeholder-2");
+    const ph3 = document.getElementById("edit-m-photo-placeholder-3");
+    if (ph1) { if (photo1) ph1.classList.add("hidden"); else ph1.classList.remove("hidden"); }
+    if (ph2) { if (photo2) ph2.classList.add("hidden"); else ph2.classList.remove("hidden"); }
+    if (ph3) { if (photo3) ph3.classList.add("hidden"); else ph3.classList.remove("hidden"); }
+
+    const mvEl = document.getElementById("edit-m-mustvisit");
+    if (mvEl) mvEl.checked = !!m.isMustVisit;
+    const vfEl = document.getElementById("edit-m-verified");
+    if (vfEl) vfEl.checked = (m.isVerified === true && m.status !== 'pending');
+
+    const modal = document.getElementById("edit-mandapam-modal");
+    if (modal) {
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+      modal.style.display = "flex";
+    }
+  } catch (err) {
+    console.error("Error in openEditMandapamModal:", err);
   }
-
-  document.getElementById("edit-m-maps-url").value = m.mapsUrl || m.googleMapsUrl || "";
-  document.getElementById("edit-m-address").value = m.address || "";
-  document.getElementById("edit-m-lat").value = (m.latitude !== null && m.latitude !== undefined) ? m.latitude : "";
-  document.getElementById("edit-m-lng").value = (m.longitude !== null && m.longitude !== undefined) ? m.longitude : "";
-  document.getElementById("edit-m-priority").value = m.priority || 1;
-  document.getElementById("edit-m-desc").value = m.description || "";
-  
-  const photo1 = (m.photos && m.photos.length > 0) ? (typeof m.photos[0] === 'string' ? m.photos[0] : m.photos[0].url) : "";
-  const photo2 = (m.photos && m.photos.length > 1) ? (typeof m.photos[1] === 'string' ? m.photos[1] : m.photos[1].url) : "";
-  const photo3 = (m.photos && m.photos.length > 2) ? (typeof m.photos[2] === 'string' ? m.photos[2] : m.photos[2].url) : "";
-
-  document.getElementById("edit-m-photo").value = photo1;
-  document.getElementById("edit-m-photo2").value = photo2;
-  document.getElementById("edit-m-photo3").value = photo3;
-
-  const p1 = document.getElementById("edit-m-photo-preview");
-  const p2 = document.getElementById("edit-m-photo2-preview");
-  const p3 = document.getElementById("edit-m-photo3-preview");
-
-  if (p1) {
-    if (photo1) { p1.src = photo1; p1.classList.remove("hidden"); } else { p1.classList.add("hidden"); }
-  }
-  if (p2) {
-    if (photo2) { p2.src = photo2; p2.classList.remove("hidden"); } else { p2.classList.add("hidden"); }
-  }
-  if (p3) {
-    if (photo3) { p3.src = photo3; p3.classList.remove("hidden"); } else { p3.classList.add("hidden"); }
-  }
-
-  const ph1 = document.getElementById("edit-m-photo-placeholder-1");
-  const ph2 = document.getElementById("edit-m-photo-placeholder-2");
-  const ph3 = document.getElementById("edit-m-photo-placeholder-3");
-  if (ph1) { if (photo1) ph1.classList.add("hidden"); else ph1.classList.remove("hidden"); }
-  if (ph2) { if (photo2) ph2.classList.add("hidden"); else ph2.classList.remove("hidden"); }
-  if (ph3) { if (photo3) ph3.classList.add("hidden"); else ph3.classList.remove("hidden"); }
-
-  document.getElementById("edit-m-ig-handle").value = m.instagramHandle || "";
-  document.getElementById("edit-m-ig-url").value = m.instagramUrl || "";
-  document.getElementById("edit-m-reels").value = m.reelsCount || 0;
-
-
-  document.getElementById("edit-m-mustvisit").checked = !!m.isMustVisit;
-  document.getElementById("edit-m-verified").checked = (m.isVerified === true && m.status !== 'pending');
-
-  document.getElementById("edit-mandapam-modal").classList.remove("hidden");
 }
 
 function closeEditMandapamModal() {
-  document.getElementById("edit-mandapam-modal").classList.add("hidden");
+  const modal = document.getElementById("edit-mandapam-modal");
+  if (modal) {
+    modal.classList.add("hidden");
+    modal.classList.remove("flex");
+    modal.style.display = "none";
+  }
 }
+
+window.openEditMandapamModal = openEditMandapamModal;
+window.closeEditMandapamModal = closeEditMandapamModal;
+window.openAddMandapamModal = openAddMandapamModal;
 
 function handleSaveMandapam(e) {
   e.preventDefault();
@@ -680,7 +728,7 @@ function handleSaveMandapam(e) {
   const categories = [category, ...(category === "unique" ? ["famous"] : [])];
 
   if (selectedMandapamId) {
-    const idx = adminMandapams.findIndex(item => item.id === selectedMandapamId);
+    const idx = adminMandapams.findIndex(item => String(item.id) === String(selectedMandapamId));
     if (idx !== -1) {
       adminMandapams[idx] = {
         ...adminMandapams[idx],
@@ -905,3 +953,16 @@ function switchAdminTab(tabName) {
     targetBtn.classList.remove("bg-white", "text-ink-700");
   }
 }
+
+// Global window exposure for inline onclick attributes
+window.openEditMandapamModal = openEditMandapamModal;
+window.closeEditMandapamModal = closeEditMandapamModal;
+window.openAddMandapamModal = openAddMandapamModal;
+window.handleSaveMandapam = handleSaveMandapam;
+window.toggleMustVisitStatus = toggleMustVisitStatus;
+window.toggleVerifiedStatus = toggleVerifiedStatus;
+window.approveMandapam = approveMandapam;
+window.deleteMandapamItem = deleteMandapamItem;
+window.switchAdminTab = switchAdminTab;
+window.filterAdminTable = filterAdminTable;
+window.renderAdminMandapamsTable = renderAdminMandapamsTable;
