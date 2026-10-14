@@ -243,8 +243,8 @@
     </div>
   </div>
 
-  <script src="data.js"></script>
-  <script src="app.js"></script>
+  <script src="data.js?v=20261014_v2"></script>
+  <script src="app.js?v=20261014_v2"></script>
   <script>
     let activeUniqueCategory = 'all';
 
@@ -265,7 +265,7 @@
     }
 
     function renderUniqueGrid() {
-      const mandapams = getMandapams();
+      const mandapams = getMandapams().filter(m => (m.isVerified === true || m.status === 'approved') && m.status !== 'pending');
       const container = document.getElementById("unique-grid");
       const countBadge = document.getElementById("unique-count-badge");
       if (!container) return;

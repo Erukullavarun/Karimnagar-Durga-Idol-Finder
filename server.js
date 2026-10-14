@@ -290,8 +290,21 @@ app.get('/api/areas', (req, res) => {
   res.json({ success: true, areas: db.areas || INITIAL_AREAS });
 });
 
-// Get site configuration and all data
+// Get site configuration and all data (public endpoint: strictly approved pandals only)
 app.get('/api/site-data', (req, res) => {
+  const db = readDB();
+  const approvedPandals = (db.mandapams || []).filter(m => (m.isVerified === true || m.status === 'approved') && m.status !== 'pending');
+  res.json({
+    success: true,
+    data: {
+      ...db,
+      mandapams: approvedPandals
+    }
+  });
+});
+
+// Admin-specific full site data endpoint
+app.get('/api/admin/site-data', (req, res) => {
   const db = readDB();
   res.json({ success: true, data: db });
 });
@@ -552,6 +565,22 @@ app.get('/pandal', (req, res) => res.sendFile(path.join(__dirname, 'pandal.html'
 app.get('/pandal.html', (req, res) => res.sendFile(path.join(__dirname, 'pandal.html')));
 app.get('/pandal/:id', (req, res) => res.sendFile(path.join(__dirname, 'pandal.html')));
 app.get('/admin', (req, res) => res.sendFile(path.join(__dirname, 'admin.html')));
+
+// --------------------------------------------------------------------------
+// 24/7 Keep-Alive Service (Prevents 1-2 hour sleep/cold-start freezes on Render)
+// --------------------------------------------------------------------------
+const PING_INTERVAL_MS = 8 * 60 * 1000; // 8 minutes (Render free tier sleeps at 15 mins)
+setInterval(() => {
+  try {
+    const urls = [
+      `http://localhost:${PORT}/health`,
+      'https://karimnagar-durga-idol-finder.onrender.com/health'
+    ];
+    urls.forEach(url => {
+      fetch(url).catch(() => {});
+    });
+  } catch (e) {}
+}, PING_INTERVAL_MS);
 
 app.listen(PORT, () => {
   console.log(`====================================================`);

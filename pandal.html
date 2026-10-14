@@ -491,7 +491,7 @@
   <!-- Scripts -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <script src="map-config.js"></script>
-  <script src="data.js"></script>
+  <script src="data.js?v=20261014_v2"></script>
   <script>
     let currentPandal = null;
 
@@ -521,26 +521,24 @@
     function loadPandalDetails() {
       const id = getPandalIdFromUrl();
       const allList = getMandapams();
-      const allApproved = allList.filter(m => m.isVerified === true || (m.isVerified !== false && m.status !== 'pending'));
+      const allApproved = allList.filter(m => (m.isVerified === true || m.status === 'approved') && m.status !== 'pending');
       
       if (!id) {
         if (allApproved.length > 0) {
           renderPandal(allApproved[0], allApproved);
-        } else if (allList.length > 0) {
-          renderPandal(allList[0], allList);
         } else {
           showNotFound();
         }
         return;
       }
 
-      currentPandal = allApproved.find(m => String(m.id) === String(id)) || allList.find(m => String(m.id) === String(id));
+      currentPandal = allApproved.find(m => String(m.id) === String(id));
       if (!currentPandal) {
-        // Try fetching direct from API
+        // Try fetching direct from API (returns 404 for unapproved pandals)
         fetch(getApiUrl(`/api/mandapams/${encodeURIComponent(id)}`))
           .then(r => r.json())
           .then(res => {
-            if (res && res.success && res.mandapam) {
+            if (res && res.success && res.mandapam && ((res.mandapam.isVerified === true || res.mandapam.status === 'approved') && res.mandapam.status !== 'pending')) {
               currentPandal = res.mandapam;
               renderPandal(currentPandal, allApproved);
             } else {
@@ -796,8 +794,24 @@
         const cleanHandle = String(igHandle).replace(/https?:\/\/(www\.)?instagram\.com\//, '').replace('@', '').replace('/', '');
         document.getElementById("detail-instagram-handle").textContent = cleanHandle;
         const igAvatar = document.getElementById("detail-instagram-avatar");
+        const communityPics = (typeof getCommunityProfilePics === "function") 
+          ? getCommunityProfilePics(item) 
+          : (photos.length > 0 ? photos : [primaryPhoto || "assets/images/hero-durga.jpg"]);
+
+        let communityPicIdx = 0;
         if (igAvatar) {
-          igAvatar.src = photos[0] || primaryPhoto || "assets/images/hero-durga.jpg";
+          igAvatar.src = communityPics[0];
+          if (window._communityAvatarInterval) clearInterval(window._communityAvatarInterval);
+          if (communityPics.length > 1) {
+            window._communityAvatarInterval = setInterval(() => {
+              communityPicIdx = (communityPicIdx + 1) % communityPics.length;
+              igAvatar.style.opacity = '0.3';
+              setTimeout(() => {
+                igAvatar.src = communityPics[communityPicIdx];
+                igAvatar.style.opacity = '1';
+              }, 180);
+            }, 3200);
+          }
         }
         const igBtn = document.getElementById("detail-instagram-btn");
         igBtn.onclick = (e) => {

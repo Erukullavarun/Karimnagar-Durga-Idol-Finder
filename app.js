@@ -119,12 +119,53 @@ function initApp() {
   renderAllViews();
 }
 
-// Optional developer modal (only opens if explicitly triggered)
+let devDpIndex = 0;
+const DEVELOPER_DPS = [
+  "assets/images/logo.jpg",
+  "uploads/hero_durga_custom.jpg",
+  "assets/images/hero-durga.jpg"
+];
+
+function updateDeveloperDp(idx) {
+  devDpIndex = (idx !== undefined) ? idx : ((devDpIndex + 1) % DEVELOPER_DPS.length);
+  const dpUrl = DEVELOPER_DPS[devDpIndex];
+  
+  const popupImg = document.getElementById("developer-popup-dp");
+  if (popupImg) {
+    popupImg.style.opacity = '0.3';
+    setTimeout(() => {
+      popupImg.src = dpUrl;
+      popupImg.style.opacity = '1';
+    }, 150);
+  }
+  
+  const cardImg = document.getElementById("developer-card-dp");
+  if (cardImg) {
+    cardImg.src = dpUrl;
+  }
+  
+  renderDeveloperDpDots();
+}
+
+function cycleDeveloperPopupDp() {
+  updateDeveloperDp();
+}
+
+function renderDeveloperDpDots() {
+  const container = document.getElementById("developer-dp-dots");
+  if (!container) return;
+  container.innerHTML = DEVELOPER_DPS.map((p, i) => `
+    <button type="button" onclick="event.stopPropagation(); updateDeveloperDp(${i})" class="h-1.5 rounded-full transition-all cursor-pointer ${i === devDpIndex ? 'w-4 bg-saffron-500' : 'w-1.5 bg-cream-300 hover:bg-cream-400'}" title="View DP ${i + 1}"></button>
+  `).join('');
+}
+
+// Developer modal controllers with multi-image DP
 function openDeveloperPopup() {
   const modal = document.getElementById("developer-popup-modal");
   if (modal) {
     modal.classList.remove("hidden");
     modal.classList.add("flex");
+    renderDeveloperDpDots();
   }
 }
 
@@ -135,6 +176,14 @@ function closeDeveloperPopup() {
     modal.classList.remove("flex");
   }
 }
+
+// Smooth auto-transition for developer multi-image DPs
+setInterval(() => {
+  const modal = document.getElementById("developer-popup-modal");
+  if (modal && !modal.classList.contains("hidden")) {
+    updateDeveloperDp();
+  }
+}, 3500);
 
 
 // 1. Render Header & Hero

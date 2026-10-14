@@ -233,18 +233,58 @@ function saveSiteConfig(config) {
   syncAllToServer();
 }
 
+// Multi-image Profile DPs for Developer and Community Members
+window.DEVELOPER_PROFILE_PICS = [
+  "assets/images/logo.jpg",
+  "uploads/hero_durga_custom.jpg",
+  "assets/images/hero-durga.jpg"
+];
+
+function getCommunityProfilePics(mandapam) {
+  if (!mandapam) return ["assets/images/hero-durga.jpg"];
+  const pics = [];
+  if (mandapam.profilePic) pics.push(mandapam.profilePic);
+  if (mandapam.dpUrl) pics.push(mandapam.dpUrl);
+  if (Array.isArray(mandapam.profilePics)) {
+    mandapam.profilePics.forEach(p => { if (p && !pics.includes(p)) pics.push(p); });
+  }
+  if (Array.isArray(mandapam.photos)) {
+    mandapam.photos.forEach(p => {
+      const u = typeof p === 'string' ? p : (p && p.url ? p.url : '');
+      if (u && !pics.includes(u)) pics.push(u);
+    });
+  }
+  if (mandapam.imageUrl && !pics.includes(mandapam.imageUrl)) pics.push(mandapam.imageUrl);
+  if (mandapam.photoUrl && !pics.includes(mandapam.photoUrl)) pics.push(mandapam.photoUrl);
+  if (pics.length === 0) pics.push("assets/images/hero-durga.jpg");
+  return pics;
+}
+
+// Public pandals getter: Strictly approved pandals only
 function getMandapams() {
   try {
     const saved = localStorage.getItem(STORAGE_KEYS.MANDAPAMS);
     if (saved) {
       const parsed = JSON.parse(saved);
       if (Array.isArray(parsed)) {
-        return parsed.filter(m => m && m.id && !String(m.id).startsWith("kd-") && !String(m.name || '').includes("Mankammathota Durga Samithi"));
+        return parsed.filter(m => m && m.id && !String(m.id).startsWith("kd-") && !String(m.name || '').includes("Mankammathota Durga Samithi") && ((m.isVerified === true || m.status === 'approved') && m.status !== 'pending'));
       }
     }
   } catch (e) {
     console.error("Error reading mandapams from localStorage:", e);
   }
+  return DEFAULT_MANDAPAMS.filter(m => (m.isVerified === true || m.status === 'approved') && m.status !== 'pending');
+}
+
+// Unfiltered getter reserved for admin dashboard
+function getAllMandapamsForAdmin() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEYS.MANDAPAMS);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed)) return parsed;
+    }
+  } catch (e) {}
   return DEFAULT_MANDAPAMS;
 }
 
@@ -335,7 +375,7 @@ function getGoogleStreetViewUrl(item) {
 // Photo Gallery Helpers
 function buildGalleryPhotosArray() {
   allGalleryPhotos = [];
-  const verifiedList = getMandapams().filter(m => m.isVerified !== false && m.status !== 'pending');
+  const verifiedList = getMandapams().filter(m => (m.isVerified === true || m.status === 'approved') && m.status !== 'pending');
   verifiedList.forEach(m => {
     if (m.photos && Array.isArray(m.photos)) {
       m.photos.forEach((p, pIdx) => {

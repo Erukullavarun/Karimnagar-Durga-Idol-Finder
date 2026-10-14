@@ -289,7 +289,7 @@
 
   <!-- Leaflet Script -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-  <script src="data.js?v=20261014_v1"></script>
+  <script src="data.js?v=20261014_v2"></script>
   <script>
     // Karimnagar Colony & Landmark Coordinates
     window.KARIMNAGAR_COLONY_COORDS = window.KARIMNAGAR_COLONY_COORDS || {
@@ -465,38 +465,61 @@
       `;
     }
 
+    let lastMapSignature = '';
+    function computeMapSignature(items) {
+      if (!Array.isArray(items)) return '';
+      return items
+        .filter(m => (m.isVerified === true || m.status === 'approved') && m.status !== 'pending')
+        .map(m => `${m.id}-${m.status}-${m.isVerified}-${m.updatedAt || ''}-${m.latitude || ''}-${m.longitude || ''}`)
+        .join('|');
+    }
+
     document.addEventListener("DOMContentLoaded", () => {
       initDedicatedMap();
       setupGooglePlacesAutocomplete();
 
       pullServerData(() => {
+        lastMapSignature = computeMapSignature(getMandapams());
         renderMapAreaPills();
         renderMapMarkersAndList();
       });
+
       if (typeof listenDataChange === "function") {
         listenDataChange(() => {
           pullServerData(() => {
-            renderMapAreaPills();
-            renderMapMarkersAndList();
+            const sig = computeMapSignature(getMandapams());
+            if (sig !== lastMapSignature) {
+              lastMapSignature = sig;
+              renderMapAreaPills();
+              renderMapMarkersAndList();
+            }
           });
         });
       }
 
-      // Live sync
+      // Live sync without flashing or marker glitching
       setInterval(() => {
         if (!mapSearchQuery) {
           pullServerData(() => {
-            renderMapAreaPills();
-            renderMapMarkersAndList();
+            const sig = computeMapSignature(getMandapams());
+            if (sig !== lastMapSignature) {
+              lastMapSignature = sig;
+              renderMapAreaPills();
+              renderMapMarkersAndList();
+            }
           });
         }
-      }, 5000);
+      }, 10000);
 
       window.addEventListener("focus", () => {
         if (!mapSearchQuery) {
           pullServerData(() => {
-            renderMapAreaPills();
-            renderMapMarkersAndList();
+            const sig = computeMapSignature(getMandapams());
+            if (sig !== lastMapSignature) {
+              lastMapSignature = sig;
+              renderMapAreaPills();
+              renderMapMarkersAndList();
+            }
           });
         }
       });

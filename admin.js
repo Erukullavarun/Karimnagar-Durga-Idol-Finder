@@ -1,7 +1,7 @@
 // Admin Panel Controller for Karimnagar Durga Idol Finder
 
 let adminConfig = getSiteConfig();
-let adminMandapams = getMandapams();
+let adminMandapams = typeof getAllMandapamsForAdmin === 'function' ? getAllMandapamsForAdmin() : getMandapams();
 let adminAreas = getAreasList();
 let selectedMandapamId = null;
 let activeAdminFilter = "all";
@@ -85,7 +85,7 @@ function loadAdminDashboard() {
         adminMandapams = mandapamsRes.mandapams;
         safeSaveMandapams(adminMandapams);
       } else {
-        adminMandapams = getMandapams();
+        adminMandapams = typeof getAllMandapamsForAdmin === 'function' ? getAllMandapamsForAdmin() : getMandapams();
       }
 
       if (areasRes && areasRes.success && Array.isArray(areasRes.areas)) {
@@ -103,7 +103,7 @@ function loadAdminDashboard() {
       updateAdminQuickStats();
     }).catch(() => {
       adminConfig = getSiteConfig();
-      adminMandapams = getMandapams();
+      adminMandapams = typeof getAllMandapamsForAdmin === 'function' ? getAllMandapamsForAdmin() : getMandapams();
       adminAreas = getAreasList();
 
       populateSiteSettingsForm();

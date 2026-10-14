@@ -278,13 +278,15 @@
     </div>
   </div>
 
-  <script src="data.js"></script>
-  <script src="app.js"></script>
+  <script src="data.js?v=20261014_v2"></script>
+  <script src="app.js?v=20261014_v2"></script>
   <script>
     let activeGalleryTab = 'all';
 
     document.addEventListener("DOMContentLoaded", () => {
-      renderDedicatedGallery();
+      pullServerData(() => {
+        renderDedicatedGallery();
+      });
     });
 
     function filterDedicatedGallery(tab) {
