@@ -52,11 +52,13 @@ app.use('/uploads', express.static(UPLOADS_DIR, { maxAge: '7d' }));
 // Static Assets with Cache-Control headers and clean URL extensions (.html)
 app.use(express.static(path.join(__dirname), {
   extensions: ['html', 'htm'],
-  maxAge: '1d',
+  maxAge: '0',
   setHeaders: (res, filePath) => {
-    if (filePath.endsWith('.html') || filePath.endsWith('.htm')) {
-      res.setHeader('Cache-Control', 'no-cache');
-    } else if (filePath.match(/\.(jpg|jpeg|png|gif|svg|webp|ico|css|js)$/)) {
+    if (filePath.endsWith('.html') || filePath.endsWith('.htm') || filePath.endsWith('.js') || filePath.endsWith('.css')) {
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
+    } else if (filePath.match(/\.(jpg|jpeg|png|gif|svg|webp|ico)$/)) {
       res.setHeader('Cache-Control', 'public, max-age=86400');
     }
   }

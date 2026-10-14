@@ -555,8 +555,8 @@ function openAddMandapamModal() {
   const modal = document.getElementById("edit-mandapam-modal");
   if (modal) {
     modal.classList.remove("hidden");
-    modal.classList.add("flex");
-    modal.style.display = "flex";
+    modal.classList.add("block");
+    modal.style.display = "block";
   }
 }
 
@@ -650,8 +650,8 @@ function openEditMandapamModal(id) {
     const modal = document.getElementById("edit-mandapam-modal");
     if (modal) {
       modal.classList.remove("hidden");
-      modal.classList.add("flex");
-      modal.style.display = "flex";
+      modal.classList.add("block");
+      modal.style.display = "block";
     }
   } catch (err) {
     console.error("Error in openEditMandapamModal:", err);
@@ -662,7 +662,7 @@ function closeEditMandapamModal() {
   const modal = document.getElementById("edit-mandapam-modal");
   if (modal) {
     modal.classList.add("hidden");
-    modal.classList.remove("flex");
+    modal.classList.remove("block", "flex");
     modal.style.display = "none";
   }
 }
@@ -824,14 +824,20 @@ function handleAdminAreaSelectChange(val) {
 function populateAreaSelectOptions(selectedVal = "") {
   const select = document.getElementById("edit-m-area");
   if (!select) return;
+  if (!Array.isArray(adminAreas) || adminAreas.length === 0) {
+    adminAreas = typeof getAreasList === "function" ? getAreasList() : [];
+  }
   const isCustom = selectedVal && !adminAreas.includes(selectedVal);
   if (isCustom) {
     adminAreas.push(selectedVal);
   }
 
-  select.innerHTML = adminAreas.map(a => `
+  select.innerHTML = `<option value="">-- Select Karimnagar Area --</option>` + adminAreas.map(a => `
     <option value="${a}" ${a === selectedVal ? 'selected' : ''}>📍 ${a}</option>
   `).join("") + `<option value="__other__">➕ Other (Type Missing Area)...</option>`;
+  if (selectedVal) {
+    select.value = selectedVal;
+  }
 }
 
 // 6. Areas Management

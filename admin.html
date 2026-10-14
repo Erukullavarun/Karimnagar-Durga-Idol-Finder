@@ -403,142 +403,242 @@
   </div>
 
   <!-- ADD / EDIT MANDAPAM MODAL -->
-  <div id="edit-mandapam-modal" onclick="if (event.target === this) closeEditMandapamModal();" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4 bg-ink-900/60 backdrop-blur-sm overflow-y-auto" style="display: none;">
-    <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-xl w-full shadow-card border border-cream-300 relative my-8 mx-auto">
-      <button type="button" onclick="closeEditMandapamModal()" class="absolute right-4 top-4 text-ink-500 hover:text-ink-900 text-xl font-bold cursor-pointer">✕</button>
-      
-      <h3 id="modal-mandapam-title" class="font-display text-xl font-bold text-ink-900 mb-4">Edit Durga Pandal</h3>
+  <div id="edit-mandapam-modal" class="fixed inset-0 z-[99999] hidden overflow-y-auto bg-ink-900/70 backdrop-blur-sm p-4 sm:p-6" style="display: none;">
+    <div class="min-h-full flex items-center justify-center py-4" onclick="if (event.target === this) closeEditMandapamModal();">
+      <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-xl w-full shadow-2xl border border-cream-300 relative my-auto">
+        <button type="button" onclick="closeEditMandapamModal()" class="absolute right-4 top-4 text-ink-500 hover:text-ink-900 text-xl font-bold cursor-pointer">✕</button>
+        
+        <h3 id="modal-mandapam-title" class="font-display text-xl font-bold text-ink-900 mb-4">Edit Durga Pandal</h3>
 
-      <form id="edit-mandapam-form" onsubmit="handleSaveMandapam(event)" class="space-y-4">
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-bold text-ink-700 mb-1">Pandal Name *</label>
-            <input id="edit-m-name" required type="text" class="w-full rounded-xl border border-cream-300 p-2 text-xs text-ink-900 outline-none" />
+        <form id="edit-mandapam-form" onsubmit="handleSaveMandapam(event)" class="space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-ink-700 mb-1">Pandal Name *</label>
+              <input id="edit-m-name" required type="text" class="w-full rounded-xl border border-cream-300 p-2 text-xs text-ink-900 outline-none" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-ink-700 mb-1">Telugu Name</label>
+              <input id="edit-m-telugu" type="text" class="w-full rounded-xl border border-cream-300 p-2 text-xs text-ink-900 outline-none font-telugu" />
+            </div>
           </div>
-          <div>
-            <label class="block text-xs font-bold text-ink-700 mb-1">Telugu Name</label>
-            <input id="edit-m-telugu" type="text" class="w-full rounded-xl border border-cream-300 p-2 text-xs text-ink-900 outline-none font-telugu" />
-          </div>
-        </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-bold text-ink-700 mb-1">Karimnagar Area *</label>
-            <select id="edit-m-area" required class="w-full rounded-xl border border-cream-300 p-2 text-xs text-ink-900 outline-none"></select>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-ink-700 mb-1">Karimnagar Area *</label>
+              <select id="edit-m-area" class="w-full rounded-xl border border-cream-300 p-2 text-xs text-ink-900 outline-none"></select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-ink-700 mb-1">Priority Rank (1 = Top)</label>
+              <input id="edit-m-priority" type="number" min="1" max="99" value="1" class="w-full rounded-xl border border-cream-300 p-2 text-xs text-ink-900 outline-none font-bold" />
+            </div>
           </div>
-          <div>
-            <label class="block text-xs font-bold text-ink-700 mb-1">Priority Rank (1 = Top)</label>
-            <input id="edit-m-priority" type="number" min="1" max="99" value="1" class="w-full rounded-xl border border-cream-300 p-2 text-xs text-ink-900 outline-none font-bold" />
-          </div>
-        </div>
 
-        <div>
-          <label class="block text-xs font-bold text-ink-700 mb-1">Full Address & Landmarks</label>
-          <input id="edit-m-address" type="text" class="w-full rounded-xl border border-cream-300 p-2 text-xs text-ink-900 outline-none" />
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold text-ink-700 mb-1">📍 Google Maps Link (for easy GPS navigation)</label>
-          <input id="edit-m-maps-url" type="url" placeholder="https://maps.app.goo.gl/... or https://www.google.com/maps?q=..." class="w-full rounded-xl border border-cream-300 p-2 text-xs text-ink-900 outline-none focus:border-saffron-500" />
-        </div>
-
-        <!-- Lat & Long -->
-        <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="block text-xs font-bold text-ink-700 mb-1">Latitude</label>
-            <input id="edit-m-lat" type="number" step="0.0001" placeholder="Optional (e.g. 18.4386)" class="w-full rounded-xl border border-cream-300 p-2 text-xs text-ink-900 outline-none" />
+            <label class="block text-xs font-bold text-ink-700 mb-1">Full Address & Landmarks</label>
+            <input id="edit-m-address" type="text" class="w-full rounded-xl border border-cream-300 p-2 text-xs text-ink-900 outline-none" />
           </div>
-          <div>
-            <label class="block text-xs font-bold text-ink-700 mb-1">Longitude</label>
-            <input id="edit-m-lng" type="number" step="0.0001" placeholder="Optional (e.g. 79.1288)" class="w-full rounded-xl border border-cream-300 p-2 text-xs text-ink-900 outline-none" />
-          </div>
-        </div>
 
-        <!-- Photos Upload by Browse (Up to 3 Photos) -->
-        <div class="p-3.5 rounded-2xl bg-cream-50 border border-cream-200 space-y-3">
-          <div class="flex items-center justify-between">
-            <label class="block text-xs font-bold text-ink-700">Durga Photos (Upload 2 to 3 Photos from Device)</label>
-            <span class="text-[10px] font-bold text-saffron-700 bg-saffron-100 px-2 py-0.5 rounded">Mobile / PC File Browse</span>
+          <div>
+            <label class="block text-xs font-bold text-ink-700 mb-1">📍 Google Maps Link (for easy GPS navigation)</label>
+            <input id="edit-m-maps-url" type="text" placeholder="https://maps.app.goo.gl/... or https://www.google.com/maps?q=..." class="w-full rounded-xl border border-cream-300 p-2 text-xs text-ink-900 outline-none focus:border-saffron-500" />
           </div>
-          
-          <!-- Photo 1 -->
-          <div class="flex items-center gap-3 p-2 bg-white rounded-xl border border-cream-300">
-            <label class="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-dashed border-saffron-400 bg-saffron-50 text-saffron-800 text-xs font-bold cursor-pointer hover:bg-saffron-100 transition shadow-soft shrink-0">
-              <span>📷</span> Photo 1 (Main Idol) *
-              <input type="file" accept="image/*" onchange="handleMandapamPhotoBrowse(event, 1)" class="hidden" />
+
+          <!-- Lat & Long -->
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-ink-700 mb-1">Latitude</label>
+              <input id="edit-m-lat" type="number" step="0.0001" placeholder="Optional (e.g. 18.4386)" class="w-full rounded-xl border border-cream-300 p-2 text-xs text-ink-900 outline-none" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-ink-700 mb-1">Longitude</label>
+              <input id="edit-m-lng" type="number" step="0.0001" placeholder="Optional (e.g. 79.1288)" class="w-full rounded-xl border border-cream-300 p-2 text-xs text-ink-900 outline-none" />
+            </div>
+          </div>
+
+          <!-- Photos Upload by Browse (Up to 3 Photos) -->
+          <div class="p-3.5 rounded-2xl bg-cream-50 border border-cream-200 space-y-3">
+            <div class="flex items-center justify-between">
+              <label class="block text-xs font-bold text-ink-700">Durga Photos (Upload 2 to 3 Photos from Device)</label>
+              <span class="text-[10px] font-bold text-saffron-700 bg-saffron-100 px-2 py-0.5 rounded">Mobile / PC File Browse</span>
+            </div>
+            
+            <!-- Photo 1 -->
+            <div class="flex items-center gap-3 p-2 bg-white rounded-xl border border-cream-300">
+              <label class="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-dashed border-saffron-400 bg-saffron-50 text-saffron-800 text-xs font-bold cursor-pointer hover:bg-saffron-100 transition shadow-soft shrink-0">
+                <span>📷</span> Photo 1 (Main Idol) *
+                <input type="file" accept="image/*" onchange="handleMandapamPhotoBrowse(event, 1)" class="hidden" />
+              </label>
+              <img id="edit-m-photo-preview" src="" class="h-10 w-12 rounded-lg object-cover border border-cream-300 hidden" />
+              <input id="edit-m-photo" type="hidden" />
+              <span class="text-[11px] text-ink-500 truncate">Main idol front photo</span>
+            </div>
+
+            <!-- Photo 2 -->
+            <div class="flex items-center gap-3 p-2 bg-white rounded-xl border border-cream-300">
+              <label class="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-dashed border-saffron-400 bg-saffron-50 text-saffron-800 text-xs font-bold cursor-pointer hover:bg-saffron-100 transition shadow-soft shrink-0">
+                <span>📷</span> Photo 2 (Pandal View)
+                <input type="file" accept="image/*" onchange="handleMandapamPhotoBrowse(event, 2)" class="hidden" />
+              </label>
+              <img id="edit-m-photo2-preview" src="" class="h-10 w-12 rounded-lg object-cover border border-cream-300 hidden" />
+              <input id="edit-m-photo2" type="hidden" />
+              <span class="text-[11px] text-ink-500 truncate">Pandal stage or night lighting</span>
+            </div>
+
+            <!-- Photo 3 -->
+            <div class="flex items-center gap-3 p-2 bg-white rounded-xl border border-cream-300">
+              <label class="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-dashed border-saffron-400 bg-saffron-50 text-saffron-800 text-xs font-bold cursor-pointer hover:bg-saffron-100 transition shadow-soft shrink-0">
+                <span>📷</span> Photo 3 (Aarti / Alankaram)
+                <input type="file" accept="image/*" onchange="handleMandapamPhotoBrowse(event, 3)" class="hidden" />
+              </label>
+              <img id="edit-m-photo3-preview" src="" class="h-10 w-12 rounded-lg object-cover border border-cream-300 hidden" />
+              <input id="edit-m-photo3" type="hidden" />
+              <span class="text-[11px] text-ink-500 truncate">Special puja, aarti or close-up</span>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-ink-700 mb-1">Instagram Handle</label>
+              <input id="edit-m-ig-handle" type="text" placeholder="@durga_youth" class="w-full rounded-xl border border-cream-300 p-2 text-xs text-ink-900 outline-none" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-ink-700 mb-1">Instagram Link</label>
+              <input id="edit-m-ig-url" type="text" placeholder="https://instagram.com/..." class="w-full rounded-xl border border-cream-300 p-2 text-xs text-ink-900 outline-none" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-ink-700 mb-1">Reels Count</label>
+              <input id="edit-m-reels" type="number" min="0" value="0" class="w-full rounded-xl border border-cream-300 p-2 text-xs text-ink-900 outline-none" />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-ink-700 mb-1">Description / Alankaram Details</label>
+            <textarea id="edit-m-desc" rows="2" class="w-full rounded-xl border border-cream-300 p-2 text-xs text-ink-900 outline-none"></textarea>
+          </div>
+
+          <div class="flex items-center gap-6 pt-2">
+            <label class="flex items-center gap-2 text-xs font-bold text-ink-800 cursor-pointer">
+              <input id="edit-m-mustvisit" type="checkbox" class="h-4 w-4 text-saffron-600 rounded" />
+              ★ Mark as Must Visit (Top Priority Rail)
             </label>
-            <img id="edit-m-photo-preview" src="" class="h-10 w-12 rounded-lg object-cover border border-cream-300 hidden" />
-            <input id="edit-m-photo" type="hidden" />
-            <span class="text-[11px] text-ink-500 truncate">Main idol front photo</span>
-          </div>
-
-          <!-- Photo 2 -->
-          <div class="flex items-center gap-3 p-2 bg-white rounded-xl border border-cream-300">
-            <label class="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-dashed border-saffron-400 bg-saffron-50 text-saffron-800 text-xs font-bold cursor-pointer hover:bg-saffron-100 transition shadow-soft shrink-0">
-              <span>📷</span> Photo 2 (Pandal View)
-              <input type="file" accept="image/*" onchange="handleMandapamPhotoBrowse(event, 2)" class="hidden" />
+            <label class="flex items-center gap-2 text-xs font-bold text-ink-800 cursor-pointer">
+              <input id="edit-m-verified" type="checkbox" checked class="h-4 w-4 text-emerald-600 rounded" />
+              ✓ Verified Listing
             </label>
-            <img id="edit-m-photo2-preview" src="" class="h-10 w-12 rounded-lg object-cover border border-cream-300 hidden" />
-            <input id="edit-m-photo2" type="hidden" />
-            <span class="text-[11px] text-ink-500 truncate">Pandal stage or night lighting</span>
           </div>
 
-          <!-- Photo 3 -->
-          <div class="flex items-center gap-3 p-2 bg-white rounded-xl border border-cream-300">
-            <label class="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-dashed border-saffron-400 bg-saffron-50 text-saffron-800 text-xs font-bold cursor-pointer hover:bg-saffron-100 transition shadow-soft shrink-0">
-              <span>📷</span> Photo 3 (Aarti / Alankaram)
-              <input type="file" accept="image/*" onchange="handleMandapamPhotoBrowse(event, 3)" class="hidden" />
-            </label>
-            <img id="edit-m-photo3-preview" src="" class="h-10 w-12 rounded-lg object-cover border border-cream-300 hidden" />
-            <input id="edit-m-photo3" type="hidden" />
-            <span class="text-[11px] text-ink-500 truncate">Special puja, aarti or close-up</span>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <div>
-            <label class="block text-xs font-bold text-ink-700 mb-1">Instagram Handle</label>
-            <input id="edit-m-ig-handle" type="text" placeholder="@durga_youth" class="w-full rounded-xl border border-cream-300 p-2 text-xs text-ink-900 outline-none" />
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-ink-700 mb-1">Instagram Link</label>
-            <input id="edit-m-ig-url" type="url" placeholder="https://instagram.com/..." class="w-full rounded-xl border border-cream-300 p-2 text-xs text-ink-900 outline-none" />
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-ink-700 mb-1">Reels Count</label>
-            <input id="edit-m-reels" type="number" min="0" value="0" class="w-full rounded-xl border border-cream-300 p-2 text-xs text-ink-900 outline-none" />
-          </div>
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold text-ink-700 mb-1">Description / Alankaram Details</label>
-          <textarea id="edit-m-desc" rows="2" class="w-full rounded-xl border border-cream-300 p-2 text-xs text-ink-900 outline-none"></textarea>
-        </div>
-
-        <div class="flex items-center gap-6 pt-2">
-          <label class="flex items-center gap-2 text-xs font-bold text-ink-800 cursor-pointer">
-            <input id="edit-m-mustvisit" type="checkbox" class="h-4 w-4 text-saffron-600 rounded" />
-            ★ Mark as Must Visit (Top Priority Rail)
-          </label>
-          <label class="flex items-center gap-2 text-xs font-bold text-ink-800 cursor-pointer">
-            <input id="edit-m-verified" type="checkbox" checked class="h-4 w-4 text-emerald-600 rounded" />
-            ✓ Verified Listing
-          </label>
-        </div>
-
-        <button type="submit" class="btn-primary w-full !py-3 text-xs sm:text-sm">
-          Save Durga Pandal
-        </button>
-      </form>
+          <button type="submit" class="btn-primary w-full !py-3 text-xs sm:text-sm">
+            Save Durga Pandal
+          </button>
+        </form>
+      </div>
     </div>
   </div>
 
-  <script src="data.js"></script>
-  <script src="admin.js"></script>
+  <script src="data.js?v=4.0"></script>
+  <script src="admin.js?v=4.0"></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       checkAdminAuth();
     });
+
+    // Guaranteed inline fallback to ensure Edit Modal always opens immediately regardless of caching
+    window.openEditMandapamModal = function(id) {
+      if (!id) return;
+      selectedMandapamId = String(id);
+      let m = (typeof adminMandapams !== "undefined" && Array.isArray(adminMandapams))
+        ? adminMandapams.find(item => String(item.id) === String(id))
+        : null;
+      if (!m) {
+        const all = typeof getAllMandapamsForAdmin === 'function' ? getAllMandapamsForAdmin() : (typeof getMandapams === 'function' ? getMandapams() : []);
+        m = all.find(item => String(item.id) === String(id));
+        if (m && typeof adminMandapams !== "undefined" && Array.isArray(adminMandapams)) {
+          adminMandapams.push(m);
+        }
+      }
+      if (!m) {
+        alert("⚠️ Could not load details for this pandal. Please refresh.");
+        return;
+      }
+
+      const titleEl = document.getElementById("modal-mandapam-title");
+      if (titleEl) titleEl.textContent = "Edit Durga Pandal";
+
+      if (typeof populateAreaSelectOptions === "function") {
+        populateAreaSelectOptions(m.area || "");
+      }
+
+      const otherCont = document.getElementById("edit-m-other-area-container");
+      if (otherCont) otherCont.classList.add("hidden");
+      const otherInp = document.getElementById("edit-m-other-area-input");
+      if (otherInp) otherInp.value = "";
+
+      const setVal = (elId, val) => {
+        const el = document.getElementById(elId);
+        if (el) el.value = val !== undefined && val !== null ? val : "";
+      };
+
+      setVal("edit-m-name", m.name);
+      setVal("edit-m-telugu", m.teluguName);
+      setVal("edit-m-area", m.area);
+      setVal("edit-m-maps-url", m.mapsUrl || m.googleMapsUrl);
+      setVal("edit-m-address", m.address);
+      setVal("edit-m-lat", (m.latitude !== null && m.latitude !== undefined) ? m.latitude : "");
+      setVal("edit-m-lng", (m.longitude !== null && m.longitude !== undefined) ? m.longitude : "");
+      setVal("edit-m-priority", m.priority || 1);
+      setVal("edit-m-desc", m.description);
+      setVal("edit-m-ig-handle", m.instagramHandle);
+      setVal("edit-m-ig-url", m.instagramUrl);
+      setVal("edit-m-reels", m.reelsCount || 0);
+
+      const catEl = document.getElementById("edit-m-category");
+      if (catEl) {
+        catEl.value = (m.categories && m.categories[0]) || m.category || "unique";
+      }
+
+      const photo1 = (m.photos && m.photos.length > 0) ? (typeof m.photos[0] === 'string' ? m.photos[0] : (m.photos[0].url || m.photos[0].image_url)) : (m.imageUrl || m.photoUrl || "");
+      const photo2 = (m.photos && m.photos.length > 1) ? (typeof m.photos[1] === 'string' ? m.photos[1] : (m.photos[1].url || m.photos[1].image_url)) : "";
+      const photo3 = (m.photos && m.photos.length > 2) ? (typeof m.photos[2] === 'string' ? m.photos[2] : (m.photos[2].url || m.photos[2].image_url)) : "";
+
+      setVal("edit-m-photo", photo1);
+      setVal("edit-m-photo2", photo2);
+      setVal("edit-m-photo3", photo3);
+
+      const p1 = document.getElementById("edit-m-photo-preview");
+      const p2 = document.getElementById("edit-m-photo2-preview");
+      const p3 = document.getElementById("edit-m-photo3-preview");
+
+      if (p1) {
+        if (photo1) { p1.src = photo1; p1.classList.remove("hidden"); } else { p1.classList.add("hidden"); }
+      }
+      if (p2) {
+        if (photo2) { p2.src = photo2; p2.classList.remove("hidden"); } else { p2.classList.add("hidden"); }
+      }
+      if (p3) {
+        if (photo3) { p3.src = photo3; p3.classList.remove("hidden"); } else { p3.classList.add("hidden"); }
+      }
+
+      const mvEl = document.getElementById("edit-m-mustvisit");
+      if (mvEl) mvEl.checked = !!m.isMustVisit;
+      const vfEl = document.getElementById("edit-m-verified");
+      if (vfEl) vfEl.checked = (m.isVerified === true && m.status !== 'pending');
+
+      const modal = document.getElementById("edit-mandapam-modal");
+      if (modal) {
+        modal.classList.remove("hidden");
+        modal.classList.add("block");
+        modal.style.display = "block";
+      }
+    };
+
+    window.closeEditMandapamModal = function() {
+      const modal = document.getElementById("edit-mandapam-modal");
+      if (modal) {
+        modal.classList.add("hidden");
+        modal.classList.remove("block", "flex");
+        modal.style.display = "none";
+      }
+    };
   </script>
 </body>
 </html>
