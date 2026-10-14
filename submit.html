@@ -243,27 +243,10 @@
             </div>
           </div>
 
-          <!-- Youth Instagram Handle & Official DP Upload -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label class="block text-xs font-bold text-ink-800 mb-1.5">Youth Committee Instagram Handle (Optional)</label>
-              <input id="sub-instagram" type="text" placeholder="@karimnagar_durga_youth" class="w-full rounded-2xl border border-cream-300 p-3.5 text-xs text-ink-900 outline-none focus:border-saffron-500 bg-cream-50/50" />
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-ink-800 mb-1.5 flex items-center justify-between">
-                <span>Handler Instagram DP (Optional)</span>
-                <span class="text-[10px] text-ink-500">Official profile picture</span>
-              </label>
-              <div class="flex items-center gap-3 p-1.5 bg-cream-50/50 rounded-2xl border border-cream-300">
-                <label class="flex items-center gap-2 px-3 py-2 rounded-xl border border-dashed border-saffron-500 bg-saffron-50 text-saffron-800 text-xs font-bold cursor-pointer hover:bg-saffron-100 transition shrink-0">
-                  <span>📷</span> Browse DP
-                  <input id="sub-handler-dp-file" type="file" accept="image/*" onchange="handleSubHandlerDpBrowse(event)" class="hidden" />
-                </label>
-                <img id="sub-handler-dp-preview" src="" class="h-9 w-9 rounded-full object-cover border-2 border-saffron-300 hidden" />
-                <input id="sub-handler-dp" type="hidden" />
-                <span id="sub-handler-dp-hint" class="text-[11px] text-ink-500 truncate">Exact DP</span>
-              </div>
-            </div>
+          <!-- Youth Committee Instagram Handle -->
+          <div>
+            <label class="block text-xs font-bold text-ink-800 mb-1.5">Youth Committee Instagram Handle (Optional)</label>
+            <input id="sub-instagram" type="text" placeholder="@karimnagar_durga_youth" class="w-full rounded-2xl border border-cream-300 p-3.5 text-xs text-ink-900 outline-none focus:border-saffron-500 bg-cream-50/50" />
           </div>
 
           <!-- Description -->
@@ -402,21 +385,6 @@
       });
     }
 
-    function handleSubHandlerDpBrowse(event) {
-      const file = event.target.files && event.target.files[0];
-      if (!file) return;
-      processImageFile(file, (dataUrl) => {
-        const hiddenInp = document.getElementById("sub-handler-dp");
-        const prev = document.getElementById("sub-handler-dp-preview");
-        const hint = document.getElementById("sub-handler-dp-hint");
-        if (hiddenInp) hiddenInp.value = dataUrl;
-        if (prev) {
-          prev.src = dataUrl;
-          prev.classList.remove("hidden");
-        }
-        if (hint) hint.textContent = file.name || "DP selected";
-      }, 400, 0.8);
-    }
 
     async function handleDedicatedSubmit(e) {
       e.preventDefault();

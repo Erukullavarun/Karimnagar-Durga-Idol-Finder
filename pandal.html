@@ -301,17 +301,7 @@
                   </div>
                   <span class="chip bg-rose-600 text-white font-bold text-[10px]">Open App ↗</span>
                 </a>
-                <div id="detail-upload-dp-container" class="hidden mt-2 p-3 bg-amber-50/70 border border-amber-200 rounded-2xl">
-                  <div class="flex items-center justify-between gap-2">
-                    <div class="text-[11px] text-amber-900 font-medium">
-                      <span class="font-bold">Instagram DP not uploaded:</span> Add official handler DP
-                    </div>
-                    <label class="px-2.5 py-1 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-[11px] font-bold cursor-pointer transition shrink-0">
-                      Upload DP
-                      <input type="file" accept="image/*" onchange="handlePandalDpUpload(event)" class="hidden" />
-                    </label>
-                  </div>
-                </div>
+
               </div>
             </div>
 
@@ -799,7 +789,6 @@
       // Instagram & Exact Handler DP
       const igContainer = document.getElementById("detail-instagram-container");
       const igHandle = item.instagramHandle || item.instagramUrl;
-      const dpUploadBox = document.getElementById("detail-upload-dp-container");
       
       if (igHandle) {
         igContainer.classList.remove("hidden");
@@ -818,15 +807,6 @@
           };
         }
 
-        // If handler DP is not yet uploaded, show upload helper
-        if (dpUploadBox) {
-          if (!item.handlerDp || exactDp === window.NEUTRAL_DP_PLACEHOLDER) {
-            dpUploadBox.classList.remove("hidden");
-          } else {
-            dpUploadBox.classList.add("hidden");
-          }
-        }
-
         const igBtn = document.getElementById("detail-instagram-btn");
         igBtn.onclick = (e) => {
           e.preventDefault();
@@ -834,7 +814,6 @@
         };
       } else {
         igContainer.classList.add("hidden");
-        if (dpUploadBox) dpUploadBox.classList.add("hidden");
       }
 
       // Related Pandals
