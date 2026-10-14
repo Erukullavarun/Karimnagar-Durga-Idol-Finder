@@ -265,6 +265,24 @@ function handleMandapamPhotoBrowse(event, index) {
   });
 }
 
+function handleAdminHandlerDpBrowse(event) {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+  processImageFile(file, (dataUrl) => {
+    document.getElementById("edit-m-handler-dp").value = dataUrl;
+    const prev = document.getElementById("edit-m-handler-dp-preview");
+    const hint = document.getElementById("edit-m-handler-dp-hint");
+    if (prev) {
+      prev.src = dataUrl;
+      prev.classList.remove("hidden");
+    }
+    if (hint) {
+      hint.textContent = file.name || "DP uploaded";
+      hint.classList.add("text-emerald-700", "font-bold");
+    }
+  }, 400, 0.8);
+}
+
 function handleSaveSiteSettings(e) {
   e.preventDefault();
   
@@ -611,6 +629,19 @@ function openEditMandapamModal(id) {
   document.getElementById("edit-m-ig-handle").value = m.instagramHandle || "";
   document.getElementById("edit-m-ig-url").value = m.instagramUrl || "";
   document.getElementById("edit-m-reels").value = m.reelsCount || 0;
+
+  const dp = m.handlerDp || "";
+  document.getElementById("edit-m-handler-dp").value = dp;
+  const prevDp = document.getElementById("edit-m-handler-dp-preview");
+  const hintDp = document.getElementById("edit-m-handler-dp-hint");
+  if (dp) {
+    if (prevDp) { prevDp.src = dp; prevDp.classList.remove("hidden"); }
+    if (hintDp) { hintDp.textContent = "Exact DP set"; hintDp.classList.add("text-emerald-700", "font-bold"); }
+  } else {
+    if (prevDp) prevDp.classList.add("hidden");
+    if (hintDp) { hintDp.textContent = "No DP set (Neutral silhouette used)"; hintDp.classList.remove("text-emerald-700", "font-bold"); }
+  }
+
   document.getElementById("edit-m-mustvisit").checked = !!m.isMustVisit;
   document.getElementById("edit-m-verified").checked = (m.isVerified === true && m.status !== 'pending');
 
@@ -660,6 +691,7 @@ function handleSaveMandapam(e) {
   const p3 = document.getElementById("edit-m-photo3").value.trim();
   const igHandle = document.getElementById("edit-m-ig-handle").value.trim();
   const igUrl = document.getElementById("edit-m-ig-url").value.trim();
+  const handlerDp = document.getElementById("edit-m-handler-dp") ? document.getElementById("edit-m-handler-dp").value.trim() : "";
   const reels = parseInt(document.getElementById("edit-m-reels").value) || 0;
   const rawMustVisit = document.getElementById("edit-m-mustvisit").checked;
   const isVerified = document.getElementById("edit-m-verified").checked;
@@ -696,6 +728,7 @@ function handleSaveMandapam(e) {
         photos,
         instagramHandle: igHandle,
         instagramUrl: igUrl,
+        handlerDp: handlerDp || (adminMandapams[idx].handlerDp || ""),
         reelsCount: reels,
         isMustVisit,
         isVerified,
@@ -730,6 +763,7 @@ function handleSaveMandapam(e) {
       photos,
       instagramHandle: igHandle,
       instagramUrl: igUrl,
+      handlerDp: handlerDp || "",
       reelsCount: reels,
       reels: [],
       isMustVisit,

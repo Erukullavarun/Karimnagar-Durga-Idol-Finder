@@ -233,30 +233,59 @@ function saveSiteConfig(config) {
   syncAllToServer();
 }
 
-// Multi-image Profile DPs for Developer and Community Members
+// Neutral non-branded user silhouette placeholder (Used when handler DP is not set)
+window.NEUTRAL_DP_PLACEHOLDER = "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(`
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <circle cx="32" cy="32" r="32" fill="#f1f5f9"/>
+  <circle cx="32" cy="24" r="11" fill="#94a3b8"/>
+  <path d="M14 54c0-9.9 8.1-18 18-18s18 8.1 18 18" fill="#94a3b8"/>
+</svg>`);
+
+// Exact Developer Profile (Erukulla Varun @chintuvarun_3008)
+window.DEVELOPER_INSTAGRAM = {
+  name: "Erukulla Varun",
+  handle: "chintuvarun_3008",
+  username: "chintuvarun_3008",
+  url: "https://instagram.com/chintuvarun_3008",
+  dp: "assets/images/developer-varun.jpg"
+};
+window.DEVELOPER_DP = "assets/images/developer-varun.jpg";
 window.DEVELOPER_PROFILE_PICS = [
-  "assets/images/logo.jpg",
-  "uploads/hero_durga_custom.jpg",
-  "assets/images/hero-durga.jpg"
+  "assets/images/developer-varun.jpg"
 ];
 
+// Helper to get exact Handler DP for a pandal (Strictly no website logos, Durga photos, or developer DP)
+function getHandlerProfileDp(mandapam) {
+  if (!mandapam) return window.NEUTRAL_DP_PLACEHOLDER;
+  const rawDp = (mandapam.handlerDp || mandapam.profilePic || mandapam.dpUrl || '').trim();
+  // Ensure we NEVER return website logo, Durga photo, or developer photo as a handler's DP
+  if (rawDp && !rawDp.includes('logo.jpg') && !rawDp.includes('hero-durga') && !rawDp.includes('developer-varun')) {
+    return rawDp;
+  }
+  return window.NEUTRAL_DP_PLACEHOLDER;
+}
+
+// Multi-image helper for community members / handlers if they uploaded multiple DPs
 function getCommunityProfilePics(mandapam) {
-  if (!mandapam) return ["assets/images/hero-durga.jpg"];
+  if (!mandapam) return [window.NEUTRAL_DP_PLACEHOLDER];
   const pics = [];
-  if (mandapam.profilePic) pics.push(mandapam.profilePic);
-  if (mandapam.dpUrl) pics.push(mandapam.dpUrl);
+  const checkAndAdd = (url) => {
+    if (url && typeof url === 'string') {
+      const u = url.trim();
+      if (u && !u.includes('logo.jpg') && !u.includes('hero-durga') && !u.includes('developer-varun') && !pics.includes(u)) {
+        pics.push(u);
+      }
+    }
+  };
+  checkAndAdd(mandapam.handlerDp);
+  checkAndAdd(mandapam.profilePic);
+  checkAndAdd(mandapam.dpUrl);
   if (Array.isArray(mandapam.profilePics)) {
-    mandapam.profilePics.forEach(p => { if (p && !pics.includes(p)) pics.push(p); });
+    mandapam.profilePics.forEach(p => checkAndAdd(p));
   }
-  if (Array.isArray(mandapam.photos)) {
-    mandapam.photos.forEach(p => {
-      const u = typeof p === 'string' ? p : (p && p.url ? p.url : '');
-      if (u && !pics.includes(u)) pics.push(u);
-    });
+  if (pics.length === 0) {
+    pics.push(window.NEUTRAL_DP_PLACEHOLDER);
   }
-  if (mandapam.imageUrl && !pics.includes(mandapam.imageUrl)) pics.push(mandapam.imageUrl);
-  if (mandapam.photoUrl && !pics.includes(mandapam.photoUrl)) pics.push(mandapam.photoUrl);
-  if (pics.length === 0) pics.push("assets/images/hero-durga.jpg");
   return pics;
 }
 

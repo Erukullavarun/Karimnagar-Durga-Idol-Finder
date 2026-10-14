@@ -94,6 +94,29 @@ function processAndSavePhotos(photos, mandapamId) {
   });
 }
 
+// Helper to save a single base64 image (such as handler Instagram DP) to uploads/ folder
+function processAndSaveSingleImage(imgData, prefix, mandapamId) {
+  if (!imgData || typeof imgData !== 'string') return '';
+  const safeId = String(mandapamId || 'item').replace(/[^a-zA-Z0-9_-]/g, '_');
+  if (imgData.startsWith('data:image/')) {
+    try {
+      const matches = imgData.match(/^data:image\/([a-zA-Z0-9+]+);base64,(.+)$/);
+      if (matches) {
+        let ext = matches[1].toLowerCase();
+        if (ext === 'jpeg') ext = 'jpg';
+        const buffer = Buffer.from(matches[2], 'base64');
+        const fileName = `${prefix}_${safeId}_${Date.now()}.${ext}`;
+        const filePath = path.join(UPLOADS_DIR, fileName);
+        fs.writeFileSync(filePath, buffer);
+        return `uploads/${fileName}`;
+      }
+    } catch (err) {
+      console.error(`Error saving ${prefix} to file:`, err);
+    }
+  }
+  return imgData;
+}
+
 const INITIAL_AREAS = [
   "Tower Circle",
   "Mukarampura",
@@ -228,6 +251,9 @@ app.post('/api/mandapams', (req, res) => {
       }
     }
 
+    const submittedHandlerDp = (req.body.handlerDp || req.body.profilePic || req.body.instagramDpUrl || '').trim();
+    const savedHandlerDp = processAndSaveSingleImage(submittedHandlerDp, 'dp', id);
+
     const newEntry = {
       id: id,
       name: req.body.name || 'Durga Mandapam',
@@ -242,7 +268,8 @@ app.post('/api/mandapams', (req, res) => {
       longitude: lng,
       description: req.body.description || '',
       instagramHandle: req.body.instagramHandle || req.body.instagram || '',
-      instagramUrl: req.body.instagramUrl || '',
+      instagramUrl: req.body.instagramUrl || (req.body.instagramHandle ? `https://instagram.com/${req.body.instagramHandle.replace('@', '')}` : ''),
+      handlerDp: savedHandlerDp,
       photos: processedPhotos,
       priority: parseInt(req.body.priority) || 10,
       isMustVisit: req.body.isMustVisit === true || req.body.category === 'must-visit',
@@ -377,6 +404,9 @@ app.put('/api/admin/mandapams/:id/approve', (req, res) => {
       if (req.body && req.body.photos && Array.isArray(req.body.photos)) {
         db.mandapams[idx].photos = processAndSavePhotos(req.body.photos, id);
       }
+      if (req.body && req.body.handlerDp) {
+        db.mandapams[idx].handlerDp = processAndSaveSingleImage(req.body.handlerDp, 'dp', id);
+      }
     }
 
     writeDB(db);
@@ -398,6 +428,9 @@ app.put('/api/admin/mandapams/:id', (req, res) => {
     const photos = req.body.photos ? processAndSavePhotos(req.body.photos, id) : undefined;
     const updateData = { ...req.body, updatedAt: new Date().toISOString() };
     if (photos) updateData.photos = photos;
+    if (req.body.handlerDp !== undefined) {
+      updateData.handlerDp = processAndSaveSingleImage(req.body.handlerDp, 'dp', id);
+    }
 
     if (idx === -1) {
       updateData.id = id;
@@ -419,6 +452,32 @@ app.put('/api/admin/mandapams/:id', (req, res) => {
 
     writeDB(db);
     res.json({ success: true, message: 'Mandapam updated successfully!', mandapam: db.mandapams[idx] });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// Endpoint to upload or set exact Instagram DP for a pandal handler
+app.post('/api/mandapams/:id/handler-dp', (req, res) => {
+  try {
+    const db = readDB();
+    const id = req.params.id;
+    const idx = db.mandapams.findIndex(m => String(m.id) === String(id));
+    if (idx === -1) {
+      return res.status(404).json({ success: false, message: 'Mandapam not found' });
+    }
+    const dpData = req.body.dp || req.body.handlerDp || req.body.image;
+    if (!dpData) {
+      return res.status(400).json({ success: false, message: 'No DP image provided' });
+    }
+    const savedDp = processAndSaveSingleImage(dpData, 'dp', id);
+    db.mandapams[idx].handlerDp = savedDp;
+    if (req.body.instagramHandle) {
+      db.mandapams[idx].instagramHandle = req.body.instagramHandle;
+      db.mandapams[idx].instagramUrl = `https://instagram.com/${req.body.instagramHandle.replace('@', '')}`;
+    }
+    writeDB(db);
+    res.json({ success: true, handlerDp: savedDp, mandapam: db.mandapams[idx] });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
@@ -569,13 +628,16 @@ app.get('/admin', (req, res) => res.sendFile(path.join(__dirname, 'admin.html'))
 // --------------------------------------------------------------------------
 // 24/7 Keep-Alive Service (Prevents 1-2 hour sleep/cold-start freezes on Render)
 // --------------------------------------------------------------------------
-const PING_INTERVAL_MS = 8 * 60 * 1000; // 8 minutes (Render free tier sleeps at 15 mins)
+const PING_INTERVAL_MS = 5 * 60 * 1000; // 5 minutes (Keeps Render free-tier hot 24/7)
 setInterval(() => {
   try {
     const urls = [
       `http://localhost:${PORT}/health`,
       'https://karimnagar-durga-idol-finder.onrender.com/health'
     ];
+    if (process.env.RENDER_EXTERNAL_URL) {
+      urls.push(`${process.env.RENDER_EXTERNAL_URL}/health`);
+    }
     urls.forEach(url => {
       fetch(url).catch(() => {});
     });

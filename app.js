@@ -32,39 +32,49 @@ document.addEventListener("DOMContentLoaded", () => {
   syncIndexData();
   setupEventListeners();
 
-  // 3. Real-time cross-tab & cross-browser synchronization
+  // 3. Real-time cross-tab synchronization
   if (typeof listenDataChange === "function") {
     listenDataChange(() => {
       syncIndexData();
     });
   }
 
-  // Smooth background live polling (10s): only re-renders when admin approves/updates data, eliminating all page glitching
+  // Smooth background live polling (every 45s): only re-renders when data signature changes
   setInterval(() => {
     syncIndexData();
-  }, 10000);
+  }, 45000);
 
+  // Debounced tab focus sync (minimum 30s gap to avoid spamming)
+  let lastFocusSyncTime = 0;
   window.addEventListener("focus", () => {
-    syncIndexData();
-  });
-  document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "visible") {
+    const now = Date.now();
+    if (now - lastFocusSyncTime > 30000) {
+      lastFocusSyncTime = now;
       syncIndexData();
     }
   });
 });
 
+let isSyncInProgress = false;
 function syncIndexData() {
+  if (isSyncInProgress) return;
+  isSyncInProgress = true;
+
   fetch(getApiUrl("/api/mandapams?_t=" + Date.now()))
-    .then(r => r.json())
+    .then(r => {
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return r.json();
+    })
     .then(res => {
       let freshMandapams = [];
       if (res && res.success && Array.isArray(res.mandapams)) {
         // Authoritative list of strictly approved pandals directly from server
-        freshMandapams = res.mandapams.filter(m => (m.isVerified === true || m.status === 'approved') && m.status !== 'pending');
+        freshMandapams = (typeof deduplicatePandals === 'function') 
+          ? deduplicatePandals(res.mandapams)
+          : res.mandapams.filter(m => (m.isVerified === true || m.status === 'approved') && m.status !== 'pending' && m.status !== 'rejected');
         safeSaveMandapams(freshMandapams);
       } else {
-        freshMandapams = getMandapams().filter(m => (m.isVerified === true || m.status === 'approved') && m.status !== 'pending');
+        freshMandapams = getMandapams();
       }
 
       const newSignature = computeDataSignature(freshMandapams, getSiteConfig());
@@ -81,17 +91,17 @@ function syncIndexData() {
       }
       renderAllViews();
     })
-    .catch(() => {
-      pullServerData(() => {
-        const localApproved = getMandapams().filter(m => (m.isVerified === true || m.status === 'approved') && m.status !== 'pending');
-        const newSignature = computeDataSignature(localApproved, getSiteConfig());
-        if (!lastRenderedSignature || newSignature !== lastRenderedSignature) {
-          lastRenderedSignature = newSignature;
-          currentMandapams = localApproved;
-          if (window._userActiveMapSearch) return;
-          renderAllViews();
-        }
-      });
+    .catch((err) => {
+      console.warn("Index sync notice (retaining valid cached data):", err);
+      // Graceful fallback: Do NOT wipe valid cached pandals
+      const localApproved = getMandapams();
+      if (localApproved.length > 0 && (!currentMandapams || currentMandapams.length === 0)) {
+        currentMandapams = localApproved;
+        renderAllViews();
+      }
+    })
+    .finally(() => {
+      isSyncInProgress = false;
     });
 }
 
@@ -113,59 +123,42 @@ function renderAllViews() {
 
 function initApp() {
   currentSiteConfig = getSiteConfig();
-  currentMandapams = getMandapams().filter(m => (m.isVerified === true || m.status === 'approved') && m.status !== 'pending');
+  currentMandapams = (typeof deduplicatePandals === 'function')
+    ? deduplicatePandals(getMandapams())
+    : getMandapams();
   currentAreas = getAreasList();
   lastRenderedSignature = computeDataSignature(currentMandapams, currentSiteConfig);
   renderAllViews();
 }
 
-let devDpIndex = 0;
 const DEVELOPER_DPS = [
-  "assets/images/logo.jpg",
-  "uploads/hero_durga_custom.jpg",
-  "assets/images/hero-durga.jpg"
+  "assets/images/developer-varun.jpg"
 ];
 
-function updateDeveloperDp(idx) {
-  devDpIndex = (idx !== undefined) ? idx : ((devDpIndex + 1) % DEVELOPER_DPS.length);
-  const dpUrl = DEVELOPER_DPS[devDpIndex];
-  
+function updateDeveloperDp() {
+  const dpUrl = "assets/images/developer-varun.jpg";
   const popupImg = document.getElementById("developer-popup-dp");
-  if (popupImg) {
-    popupImg.style.opacity = '0.3';
-    setTimeout(() => {
-      popupImg.src = dpUrl;
-      popupImg.style.opacity = '1';
-    }, 150);
-  }
-  
+  if (popupImg) popupImg.src = dpUrl;
   const cardImg = document.getElementById("developer-card-dp");
-  if (cardImg) {
-    cardImg.src = dpUrl;
-  }
-  
-  renderDeveloperDpDots();
+  if (cardImg) cardImg.src = dpUrl;
 }
 
 function cycleDeveloperPopupDp() {
-  updateDeveloperDp();
+  openInstagramApp('chintuvarun_3008');
 }
 
 function renderDeveloperDpDots() {
   const container = document.getElementById("developer-dp-dots");
-  if (!container) return;
-  container.innerHTML = DEVELOPER_DPS.map((p, i) => `
-    <button type="button" onclick="event.stopPropagation(); updateDeveloperDp(${i})" class="h-1.5 rounded-full transition-all cursor-pointer ${i === devDpIndex ? 'w-4 bg-saffron-500' : 'w-1.5 bg-cream-300 hover:bg-cream-400'}" title="View DP ${i + 1}"></button>
-  `).join('');
+  if (container) container.innerHTML = '';
 }
 
-// Developer modal controllers with multi-image DP
+// Developer modal controllers
 function openDeveloperPopup() {
   const modal = document.getElementById("developer-popup-modal");
   if (modal) {
     modal.classList.remove("hidden");
     modal.classList.add("flex");
-    renderDeveloperDpDots();
+    updateDeveloperDp();
   }
 }
 
@@ -176,14 +169,6 @@ function closeDeveloperPopup() {
     modal.classList.remove("flex");
   }
 }
-
-// Smooth auto-transition for developer multi-image DPs
-setInterval(() => {
-  const modal = document.getElementById("developer-popup-modal");
-  if (modal && !modal.classList.contains("hidden")) {
-    updateDeveloperDp();
-  }
-}, 3500);
 
 
 // 1. Render Header & Hero
@@ -383,17 +368,39 @@ function renderMandapamsDirectory() {
     countEl.textContent = `${filtered.length} Pandals`;
   }
 
+  if (currentMandapams.length === 0) {
+    container.innerHTML = `
+      <div class="col-span-full py-16 px-6 text-center bg-white rounded-3xl border border-cream-300 p-8 shadow-soft space-y-4">
+        <span class="text-4xl block">🔱</span>
+        <h3 class="font-display font-bold text-xl text-ink-900">No pandals available yet</h3>
+        <p class="text-xs sm:text-sm text-ink-600 max-w-md mx-auto leading-relaxed">
+          Be the first to add a Durga pandal in Karimnagar. Submissions appear publicly once approved by admin.
+        </p>
+        <div class="pt-2">
+          <a href="submit.html" class="btn-primary text-xs sm:text-sm inline-flex items-center gap-1.5 !py-3 !px-6 shadow-lift">
+            <span>🔱</span>
+            <span>+ Add Pandal</span>
+          </a>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
   if (filtered.length === 0) {
     container.innerHTML = `
       <div class="col-span-full py-12 text-center bg-white rounded-3xl border border-cream-300 p-8 shadow-soft space-y-3">
-        <span class="text-4xl block">🔱</span>
-        <h3 class="font-display font-bold text-lg text-ink-900">No Durga Pandals Found</h3>
+        <span class="text-4xl block">🔍</span>
+        <h3 class="font-display font-bold text-lg text-ink-900">No Matching Durga Pandals Found</h3>
         <p class="text-xs text-ink-600 max-w-md mx-auto leading-relaxed">
-          Try selecting another category or area, or submit your local colony Durga pandal details to get it listed upon admin approval.
+          Try resetting filters, selecting another area, or submit your local colony Durga pandal details to get it listed upon admin approval.
         </p>
-        <div class="pt-2">
+        <div class="pt-2 flex items-center justify-center gap-3">
+          <button type="button" onclick="filterByArea('all'); filterByCategory('all');" class="btn-outline text-xs !py-2.5 !px-4">
+            Reset Filters
+          </button>
           <a href="submit.html" class="btn-primary text-xs inline-flex items-center gap-1.5 !py-2.5 !px-5 shadow-md">
-            <span>+ Add Durga Mandapam</span>
+            <span>+ Add Pandal</span>
           </a>
         </div>
       </div>
