@@ -71,7 +71,346 @@ const DEFAULT_SITE_CONFIG = {
 };
 
 // No default mock pandals on index page - populated ONLY when submitted and approved by admin!
-const DEFAULT_MANDAPAMS = [];
+const DEFAULT_MANDAPAMS = [
+  {
+    "id": "m-1791882042794",
+    "name": "Lakhimpur ka Rani",
+    "teluguName": "లక్ష్మీపూర్ కా రాణి",
+    "area": "Laxmipur shivalayam",
+    "address": "F37J 79J Shivalayam, Lakshmipur, Telangana 505451",
+    "category": "famous",
+    "categories": [
+      "famous",
+      "unique",
+      "must-visit"
+    ],
+    "mapsUrl": "https://maps.app.goo.gl/Z6fxE2jdKMusmeWa8?g_st=ac",
+    "googleMapsUrl": "https://maps.app.goo.gl/Z6fxE2jdKMusmeWa8?g_st=ac",
+    "latitude": 18.4386,
+    "longitude": 79.1288,
+    "description": "Sacred Durga Mata idol at Shivalayam, Lakshmipur, Karimnagar.",
+    "instagramHandle": "",
+    "instagramUrl": "",
+    "reelsCount": 0,
+    "committee": "Laxmipur Durga Samithi",
+    "photos": [
+      {
+        "url": "assets/images/hero-durga.jpg",
+        "caption": "Lakhimpur ka Rani Main Idol",
+        "isPublished": true
+      }
+    ],
+    "priority": 1,
+    "isMustVisit": true,
+    "isVerified": true,
+    "status": "approved",
+    "imageUrl": "assets/images/hero-durga.jpg",
+    "photoUrl": "assets/images/hero-durga.jpg",
+    "createdAt": "2026-10-13T09:00:42.794Z",
+    "approvedAt": "2026-10-13T09:01:22.920Z"
+  },
+  {
+    "id": "collectorate-road-chandi-mata",
+    "name": "Sri Sri Durga Parameshwari Sena",
+    "teluguName": "శ్రీ శ్రీ దుర్గా పరమేశ్వరి సేన",
+    "area": "Collectorate Road",
+    "address": "Near Collectorate Circle, Court Crossroad, Karimnagar",
+    "category": "must-visit",
+    "categories": [
+      "must-visit",
+      "famous"
+    ],
+    "mapsUrl": "https://maps.google.com/?q=18.4312,79.1245",
+    "googleMapsUrl": "https://maps.google.com/?q=18.4312,79.1245",
+    "latitude": 18.4312,
+    "longitude": 79.1245,
+    "theme": "Mayura Vahana Saraswati & Durga Fusion",
+    "description": "Renowned for its peaceful spiritual ambient chanting, majestic tiger throne, and massive crowd for Kumkumarchana.",
+    "committee": "Swarajya Yuvasena Collectorate",
+    "instagram": "@collectorate_durga_krm",
+    "instagramHandle": "@collectorate_durga_krm",
+    "instagramUrl": "https://instagram.com/collectorate_durga_krm",
+    "reelsCount": 3,
+    "photos": [
+      {
+        "url": "assets/images/hero_durga.jpg",
+        "caption": "Sri Sri Durga Parameshwari Sena Main Idol",
+        "isPublished": true
+      }
+    ],
+    "priority": 2,
+    "isMustVisit": true,
+    "isVerified": true,
+    "status": "approved",
+    "imageUrl": "assets/images/hero_durga.jpg",
+    "photoUrl": "assets/images/hero_durga.jpg",
+    "createdAt": "2026-10-02T10:00:00.000Z",
+    "approvedAt": "2026-10-02T11:00:00.000Z"
+  },
+  {
+    "id": "geetha-bhavan-annapurna",
+    "name": "Sri Annapurna Devi Utsava Samithi",
+    "teluguName": "శ్రీ అన్నపూర్ణా దేవి ఉత్సవ సమితి",
+    "area": "Geetha Bhavan",
+    "address": "Geetha Bhavan Cross Roads, Karimnagar",
+    "category": "must-visit",
+    "categories": [
+      "must-visit",
+      "grand"
+    ],
+    "mapsUrl": "https://maps.google.com/?q=18.4370,79.1310",
+    "googleMapsUrl": "https://maps.google.com/?q=18.4370,79.1310",
+    "latitude": 18.437,
+    "longitude": 79.131,
+    "theme": "Golden Akshaya Vessel & Annadanam Mandapam",
+    "description": "Offering daily Maha Annaprasadam to over 5,000 devotees with grand floral decorations changed every morning.",
+    "committee": "Geetha Bhavan Mitra Mandali",
+    "instagram": "@geethabhavan_durga_festival",
+    "instagramHandle": "@geethabhavan_durga_festival",
+    "instagramUrl": "https://instagram.com/geethabhavan_durga_festival",
+    "reelsCount": 4,
+    "photos": [
+      {
+        "url": "assets/images/hero_durga.jpg",
+        "caption": "Sri Annapurna Devi Utsava Samithi",
+        "isPublished": true
+      }
+    ],
+    "priority": 3,
+    "isMustVisit": true,
+    "isVerified": true,
+    "status": "approved",
+    "imageUrl": "assets/images/hero_durga.jpg",
+    "photoUrl": "assets/images/hero_durga.jpg",
+    "createdAt": "2026-10-03T09:00:00.000Z",
+    "approvedAt": "2026-10-03T10:00:00.000Z"
+  },
+  {
+    "id": "ramnagar-vaishno-devi",
+    "name": "Maa Vaishno Devi Cave Mandapam",
+    "teluguName": "మా వైష్ణో దేవి కేవ్ మండపం",
+    "area": "Ramnagar",
+    "address": "Near Water Tank, Main Road, Ramnagar, Karimnagar",
+    "category": "unique",
+    "categories": [
+      "unique",
+      "must-visit"
+    ],
+    "mapsUrl": "https://maps.google.com/?q=18.4410,79.1450",
+    "googleMapsUrl": "https://maps.google.com/?q=18.4410,79.1450",
+    "latitude": 18.441,
+    "longitude": 79.145,
+    "theme": "Realistic Trikuta Mountain Cave Experience",
+    "description": "Walk through a 150-feet artificial mist cave with waterfalls recreating the holy pilgrimage of Jammu Vaishno Devi.",
+    "committee": "Ramnagar Yuva Mandali",
+    "instagram": "@ramnagar_vaishnodevi_krm",
+    "instagramHandle": "@ramnagar_vaishnodevi_krm",
+    "instagramUrl": "https://instagram.com/ramnagar_vaishnodevi_krm",
+    "reelsCount": 7,
+    "photos": [
+      {
+        "url": "assets/images/hero_durga.jpg",
+        "caption": "Maa Vaishno Devi Cave Mandapam",
+        "isPublished": true
+      }
+    ],
+    "priority": 4,
+    "isMustVisit": true,
+    "isVerified": true,
+    "status": "approved",
+    "imageUrl": "assets/images/hero_durga.jpg",
+    "photoUrl": "assets/images/hero_durga.jpg",
+    "createdAt": "2026-10-03T11:00:00.000Z",
+    "approvedAt": "2026-10-03T12:00:00.000Z"
+  },
+  {
+    "id": "mukarampura-simhavahini",
+    "name": "Mukarampura Simhavahini Durga",
+    "teluguName": "ముకరంపుర సింహవాహిని దుర్గ",
+    "area": "Mukarampura",
+    "address": "Near Old Market, Beside Hanuman Temple, Mukarampura, Karimnagar",
+    "category": "traditional",
+    "categories": [
+      "traditional",
+      "famous"
+    ],
+    "mapsUrl": "https://maps.google.com/?q=18.4415,79.1360",
+    "googleMapsUrl": "https://maps.google.com/?q=18.4415,79.1360",
+    "latitude": 18.4415,
+    "longitude": 79.136,
+    "theme": "Kolkata Clay Style Mahishasura Mardini",
+    "description": "Crafted exclusively with eco-friendly natural river clay by artisan sculptors, depicting the dramatic victory over Mahishasura.",
+    "committee": "Jai Bhavani Youth Mukarampura",
+    "instagram": "@mukarampura_bhavani_youth",
+    "instagramHandle": "@mukarampura_bhavani_youth",
+    "instagramUrl": "https://instagram.com/mukarampura_bhavani_youth",
+    "reelsCount": 2,
+    "photos": [
+      {
+        "url": "assets/images/hero_durga.jpg",
+        "caption": "Mukarampura Simhavahini Durga",
+        "isPublished": true
+      }
+    ],
+    "priority": 5,
+    "isMustVisit": false,
+    "isVerified": true,
+    "status": "approved",
+    "imageUrl": "assets/images/hero_durga.jpg",
+    "photoUrl": "assets/images/hero_durga.jpg",
+    "createdAt": "2026-10-02T12:00:00.000Z",
+    "approvedAt": "2026-10-02T13:00:00.000Z"
+  },
+  {
+    "id": "sapthagiri-colony-navadurga",
+    "name": "Sapthagiri Nava Durga Youth",
+    "teluguName": "సప్తగిరి నవదుర్గ యూత్",
+    "area": "Sapthagiri Colony",
+    "address": "Park Street, 3rd Lane, Sapthagiri Colony, Karimnagar",
+    "category": "unique",
+    "categories": [
+      "unique"
+    ],
+    "mapsUrl": "https://maps.google.com/?q=18.4520,79.1230",
+    "googleMapsUrl": "https://maps.google.com/?q=18.4520,79.1230",
+    "latitude": 18.452,
+    "longitude": 79.123,
+    "theme": "9 Forms of Durga 3D Diorama Stage",
+    "description": "Featuring moving mechanical dioramas showing Shailaputri, Brahmacharini, Chandraghanta, Kushmanda, Skandamata, Katyayani, Kalaratri, Mahagauri, and Siddhidatri.",
+    "committee": "Sapthagiri Youth Association",
+    "instagram": "@sapthagiri_durga_club",
+    "instagramHandle": "@sapthagiri_durga_club",
+    "instagramUrl": "https://instagram.com/sapthagiri_durga_club",
+    "reelsCount": 3,
+    "photos": [
+      {
+        "url": "assets/images/hero_durga.jpg",
+        "caption": "Sapthagiri Nava Durga Youth",
+        "isPublished": true
+      }
+    ],
+    "priority": 6,
+    "isMustVisit": false,
+    "isVerified": true,
+    "status": "approved",
+    "imageUrl": "assets/images/hero_durga.jpg",
+    "photoUrl": "assets/images/hero_durga.jpg",
+    "createdAt": "2026-10-03T14:00:00.000Z",
+    "approvedAt": "2026-10-03T15:00:00.000Z"
+  },
+  {
+    "id": "sub-101",
+    "name": "Sri Maha Chandi Navaratri Utsavam",
+    "teluguName": "శ్రీ మహా చండీ నవరాత్రి ఉత్సవం",
+    "area": "Civil Hospital Road",
+    "address": "Near Government Head Hospital, Civil Hospital Road, Karimnagar",
+    "category": "unique",
+    "categories": [
+      "unique"
+    ],
+    "mapsUrl": "https://maps.google.com/?q=18.4365,79.1265",
+    "googleMapsUrl": "https://maps.google.com/?q=18.4365,79.1265",
+    "latitude": 18.4365,
+    "longitude": 79.1265,
+    "theme": "Kavacham Alankaram with 1008 Diya Deepam",
+    "description": "Community pandal setup with 1008 oil lamps lighted daily at twilight by women devotees.",
+    "committee": "Youth Friends Group",
+    "instagram": "@civilhospital_durga",
+    "instagramHandle": "@civilhospital_durga",
+    "instagramUrl": "https://instagram.com/civilhospital_durga",
+    "reelsCount": 1,
+    "photos": [
+      {
+        "url": "assets/images/hero_durga.jpg",
+        "caption": "Sri Maha Chandi Navaratri Utsavam",
+        "isPublished": true
+      }
+    ],
+    "priority": 7,
+    "isMustVisit": false,
+    "isVerified": true,
+    "status": "approved",
+    "imageUrl": "assets/images/hero_durga.jpg",
+    "photoUrl": "assets/images/hero_durga.jpg",
+    "createdAt": "2026-10-04T08:00:00.000Z",
+    "approvedAt": "2026-10-04T09:00:00.000Z"
+  },
+  {
+    "id": "bhagyanagar-bhavani-mata",
+    "name": "Bhagyanagar Bhavani Youth",
+    "teluguName": "భాగ్యనగర్ భవానీ యూత్",
+    "area": "Bhagyanagar",
+    "address": "Main Road, Near Arch, Bhagyanagar, Karimnagar",
+    "category": "grand",
+    "categories": [
+      "grand",
+      "famous"
+    ],
+    "mapsUrl": "https://maps.google.com/?q=18.4440,79.1150",
+    "googleMapsUrl": "https://maps.google.com/?q=18.4440,79.1150",
+    "latitude": 18.444,
+    "longitude": 79.115,
+    "theme": "Glowing Crystal & Glass Palace Theme",
+    "description": "Over 50,000 LED lights creating a sparkling crystal cave entrance leading to the divine sanctum of Bhavani Mata.",
+    "committee": "Bhagyanagar Utsav Committee",
+    "instagram": "@bhagyanagar_durga_krm",
+    "instagramHandle": "@bhagyanagar_durga_krm",
+    "instagramUrl": "https://instagram.com/bhagyanagar_durga_krm",
+    "reelsCount": 3,
+    "photos": [
+      {
+        "url": "assets/images/hero_durga.jpg",
+        "caption": "Bhagyanagar Bhavani Youth",
+        "isPublished": true
+      }
+    ],
+    "priority": 8,
+    "isMustVisit": false,
+    "isVerified": true,
+    "status": "approved",
+    "imageUrl": "assets/images/hero_durga.jpg",
+    "photoUrl": "assets/images/hero_durga.jpg",
+    "createdAt": "2026-10-03T16:00:00.000Z",
+    "approvedAt": "2026-10-03T17:00:00.000Z"
+  },
+  {
+    "id": "kothirampur-kamakshi",
+    "name": "Sri Kamakshi Ammavaru Mandapam",
+    "teluguName": "శ్రీ కామాక్షి అమ్మవారు మండపం",
+    "area": "Kothirampur",
+    "address": "Behind Zilla Parishad High School, Kothirampur, Karimnagar",
+    "category": "traditional",
+    "categories": [
+      "traditional"
+    ],
+    "mapsUrl": "https://maps.google.com/?q=18.4280,79.1410",
+    "googleMapsUrl": "https://maps.google.com/?q=18.4280,79.1410",
+    "latitude": 18.428,
+    "longitude": 79.141,
+    "theme": "South Indian Temple Gopuram Setup",
+    "description": "Replica of Kanchi Kamakshi temple courtyard with Carnatic classical concerts every evening during Navaratri.",
+    "committee": "Kothirampur Boys Sena",
+    "instagram": "@kothirampur_cha_raja",
+    "instagramHandle": "@kothirampur_cha_raja",
+    "instagramUrl": "https://instagram.com/kothirampur_cha_raja",
+    "reelsCount": 2,
+    "photos": [
+      {
+        "url": "assets/images/hero_durga.jpg",
+        "caption": "Sri Kamakshi Ammavaru Mandapam",
+        "isPublished": true
+      }
+    ],
+    "priority": 9,
+    "isMustVisit": false,
+    "isVerified": true,
+    "status": "approved",
+    "imageUrl": "assets/images/hero_durga.jpg",
+    "photoUrl": "assets/images/hero_durga.jpg",
+    "createdAt": "2026-10-03T18:00:00.000Z",
+    "approvedAt": "2026-10-03T19:00:00.000Z"
+  }
+];
 
 const DEFAULT_AREAS = [
   "Tower Circle",
