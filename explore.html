@@ -338,18 +338,27 @@
   </nav>
 
   <!-- Map Provider Config & Live Data with Cache Busting -->
-  <script src="map-config.js?v=16"></script>
-  <script src="data.js?v=16"></script>
+  <script src="map-config.js?v=20261014_v1"></script>
+  <script src="data.js?v=20261014_v1"></script>
   <script>
-    let currentMapType = 'm'; // 'm' for Roadmap, 'k' for Satellite Hybrid
     let currentEmbedLocation = '18.4386,79.1288';
     let currentEmbedZoom = 14;
     let activeMapArea = 'all';
     let mapSearchQuery = '';
     let activeSelectedPandal = null;
+    let lastExploreSignature = '';
+
+    function computeExploreSignature(items) {
+      if (!Array.isArray(items)) return '';
+      return items
+        .filter(m => (m.isVerified === true || m.status === 'approved') && m.status !== 'pending')
+        .map(m => `${m.id}-${m.status}-${m.isVerified}-${m.updatedAt || ''}`)
+        .join('|');
+    }
 
     document.addEventListener("DOMContentLoaded", () => {
       pullServerData(() => {
+        lastExploreSignature = computeExploreSignature(getMandapams());
         renderMapAreaPills();
         renderMapMarkersAndList();
         handleUrlParameters();
@@ -358,24 +367,36 @@
       if (typeof listenDataChange === "function") {
         listenDataChange(() => {
           pullServerData(() => {
-            renderMapAreaPills();
-            renderMapMarkersAndList();
+            const sig = computeExploreSignature(getMandapams());
+            if (sig !== lastExploreSignature) {
+              lastExploreSignature = sig;
+              renderMapAreaPills();
+              renderMapMarkersAndList();
+            }
           });
         });
       }
 
-      // Live sync
+      // Live sync without flashing or DOM destruction
       setInterval(() => {
         pullServerData(() => {
-          renderMapAreaPills();
-          renderMapMarkersAndList();
+          const sig = computeExploreSignature(getMandapams());
+          if (sig !== lastExploreSignature) {
+            lastExploreSignature = sig;
+            renderMapAreaPills();
+            renderMapMarkersAndList();
+          }
         });
-      }, 5000);
+      }, 10000);
 
       window.addEventListener("focus", () => {
         pullServerData(() => {
-          renderMapAreaPills();
-          renderMapMarkersAndList();
+          const sig = computeExploreSignature(getMandapams());
+          if (sig !== lastExploreSignature) {
+            lastExploreSignature = sig;
+            renderMapAreaPills();
+            renderMapMarkersAndList();
+          }
         });
       });
     });
@@ -385,35 +406,12 @@
       currentEmbedZoom = zoom || 15;
       const iframe = document.getElementById("google-maps-embed-frame");
       if (iframe) {
-        iframe.src = `https://maps.google.com/maps?q=${currentEmbedLocation}&t=${currentMapType}&z=${currentEmbedZoom}&ie=UTF8&iwloc=&output=embed`;
+        iframe.src = `https://maps.google.com/maps?q=${currentEmbedLocation}&t=m&z=${currentEmbedZoom}&ie=UTF8&iwloc=&output=embed`;
       }
       const directLink = document.getElementById("btn-open-google-maps");
       if (directLink) {
         directLink.href = `https://www.google.com/maps/search/?api=1&query=${currentEmbedLocation}`;
       }
-    }
-
-    function switchDedicatedMapView(type) {
-      if (type === 'satellite') {
-        currentMapType = 'k';
-      } else {
-        currentMapType = 'm';
-      }
-
-      const btnRoads = document.getElementById('btn-view-roads');
-      const btnSat = document.getElementById('btn-view-satellite');
-
-      if (btnRoads && btnSat) {
-        if (currentMapType === 'm') {
-          btnRoads.className = "px-2.5 py-1 rounded-lg font-bold transition bg-saffron-500 text-white shadow-xs cursor-pointer";
-          btnSat.className = "px-2.5 py-1 rounded-lg font-medium text-ink-700 hover:bg-cream-100 transition cursor-pointer";
-        } else {
-          btnSat.className = "px-2.5 py-1 rounded-lg font-bold transition bg-saffron-500 text-white shadow-xs cursor-pointer";
-          btnRoads.className = "px-2.5 py-1 rounded-lg font-medium text-ink-700 hover:bg-cream-100 transition cursor-pointer";
-        }
-      }
-
-      updateGoogleMapEmbed(currentEmbedLocation, currentEmbedZoom);
     }
 
     function toggleMobileView(mode) {
@@ -457,7 +455,7 @@
       } else {
         // 1. Check if an approved pandal exists in this area
         const mandapams = getMandapams();
-        const inArea = mandapams.filter(m => (m.isVerified === true || m.status !== 'pending') && m.area === area && m.latitude && m.longitude);
+        const inArea = mandapams.filter(m => (m.isVerified === true || m.status === 'approved') && m.status !== 'pending' && m.area === area && m.latitude && m.longitude);
         if (inArea.length > 0) {
           const first = inArea[0];
           panToMandapam(first.latitude, first.longitude, first.id);
@@ -486,7 +484,7 @@
       if (q.length >= 2) {
         mapSearchDebounce = setTimeout(async () => {
           // 1. Check if an approved pandal matches
-          const mandapams = getMandapams();
+          const mandapams = getMandapams().filter(m => (m.isVerified === true || m.status === 'approved') && m.status !== 'pending');
           const pMatch = mandapams.find(m =>
             m.latitude && m.longitude &&
             ((m.name && m.name.toLowerCase().includes(mapSearchQuery)) ||
